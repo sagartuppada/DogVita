@@ -1,23 +1,22 @@
 # AGENTS.md — dog-health-app
 
-React Native + Expo SDK 52 (TypeScript) app for monitoring a BLE dog-collar (ESP32-S3). Zustand state, React Navigation 7, Supabase backend, react-native-ble-plx.
+React Native (bare, no Expo) TypeScript app for monitoring a BLE dog-collar (ESP32-S3). Zustand state, React Navigation 7, Supabase backend, react-native-ble-plx.
 
 ## Quick Start
 
 ```bash
 npm install
-npm start              # Expo dev server (Metro)
-npm run android        # Builds + runs on Android (needs Android Studio + SDK)
-npm run ios            # Builds + runs on iOS (needs Xcode)
-npm run typecheck      # tsc --noEmit
-npm run lint           # ESLint . --ext .ts,.tsx
+npx react-native start --reset-cache  # Metro dev server
+npx react-native run-android          # Build + run on Android
+npm run typecheck                      # tsc --noEmit
+npm run lint                           # ESLint
 ```
 
 There is no test suite. `npm test` referenced in the README is a lie — the script is not defined in `package.json`.
 
 ## Entry Points & Layout
 
-- `App.tsx` (root) re-exports from `app/App.tsx` — Expo loads `App.tsx` via the `main` field in `package.json` (`node_modules/expo/AppEntry.js`).
+- `App.tsx` (root) re-exports from `app/App.tsx` — RN loads via `index.js` → `AppRegistry.registerComponent`.
 - `app/App.tsx` — actual root component. Wraps everything in `GestureHandlerRootView` + `SafeAreaProvider`, then renders `RootNavigator`.
 - `app/navigation/RootNavigator.tsx` — switches between the onboarding stack and the main tab navigator based on `useSettingsStore.hasCompletedOnboarding`.
 - `app/screens/onboarding/` — Welcome → AddPhoneNumber → OTPVerification → SetupDogProfile → PairDevice.
@@ -44,11 +43,40 @@ If you want real Supabase auth, fill in `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUB
 - Android Studio installed with SDK at `C:\Users\User\AppData\Local\Android\Sdk`
 - `JAVA_HOME` must point at Android Studio's bundled JDK (e.g. `C:\Program Files\Android\Android Studio\jbr`). Setting it to a system JDK breaks the Gradle build.
 - `android/local.properties` is already populated with `sdk.dir=...` and is **not** committed (see `.gitignore`).
-- The `android/` and `ios/` directories are prebuild artifacts. Regenerate with `npm run prebuild` if you change `app.json` plugins or config.
+- The `android/` and `ios/` directories are prebuild artifacts. Regenerate with `npx react-native prebuild` if you change `app.json` plugins or config.
+- Build command: `$env:ANDROID_HOME="C:\Users\User\AppData\Local\Android\Sdk"; .\gradlew.bat app:assembleDebug --no-daemon -PreactNativeArchitectures=x86_64` (from `android/` dir)
 
 ## State Management
 
-Zustand stores, one per domain. Persist middleware writes to `AsyncStorage` (already wired in most stores). Selectors should be narrow — e.g. `useSettingsStore((s) => s.hasCompletedOnboarding)`, not the whole state, to avoid re-renders.
+Zustand stores, one per domain. Persist middleware writes to `AsyncStorage` (already wired in most stores).
+
+### CRITICAL: Zustand Selector Rules
+
+**Never call methods or return new references inside Zustand selectors.** This causes infinite re-render loops ("Maximum update depth exceeded").
+
+**BAD — creates new object/array each render:**
+```tsx
+const activeDog = useDogStore((state) => state.getActiveDog());  // new ref each time
+const heartRateData = useHealthStore((state) => state.heartRateHistory.slice(-20));  // new array each time
+```
+
+**GOOD — narrow selectors + useMemo:**
+```tsx
+const dogs = useDogStore((s) => s.dogs);
+const activeDogId = useDogStore((s) => s.activeDogId);
+const activeDog = useMemo(() => dogs.find((d) => d.id === activeDogId) ?? null, [dogs, activeDogId]);
+```
+
+**BAD — destructuring the whole store:**
+```tsx
+const { isConnected, connectedDeviceName } = useBLEStore();  // re-renders on ANY store change
+```
+
+**GOOD — individual narrow selectors:**
+```tsx
+const isConnected = useBLEStore((s) => s.isConnected);
+const connectedDeviceName = useBLEStore((s) => s.connectedDeviceName);
+```
 
 ## Graphify (Knowledge Graph)
 
@@ -69,5 +97,5 @@ Real BLE UUIDs are placeholder in `.env` (`EXPO_PUBLIC_BLE_*`). The packet parse
 - **No Redux.** Only Zustand. (Per project requirement — do not introduce Redux.)
 - **TypeScript strict** is on. `npm run typecheck` is the cheapest correctness check — run it before lint.
 - **Theme tokens** come from `app/theme/` (`colors`, `spacing`, `typography`, `shadows`, `borderRadius`). Do not hardcode hex values in components.
-- **Icons** use `@expo/vector-icons` (`Ionicons` is the chosen set across the app).
+- **Icons** use `react-native-vector-icons/Ionicons`.
 - No comments added on edits unless the code is non-obvious (mirrors the original style — most files are clean of explanatory comments).
