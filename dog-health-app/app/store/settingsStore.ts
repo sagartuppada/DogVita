@@ -51,7 +51,7 @@ const defaultUnits: Units = {
 };
 
 const initialState: SettingsState = {
-  ...defaultUnits,
+  units: defaultUnits,
   notifications: true,
   darkMode: false,
   autoSync: true,

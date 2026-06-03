@@ -6,7 +6,7 @@
 import { supabase, isSupabaseConfigured } from '../api/supabase';
 import { AuthUser, AuthSession } from '../../types';
 
-const TEST_MODE = !isSupabaseConfigured || process.env.NODE_ENV === 'development';
+const TEST_MODE = !isSupabaseConfigured() || process.env.NODE_ENV === 'development';
 const TEST_OTP = '123456';
 
 class AuthService {

@@ -32,7 +32,7 @@ if (isConfigured) {
   });
 }
 
-export const supabase: SupabaseClient = _supabase!;
+export const supabase: SupabaseClient = _supabase as SupabaseClient;
 
 export const getSupabaseUrl = () => supabaseUrl;
 export const getSupabaseAnonKey = () => supabaseAnonKey;

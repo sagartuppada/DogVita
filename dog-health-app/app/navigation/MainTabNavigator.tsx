@@ -29,12 +29,6 @@ const TrackingStack = createNativeStackNavigator<TrackingStackParamList>();
 const AlertsStack = createNativeStackNavigator<AlertsStackParamList>();
 const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
 
-const createStackNavigator = (Screen: React.FC) => {
-  return function StackScreen() {
-    return <Screen />;
-  };
-};
-
 const DashboardStackScreen = () => (
   <DashboardStack.Navigator screenOptions={{ headerShown: false }}>
     <DashboardStack.Screen name="Dashboard" component={DashboardScreen} />

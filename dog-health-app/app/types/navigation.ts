@@ -120,10 +120,3 @@ export type SettingsScreenProps<T extends keyof SettingsStackParamList> = Compos
 // Navigation prop types for useNavigation hook
 export type NavigationProp<T extends keyof RootStackParamList> = 
   RootStackScreenProps<T>['navigation'];
-
-// Declare global navigation types
-declare global {
-  namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
-  }
-}

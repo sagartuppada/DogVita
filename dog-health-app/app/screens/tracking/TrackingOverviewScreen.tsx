@@ -2,7 +2,7 @@
  * TrackingOverviewScreen - GPS tracking and geofencing
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Card, StatusBadge, Button } from '../../components/common';
@@ -11,8 +11,13 @@ import { colors, spacing, typography } from '../../theme';
 import { useDogStore, useTrackingStore } from '../../store';
 
 export const TrackingOverviewScreen: React.FC = () => {
-  const activeDog = useDogStore((state) => state.getActiveDog());
-  const { currentLocation, geofences, isTracking, totalDistance } = useTrackingStore();
+  const dogs = useDogStore((s) => s.dogs);
+  const activeDogId = useDogStore((s) => s.activeDogId);
+  const activeDog = useMemo(() => dogs.find((d) => d.id === activeDogId) ?? null, [dogs, activeDogId]);
+  const currentLocation = useTrackingStore((s) => s.currentLocation);
+  const geofences = useTrackingStore((s) => s.geofences);
+  const isTracking = useTrackingStore((s) => s.isTracking);
+  const totalDistance = useTrackingStore((s) => s.totalDistance);
 
   return (
     <SafeAreaView style={styles.container}>

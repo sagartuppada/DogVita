@@ -46,7 +46,8 @@ class BLEScanner {
 
     return new Promise((resolve, reject) => {
       this.manager.startDeviceScan(
-        options,
+        SERVICE_UUIDS,
+        { allowDuplicates: false },
         (error, device) => {
           if (error) {
             this.isScanning = false;

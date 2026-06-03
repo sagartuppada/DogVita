@@ -35,7 +35,6 @@ export const PairDeviceScreen: React.FC<Props> = ({ navigation }) => {
           text: 'Continue',
           onPress: () => {
             setOnboardingComplete();
-            navigation.navigate('Welcome');
           },
         },
       ]);
@@ -111,7 +110,6 @@ export const PairDeviceScreen: React.FC<Props> = ({ navigation }) => {
               title="Skip for now"
               onPress={() => {
                 setOnboardingComplete();
-                navigation.navigate('Welcome');
               }}
               variant="ghost"
             />

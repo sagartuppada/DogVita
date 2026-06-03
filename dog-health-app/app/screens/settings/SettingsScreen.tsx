@@ -34,18 +34,16 @@ const SettingItem: React.FC<SettingItemProps> = ({ icon, iconColor, title, subti
 );
 
 export const SettingsScreen: React.FC = () => {
-  const {
-    notifications,
-    darkMode,
-    autoSync,
-    isBLEEnabled,
-    isLocationEnabled,
-    setNotifications,
-    setDarkMode,
-    setAutoSync,
-    setBLEEnabled,
-    setLocationEnabled,
-  } = useSettingsStore();
+  const notifications = useSettingsStore((s) => s.notifications);
+  const darkMode = useSettingsStore((s) => s.darkMode);
+  const autoSync = useSettingsStore((s) => s.autoSync);
+  const isBLEEnabled = useSettingsStore((s) => s.isBLEEnabled);
+  const isLocationEnabled = useSettingsStore((s) => s.isLocationEnabled);
+  const setNotifications = useSettingsStore((s) => s.setNotifications);
+  const setDarkMode = useSettingsStore((s) => s.setDarkMode);
+  const setAutoSync = useSettingsStore((s) => s.setAutoSync);
+  const setBLEEnabled = useSettingsStore((s) => s.setBLEEnabled);
+  const setLocationEnabled = useSettingsStore((s) => s.setLocationEnabled);
 
   return (
     <SafeAreaView style={styles.container}>

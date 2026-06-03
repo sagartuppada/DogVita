@@ -2,7 +2,7 @@
  * HealthOverviewScreen - Health metrics overview
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Card, StatusBadge } from '../../components/common';
@@ -11,10 +11,13 @@ import { colors, spacing, typography } from '../../theme';
 import { useDogStore, useHealthStore } from '../../store';
 
 export const HealthOverviewScreen: React.FC = () => {
-  const activeDog = useDogStore((state) => state.getActiveDog());
-  const { currentMetrics, heartRateHistory } = useHealthStore();
+  const dogs = useDogStore((state) => state.dogs);
+  const activeDogId = useDogStore((state) => state.activeDogId);
+  const currentMetrics = useHealthStore((s) => s.currentMetrics);
+  const heartRateHistory = useHealthStore((s) => s.heartRateHistory);
+  const activeDog = useMemo(() => dogs.find((d) => d.id === activeDogId) ?? null, [dogs, activeDogId]);
   const metrics = activeDog ? currentMetrics[activeDog.id] : null;
-  const recentHeartRate = heartRateHistory.slice(-20);
+  const recentHeartRate = useMemo(() => heartRateHistory.slice(-20), [heartRateHistory]);
 
   const getHealthScore = () => {
     if (!metrics) return 0;
