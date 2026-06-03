@@ -1,0 +1,1 @@
+export { notificationsService } from './service';

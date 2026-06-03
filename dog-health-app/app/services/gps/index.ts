@@ -1,0 +1,1 @@
+export { gpsService } from './service';

@@ -1,0 +1,1 @@
+export { DogCard } from './DogCard';

@@ -1,0 +1,1 @@
+export { HeartRateChart } from './HeartRateChart';
