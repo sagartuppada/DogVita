@@ -32,6 +32,7 @@ interface BLEActions {
   setSignalStrength: (strength: number) => void;
   setError: (error: string | null) => void;
   reset: () => void;
+  loadDemoData: () => void;
 }
 
 type BLEStore = BLEState & BLEActions;
@@ -106,6 +107,16 @@ export const useBLEStore = create<BLEStore>()(
       setError: (lastError) => set({ lastError, connectionStatus: 'error' }),
 
       reset: () => set(initialState),
+
+      loadDemoData: () =>
+        set({
+          isConnected: true,
+          connectionStatus: 'connected',
+          connectedDeviceId: 'demo_collar_1',
+          connectedDeviceName: 'DogVita Collar',
+          signalStrength: -65,
+          lastConnected: new Date().toISOString(),
+        }),
     }),
     {
       name: 'ble-storage',

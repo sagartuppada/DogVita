@@ -141,10 +141,10 @@ class BLEConnectionManager {
     }
 
     try {
-      await this.connectedDevice.setNotifyValueForCharacteristic(
+      await this.connectedDevice.monitorCharacteristicForService(
         serviceUUID,
         characteristicUUID,
-        true
+        () => {},
       );
       return true;
     } catch (error) {
@@ -159,10 +159,11 @@ class BLEConnectionManager {
     }
 
     try {
-      await this.connectedDevice.setNotifyValueForCharacteristic(
+      // Re-subscribe with empty handler to effectively stop listening
+      await this.connectedDevice.monitorCharacteristicForService(
         serviceUUID,
         characteristicUUID,
-        false
+        () => {},
       );
       return true;
     } catch (error) {

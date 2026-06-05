@@ -85,7 +85,7 @@ class AuthService {
           refreshToken: data.session.refresh_token,
           expiresAt: data.session.expires_at || 0,
           expiresIn: data.session.expires_in || 0,
-          user: this.mapUser(data.user),
+          user: this.mapUser(data.user!),
         };
         return { session };
       }

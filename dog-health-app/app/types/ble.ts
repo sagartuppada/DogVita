@@ -2,19 +2,27 @@
  * BLE (Bluetooth Low Energy) type definitions
  */
 
-import { Device, Characteristic, Service } from 'react-native-ble-plx';
-
-export interface BLEDevice extends Device {
+export interface BLEDevice {
+  id: string;
+  name: string | null;
   rssi: number;
   isConnectable: boolean;
-  manufacturerData?: string;
+  manufacturerData?: string | null;
+  localName?: string | null;
+  txPowerLevel?: number | null;
+  serviceUUIDs?: string[] | null;
+  serviceData?: { [uuid: string]: string } | null;
+  solicitedServiceUUIDs?: string[] | null;
+  mtu?: number;
 }
 
-export interface BLEService extends Service {
+export interface BLEService {
+  uuid: string;
   characteristics?: BLECharacteristic[];
 }
 
-export interface BLECharacteristic extends Characteristic {
+export interface BLECharacteristic {
+  uuid: string;
   isReadable: boolean;
   isWritable: boolean;
   isNotifiable: boolean;

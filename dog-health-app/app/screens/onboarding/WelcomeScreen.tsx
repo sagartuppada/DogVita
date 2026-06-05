@@ -1,127 +1,170 @@
 /**
- * WelcomeScreen - Onboarding welcome screen
+ * WelcomeScreen - Premium welcome landing
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Button } from '../../components/common';
-import { colors, spacing, typography } from '../../theme';
-import { OnboardingStackParamList } from '../../navigation/types';
+import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import type { OnboardingScreenProps } from '../../navigation/types';
+import { useSettingsStore } from '../../store/settingsStore';
+import { useDogStore } from '../../store/dogStore';
+import { useHealthStore } from '../../store/healthStore';
+import { useBLEStore } from '../../store/bleStore';
+import { useTrackingStore } from '../../store/trackingStore';
+import { useAlertStore } from '../../store/alertStore';
 
-type Props = NativeStackScreenProps<OnboardingStackParamList, 'Welcome'>;
+export default function WelcomeScreen({ navigation }: OnboardingScreenProps<'Welcome'>) {
+  const insets = useSafeAreaInsets();
+  const setOnboardingComplete = useSettingsStore((s) => s.setOnboardingComplete);
+  const loadDogDemo = useDogStore((s) => s.loadDemoData);
+  const loadHealthDemo = useHealthStore((s) => s.loadDemoData);
+  const loadBLEDemo = useBLEStore((s) => s.loadDemoData);
+  const loadTrackingDemo = useTrackingStore((s) => s.loadDemoData);
+  const loadAlertsDemo = useAlertStore((s) => s.loadDemoData);
 
-export const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
+  const handleSkip = () => {
+    loadDogDemo();
+    loadHealthDemo();
+    loadBLEDemo();
+    loadTrackingDemo();
+    loadAlertsDemo();
+    setOnboardingComplete();
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.iconContainer}>
-          <Ionicons name="paw" size={80} color={colors.primary[600]} />
+    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+      {/* Logo Area */}
+      <View style={styles.logoArea}>
+        <View style={styles.logoCircle}>
+          <Ionicons name="paw" size={48} color={colors.primary.DEFAULT} />
         </View>
-        <Text style={styles.title}>Dog Health App</Text>
-        <Text style={styles.subtitle}>
-          Monitor your dog's health in real-time with our smart wearable collar
-        </Text>
+        <Text style={styles.appName}>DogVita</Text>
+        <Text style={styles.tagline}>Smart health monitoring for your best friend</Text>
       </View>
+
+      {/* Features */}
       <View style={styles.features}>
-        <FeatureItem icon="heart" text="Heart rate monitoring" />
-        <FeatureItem icon="location" text="GPS tracking & geofencing" />
-        <FeatureItem icon="fitness" text="Activity tracking" />
-        <FeatureItem icon="moon" text="Sleep monitoring" />
+        <View style={styles.featureRow}>
+          <View style={[styles.featureIcon, { backgroundColor: colors.health.heartRate + '18' }]}>
+            <Ionicons name="heart" size={20} color={colors.health.heartRate} />
+          </View>
+          <View style={styles.featureText}>
+            <Text style={styles.featureTitle}>Real-time Health</Text>
+            <Text style={styles.featureDesc}>Heart rate, temperature, and SpO₂</Text>
+          </View>
+        </View>
+
+        <View style={styles.featureRow}>
+          <View style={[styles.featureIcon, { backgroundColor: colors.status.info + '18' }]}>
+            <Ionicons name="location" size={20} color={colors.status.info} />
+          </View>
+          <View style={styles.featureText}>
+            <Text style={styles.featureTitle}>Live Tracking</Text>
+            <Text style={styles.featureDesc}>GPS location and activity monitoring</Text>
+          </View>
+        </View>
+
+        <View style={styles.featureRow}>
+          <View style={[styles.featureIcon, { backgroundColor: colors.status.success + '18' }]}>
+            <Ionicons name="shield-checkmark" size={20} color={colors.status.success} />
+          </View>
+          <View style={styles.featureText}>
+            <Text style={styles.featureTitle}>Smart Alerts</Text>
+            <Text style={styles.featureDesc}>Instant notifications for health changes</Text>
+          </View>
+        </View>
       </View>
-      <View style={styles.testModeBanner}>
-        <Text style={styles.testModeTitle}>🧪 Test Mode Active</Text>
-        <Text style={styles.testModeSubtitle}>Use OTP: 123456 to verify</Text>
-      </View>
-      <View style={styles.footer}>
+
+      {/* CTA */}
+      <View style={styles.cta}>
         <Button
           title="Get Started"
-          onPress={() => navigation.navigate('AddPhoneNumber')}
+          onPress={() => navigation.navigate('AddPhone')}
+          variant="primary"
           size="lg"
-          style={styles.button}
         />
+        <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
+          <Text style={styles.skipText}>Skip for now</Text>
+        </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
-};
-
-const FeatureItem = ({ icon, text }: { icon: string; text: string }) => (
-  <View style={styles.featureItem}>
-    <Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={24} color={colors.primary[600]} />
-    <Text style={styles.featureText}>{text}</Text>
-  </View>
-);
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.primary,
-    padding: spacing.page,
+    paddingHorizontal: spacing.xxl,
   },
-  content: {
-    alignItems: 'center',
-    paddingTop: spacing.xxxl,
-  },
-  iconContainer: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    backgroundColor: colors.primary[100],
+  logoArea: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: spacing.xxl,
+    paddingBottom: spacing.xxxl,
   },
-  title: {
-    ...typography.styles.displayMedium,
-    color: colors.text.primary,
-    textAlign: 'center',
+  logoCircle: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: colors.primary[50],
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.xl,
+    ...shadows.md,
   },
-  subtitle: {
-    ...typography.styles.bodyLarge,
+  appName: {
+    ...typography.styles.headingXL,
+    color: colors.primary.dark,
+    marginBottom: spacing.sm,
+  },
+  tagline: {
+    ...typography.styles.bodyMD,
     color: colors.text.secondary,
     textAlign: 'center',
-    marginTop: spacing.md,
-    paddingHorizontal: spacing.lg,
   },
   features: {
-    marginTop: spacing.xxxl,
-    gap: spacing.lg,
+    marginBottom: spacing.xxxl,
   },
-  featureItem: {
+  featureRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.md,
+    marginBottom: spacing.xl,
+  },
+  featureIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.lg,
   },
   featureText: {
-    ...typography.styles.bodyLarge,
+    flex: 1,
+  },
+  featureTitle: {
+    ...typography.styles.bodyLG,
     color: colors.text.primary,
-  },
-  testModeBanner: {
-    backgroundColor: colors.status.info + '20',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderRadius: 8,
-    marginTop: spacing.md,
-    alignItems: 'center',
-  },
-  testModeTitle: {
-    ...typography.styles.labelMedium,
-    color: colors.status.info,
     fontWeight: '600',
   },
-  testModeSubtitle: {
-    ...typography.styles.caption,
-    color: colors.status.info,
+  featureDesc: {
+    ...typography.styles.bodySM,
+    color: colors.text.secondary,
     marginTop: 2,
   },
-  footer: {
-    marginTop: 'auto',
-    paddingBottom: spacing.lg,
+  cta: {
+    paddingBottom: spacing.xl,
   },
-  button: {
-    width: '100%',
+  skipButton: {
+    alignItems: 'center',
+    paddingVertical: spacing.md,
+    marginTop: spacing.sm,
+  },
+  skipText: {
+    ...typography.styles.bodyMD,
+    color: colors.text.secondary,
   },
 });
-
-export default WelcomeScreen;

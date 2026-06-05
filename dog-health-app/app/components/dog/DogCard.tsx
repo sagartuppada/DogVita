@@ -80,11 +80,11 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   name: {
-    ...typography.styles.titleLarge,
+    ...typography.styles.headingSM,
     color: colors.text.primary,
   },
   breed: {
-    ...typography.styles.bodyMedium,
+    ...typography.styles.bodyMD,
     color: colors.text.secondary,
   },
   stats: {

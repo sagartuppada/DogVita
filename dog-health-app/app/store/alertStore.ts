@@ -37,6 +37,7 @@ interface AlertActions {
   getAlertsByDog: (dogId: string) => HealthAlert[];
   getAlertsByType: (type: AlertType) => HealthAlert[];
   getUnacknowledgedAlerts: () => HealthAlert[];
+  loadDemoData: () => void;
 }
 
 type AlertStore = AlertState & AlertActions;
@@ -141,6 +142,52 @@ export const useAlertStore = create<AlertStore>()(
       getUnacknowledgedAlerts: () => {
         const { alerts } = get();
         return alerts.filter((a) => !a.acknowledged);
+      },
+
+      loadDemoData: () => {
+        const now = Date.now();
+        const demoAlerts: HealthAlert[] = [
+          {
+            id: 'demo_alert_1',
+            dogId: 'demo_dog_1',
+            type: 'heart_rate_high',
+            severity: 'warning',
+            message: 'Heart rate elevated: 115 bpm detected',
+            metricValue: 115,
+            threshold: 120,
+            timestamp: new Date(now - 300000).toISOString(),
+            acknowledged: false,
+          },
+          {
+            id: 'demo_alert_2',
+            dogId: 'demo_dog_1',
+            type: 'battery_low',
+            severity: 'info',
+            message: 'Collar battery at 15%',
+            metricValue: 15,
+            threshold: 20,
+            timestamp: new Date(now - 1800000).toISOString(),
+            acknowledged: false,
+          },
+          {
+            id: 'demo_alert_3',
+            dogId: 'demo_dog_1',
+            type: 'temperature_high',
+            severity: 'warning',
+            message: 'Body temperature slightly elevated: 38.9°C',
+            metricValue: 38.9,
+            threshold: 39,
+            timestamp: new Date(now - 3600000).toISOString(),
+            acknowledged: true,
+          },
+        ];
+        set({
+          alerts: demoAlerts,
+          unacknowledgedCount: demoAlerts.filter((a) => !a.acknowledged).length,
+          criticalAlerts: demoAlerts.filter(
+            (a) => a.severity === 'critical' && !a.acknowledged
+          ),
+        });
       },
     }),
     {

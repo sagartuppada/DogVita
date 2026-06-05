@@ -1,9 +1,17 @@
 /**
- * Button - Reusable button component
+ * Button - Premium pill-shaped button
  */
 
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle, View } from 'react-native';
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  ViewStyle,
+  TextStyle,
+  View,
+} from 'react-native';
 import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
 
 interface ButtonProps {
@@ -16,6 +24,7 @@ interface ButtonProps {
   icon?: React.ReactNode;
   style?: ViewStyle;
   textStyle?: TextStyle;
+  fullWidth?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -28,44 +37,69 @@ export const Button: React.FC<ButtonProps> = ({
   icon,
   style,
   textStyle,
+  fullWidth = true,
 }) => {
-  const getBackgroundColor = () => {
-    if (disabled) return colors.neutral[300];
+  const getContainerStyle = (): ViewStyle => {
+    if (disabled) {
+      return { backgroundColor: colors.border.light, opacity: 0.6 };
+    }
     switch (variant) {
-      case 'primary': return colors.primary[600];
-      case 'secondary': return colors.secondary[600];
-      case 'outline': return 'transparent';
-      case 'ghost': return 'transparent';
-      default: return colors.primary[600];
+      case 'primary':
+        return { backgroundColor: colors.primary.DEFAULT, ...shadows.button };
+      case 'secondary':
+        return { backgroundColor: colors.background.card, ...shadows.sm };
+      case 'outline':
+        return {
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          borderColor: colors.border.DEFAULT,
+        };
+      case 'ghost':
+        return { backgroundColor: 'transparent' };
+      default:
+        return { backgroundColor: colors.primary.DEFAULT, ...shadows.button };
     }
   };
 
-  const getTextColor = () => {
-    if (disabled) return colors.neutral[500];
+  const getTextColor = (): string => {
+    if (disabled) return colors.text.tertiary;
     switch (variant) {
-      case 'primary': return colors.text.inverse;
-      case 'secondary': return colors.text.inverse;
-      case 'outline': return colors.primary[600];
-      case 'ghost': return colors.primary[600];
-      default: return colors.text.inverse;
+      case 'primary':
+        return colors.white;
+      case 'secondary':
+        return colors.text.primary;
+      case 'outline':
+        return colors.text.primary;
+      case 'ghost':
+        return colors.primary.dark;
+      default:
+        return colors.white;
     }
   };
 
-  const getPadding = () => {
+  const getPadding = (): ViewStyle => {
     switch (size) {
-      case 'sm': return { paddingVertical: spacing.sm, paddingHorizontal: spacing.md };
-      case 'md': return { paddingVertical: spacing.md, paddingHorizontal: spacing.lg };
-      case 'lg': return { paddingVertical: spacing.lg, paddingHorizontal: spacing.xxl };
-      default: return { paddingVertical: spacing.md, paddingHorizontal: spacing.lg };
+      case 'sm':
+        return { paddingVertical: 10, paddingHorizontal: spacing.lg };
+      case 'md':
+        return { paddingVertical: 14, paddingHorizontal: spacing.xl };
+      case 'lg':
+        return { paddingVertical: 18, paddingHorizontal: spacing.xxl };
+      default:
+        return { paddingVertical: 14, paddingHorizontal: spacing.xl };
     }
   };
 
-  const getFontSize = () => {
+  const getTextStyle = (): TextStyle => {
     switch (size) {
-      case 'sm': return typography.fontSize.sm;
-      case 'md': return typography.fontSize.md;
-      case 'lg': return typography.fontSize.lg;
-      default: return typography.fontSize.md;
+      case 'sm':
+        return typography.styles.buttonSM;
+      case 'md':
+        return typography.styles.buttonMD;
+      case 'lg':
+        return typography.styles.buttonLG;
+      default:
+        return typography.styles.buttonMD;
     }
   };
 
@@ -73,12 +107,12 @@ export const Button: React.FC<ButtonProps> = ({
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled || loading}
-      activeOpacity={0.7}
+      activeOpacity={0.75}
       style={[
-        styles.button,
-        { backgroundColor: getBackgroundColor() },
+        styles.container,
+        getContainerStyle(),
         getPadding(),
-        variant === 'outline' && styles.outline,
+        fullWidth && styles.fullWidth,
         style,
       ]}
     >
@@ -86,8 +120,8 @@ export const Button: React.FC<ButtonProps> = ({
         <ActivityIndicator color={getTextColor()} size="small" />
       ) : (
         <View style={styles.content}>
-          {icon && <View style={styles.icon}>{icon}</View>}
-          <Text style={[styles.text, { color: getTextColor(), fontSize: getFontSize() }, textStyle]}>
+          {icon && <View style={styles.iconWrapper}>{icon}</View>}
+          <Text style={[styles.text, { color: getTextColor() }, getTextStyle(), textStyle]}>
             {title}
           </Text>
         </View>
@@ -97,28 +131,25 @@ export const Button: React.FC<ButtonProps> = ({
 };
 
 const styles = StyleSheet.create({
-  button: {
-    borderRadius: borderRadius.md,
+  container: {
+    borderRadius: borderRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
-    ...shadows.button,
+  },
+  fullWidth: {
+    width: '100%',
   },
   content: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  icon: {
+  iconWrapper: {
     marginRight: spacing.sm,
   },
   text: {
-    fontWeight: '600',
     textAlign: 'center',
-  },
-  outline: {
-    borderWidth: 2,
-    borderColor: colors.primary[600],
-    ...shadows.none,
   },
 });
 

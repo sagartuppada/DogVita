@@ -1,205 +1,185 @@
 /**
- * AlertsListScreen - List of health alerts
+ * AlertsListScreen - Alert history list
  */
 
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Card, StatusBadge } from '../../components/common';
-import { colors, spacing, typography } from '../../theme';
-import { useAlerts } from '../../hooks';
-import { HealthAlert } from '../../types';
+import { useAlertStore } from '../../store/alertStore';
+import { Card, EmptyState } from '../../components/common';
+import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import type { AlertsTabScreenProps } from '../../navigation/types';
 
-export const AlertsListScreen: React.FC = () => {
-  const { alerts, acknowledgeAlert, unacknowledgedCount } = useAlerts();
+const getAlertIcon = (type: string) => {
+  switch (type) {
+    case 'heart_rate':
+    case 'heart_rate_high':
+    case 'heart_rate_low':
+      return 'heart';
+    case 'temperature':
+    case 'temperature_high':
+    case 'temperature_low':
+      return 'thermometer';
+    case 'battery':
+    case 'battery_low':
+      return 'battery-half';
+    case 'connection':
+    case 'device_disconnect':
+      return 'bluetooth';
+    case 'geofence_enter':
+    case 'geofence_exit':
+      return 'location';
+    case 'activity_abnormal':
+      return 'walk';
+    case 'sleep_disruption':
+      return 'moon';
+    default:
+      return 'warning';
+  }
+};
 
-  const getAlertIcon = (type: string) => {
-    switch (type) {
-      case 'heart_rate_high':
-      case 'heart_rate_low':
-        return 'heart';
-      case 'temperature_high':
-      case 'temperature_low':
-        return 'thermometer';
-      case 'battery_low':
-        return 'battery';
-      case 'geofence_enter':
-      case 'geofence_exit':
-        return 'location';
-      default:
-        return 'warning';
-    }
-  };
+const getAlertTitle = (type: string) => {
+  switch (type) {
+    case 'heart_rate_high': return 'High Heart Rate';
+    case 'heart_rate_low': return 'Low Heart Rate';
+    case 'temperature_high': return 'High Temperature';
+    case 'temperature_low': return 'Low Temperature';
+    case 'battery_low': return 'Low Battery';
+    case 'device_disconnect': return 'Device Disconnected';
+    case 'geofence_enter': return 'Geofence Entered';
+    case 'geofence_exit': return 'Geofence Exited';
+    case 'activity_abnormal': return 'Unusual Activity';
+    case 'sleep_disruption': return 'Sleep Disruption';
+    default: return 'Alert';
+  }
+};
 
-  const getAlertColor = (severity: string) => {
-    switch (severity) {
-      case 'critical':
-        return colors.status.error;
-      case 'warning':
-        return colors.status.warning;
-      default:
-        return colors.status.info;
-    }
-  };
+const getAlertColor = (severity: string) => {
+  switch (severity) {
+    case 'critical': return colors.status.error;
+    case 'warning': return colors.status.warning;
+    default: return colors.status.info;
+  }
+};
 
-  const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
+export default function AlertsListScreen({}: AlertsTabScreenProps<'Alerts'>) {
+  const insets = useSafeAreaInsets();
+  const alerts = useAlertStore((s) => s.alerts);
 
-  const formatDate = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-  };
+  const sortedAlerts = useMemo(
+    () => [...alerts].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
+    [alerts],
+  );
 
-  const renderAlert = ({ item }: { item: HealthAlert }) => (
-    <TouchableOpacity onPress={() => !item.acknowledged && acknowledgeAlert(item.id)}>
-      <Card style={[styles.alertCard, !item.acknowledged && styles.unreadAlert]}>
+  const renderAlert = ({ item }: { item: any }) => {
+    const color = getAlertColor(item.severity);
+    return (
+      <Card variant="default" padding="md" style={styles.alertCard}>
         <View style={styles.alertRow}>
-          <View style={[styles.alertIcon, { backgroundColor: getAlertColor(item.severity) + '20' }]}>
-            <Ionicons
-              name={getAlertIcon(item.type) as keyof typeof Ionicons.glyphMap}
-              size={20}
-              color={getAlertColor(item.severity)}
-            />
+          <View style={[styles.alertIcon, { backgroundColor: color + '18' }]}>
+            <Ionicons name={getAlertIcon(item.type)} size={18} color={color} />
           </View>
           <View style={styles.alertContent}>
-            <View style={styles.alertHeader}>
-              <Text style={styles.alertMessage}>{item.message}</Text>
-              {!item.acknowledged && <View style={styles.unreadDot} />}
-            </View>
-            <View style={styles.alertMeta}>
-              <Text style={styles.alertTime}>{formatDate(item.timestamp)} {formatTime(item.timestamp)}</Text>
-              <StatusBadge
-                label={item.severity}
-                variant={item.severity === 'critical' ? 'error' : item.severity === 'warning' ? 'warning' : 'info'}
-                size="sm"
-              />
-            </View>
+            <Text style={styles.alertTitle}>{getAlertTitle(item.type)}</Text>
+            <Text style={styles.alertMessage}>{item.message}</Text>
+            <Text style={styles.alertTime}>
+              {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </Text>
           </View>
+          {!item.acknowledged && (
+            <View style={[styles.unreadDot, { backgroundColor: color }]} />
+          )}
         </View>
       </Card>
-    </TouchableOpacity>
-  );
+    );
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <Text style={styles.title}>Alerts</Text>
-        {unacknowledgedCount > 0 && (
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{unacknowledgedCount}</Text>
-          </View>
-        )}
+        <Text style={styles.subtitle}>{alerts.length} total</Text>
       </View>
+
       <FlatList
-        data={alerts}
+        data={sortedAlerts}
         keyExtractor={(item) => item.id}
         renderItem={renderAlert}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={[styles.list, { paddingBottom: 100 }]}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-          <View style={styles.emptyState}>
-            <Ionicons name="checkmark-circle" size={64} color={colors.status.success} />
-            <Text style={styles.emptyTitle}>All Clear!</Text>
-            <Text style={styles.emptySubtitle}>No alerts at the moment</Text>
-          </View>
+          <EmptyState
+            icon="notifications-off-outline"
+            title="No Alerts"
+            message="You're all caught up! Alerts will appear here."
+          />
         }
       />
-    </SafeAreaView>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.secondary,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    padding: spacing.page,
     backgroundColor: colors.background.primary,
   },
+  header: {
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.xl,
+  },
   title: {
-    ...typography.styles.displaySmall,
+    ...typography.styles.headingXL,
     color: colors.text.primary,
   },
-  badge: {
-    backgroundColor: colors.status.error,
-    borderRadius: 12,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
-  },
-  badgeText: {
-    ...typography.styles.labelSmall,
-    color: colors.text.inverse,
+  subtitle: {
+    ...typography.styles.bodySM,
+    color: colors.text.tertiary,
+    marginTop: 2,
   },
   list: {
-    padding: spacing.page,
-    gap: spacing.sm,
+    paddingHorizontal: spacing.page,
   },
   alertCard: {
-    padding: spacing.md,
-  },
-  unreadAlert: {
-    borderLeftWidth: 4,
-    borderLeftColor: colors.status.error,
+    marginBottom: spacing.md,
   },
   alertRow: {
     flexDirection: 'row',
-    gap: spacing.md,
+    alignItems: 'flex-start',
   },
   alertIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: spacing.md,
   },
   alertContent: {
     flex: 1,
-    gap: spacing.xs,
   },
-  alertHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+  alertTitle: {
+    ...typography.styles.bodyMD,
+    color: colors.text.primary,
+    fontWeight: '600',
+    marginBottom: 2,
   },
   alertMessage: {
-    ...typography.styles.bodyMedium,
-    color: colors.text.primary,
-    flex: 1,
-  },
-  unreadDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.status.error,
-    marginLeft: spacing.sm,
-  },
-  alertMeta: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    ...typography.styles.bodySM,
+    color: colors.text.secondary,
+    marginBottom: spacing.xs,
   },
   alertTime: {
     ...typography.styles.caption,
     color: colors.text.tertiary,
   },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: spacing.xxxl * 2,
-    gap: spacing.md,
-  },
-  emptyTitle: {
-    ...typography.styles.titleLarge,
-    color: colors.text.primary,
-  },
-  emptySubtitle: {
-    ...typography.styles.bodyMedium,
-    color: colors.text.secondary,
+  unreadDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginTop: spacing.sm,
+    marginLeft: spacing.sm,
   },
 });
-
-export default AlertsListScreen;

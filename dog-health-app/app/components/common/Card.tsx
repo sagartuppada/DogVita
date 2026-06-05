@@ -1,16 +1,17 @@
 /**
- * Card - Reusable card component
+ * Card - Premium card with soft shadow
  */
 
 import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet, ViewStyle, TouchableOpacity } from 'react-native';
 import { colors, spacing, borderRadius, shadows } from '../../theme';
 
 interface CardProps {
   children: React.ReactNode;
   style?: ViewStyle;
-  variant?: 'default' | 'elevated' | 'outlined';
+  variant?: 'default' | 'elevated' | 'outlined' | 'filled';
   padding?: 'none' | 'sm' | 'md' | 'lg';
+  onPress?: () => void;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -18,24 +19,47 @@ export const Card: React.FC<CardProps> = ({
   style,
   variant = 'default',
   padding = 'md',
+  onPress,
 }) => {
-  const getPadding = () => {
+  const getPadding = (): number => {
     switch (padding) {
-      case 'none': return 0;
-      case 'sm': return spacing.sm;
-      case 'md': return spacing.md;
-      case 'lg': return spacing.lg;
-      default: return spacing.md;
+      case 'none':
+        return 0;
+      case 'sm':
+        return spacing.md;
+      case 'md':
+        return spacing.xl;
+      case 'lg':
+        return spacing.xxl;
+      default:
+        return spacing.xl;
     }
   };
 
-  const getVariantStyle = () => {
+  const getVariantStyle = (): ViewStyle => {
     switch (variant) {
-      case 'elevated': return { ...styles.elevated, padding: getPadding() };
-      case 'outlined': return { ...styles.outlined, padding: getPadding() };
-      default: return { ...styles.default, padding: getPadding() };
+      case 'elevated':
+        return { ...styles.elevated, padding: getPadding() };
+      case 'outlined':
+        return { ...styles.outlined, padding: getPadding() };
+      case 'filled':
+        return { ...styles.filled, padding: getPadding() };
+      default:
+        return { ...styles.default, padding: getPadding() };
     }
   };
+
+  if (onPress) {
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        activeOpacity={0.75}
+        style={[styles.card, getVariantStyle(), style]}
+      >
+        {children}
+      </TouchableOpacity>
+    );
+  }
 
   return <View style={[styles.card, getVariantStyle(), style]}>{children}</View>;
 };
@@ -43,7 +67,7 @@ export const Card: React.FC<CardProps> = ({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.background.card,
-    borderRadius: borderRadius.lg,
+    borderRadius: borderRadius.xxl,
   },
   default: {
     ...shadows.card,
@@ -53,7 +77,11 @@ const styles = StyleSheet.create({
   },
   outlined: {
     borderWidth: 1,
-    borderColor: colors.border.default,
+    borderColor: colors.border.light,
+    backgroundColor: colors.white,
+  },
+  filled: {
+    backgroundColor: colors.background.secondary,
   },
 });
 

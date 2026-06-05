@@ -6,7 +6,10 @@
  */
 
 import { Platform, PermissionsAndroid } from 'react-native';
-import { LocationData, Region } from '../../types';
+import { LocationData } from '../../types';
+
+// navigator.geolocation is available at runtime in React Native but not typed
+const geolocation = (navigator as unknown as { geolocation: Geolocation }).geolocation;
 
 class GPSService {
   private static instance: GPSService;
@@ -48,11 +51,11 @@ class GPSService {
       if (!hasPermission) return null;
 
       return new Promise((resolve) => {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
+        geolocation.getCurrentPosition(
+          (position: GeolocationPosition) => {
             resolve(this.convertToLocationData(position));
           },
-          (error) => {
+          (error: GeolocationPositionError) => {
             console.error('Error getting current location:', error);
             resolve(null);
           },
@@ -70,15 +73,15 @@ class GPSService {
       const hasPermission = await this.requestPermissions();
       if (!hasPermission) return false;
 
-      this.watchId = navigator.geolocation.watchPosition(
-        (position) => {
+      this.watchId = geolocation.watchPosition(
+        (position: GeolocationPosition) => {
           const locationData = this.convertToLocationData(position);
           this.notifyListeners(locationData);
         },
-        (error) => {
+        (error: GeolocationPositionError) => {
           console.error('Error watching location:', error);
         },
-        { enableHighAccuracy: true, distanceFilter: 5, interval: intervalMs }
+        { enableHighAccuracy: true, distanceFilter: 5, interval: intervalMs } as PositionOptions
       );
 
       return true;
@@ -90,7 +93,7 @@ class GPSService {
 
   stopTracking(): void {
     if (this.watchId !== null) {
-      navigator.geolocation.clearWatch(this.watchId);
+      geolocation.clearWatch(this.watchId);
       this.watchId = null;
     }
   }

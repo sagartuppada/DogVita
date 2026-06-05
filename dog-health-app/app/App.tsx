@@ -7,13 +7,15 @@ import { StatusBar } from 'react-native';
 import { View, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import SplashScreen from 'react-native-splash-screen';
 import { RootNavigator } from './navigation/RootNavigator';
 import { Loader } from './components/common';
-import { colors } from './theme';
+import { ThemeProvider, useTheme } from './theme/ThemeContext';
 import { notificationsService } from './services/notifications';
 import { authService } from './services/auth';
 
-export const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const { colors, isDark } = useTheme();
   const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
@@ -27,6 +29,7 @@ export const App: React.FC = () => {
         console.error('Initialization error:', error);
       } finally {
         setIsInitializing(false);
+        SplashScreen.hide();
       }
     };
 
@@ -48,8 +51,8 @@ export const App: React.FC = () => {
 
   if (isInitializing) {
     return (
-      <View style={styles.loadingContainer}>
-        <Loader fullScreen message="Loading..." />
+      <View style={[styles.loadingContainer, { backgroundColor: colors.background.primary }]}>
+        <Loader fullScreen text="Loading..." />
       </View>
     );
   }
@@ -57,23 +60,33 @@ export const App: React.FC = () => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
-        <StatusBar barStyle="dark-content" backgroundColor={colors.background.primary} />
+        <StatusBar
+          barStyle={isDark ? 'light-content' : 'dark-content'}
+          backgroundColor={colors.background.primary}
+        />
         <RootNavigator />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 };
 
+export const App: React.FC = () => {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.primary,
+    backgroundColor: '#F5EAD3',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background.primary,
   },
 });
 

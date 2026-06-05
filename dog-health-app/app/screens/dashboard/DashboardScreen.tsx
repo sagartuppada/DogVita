@@ -1,251 +1,380 @@
 /**
- * DashboardScreen - Main dashboard with health overview
+ * DashboardScreen - Main dashboard with health metrics cards
  */
 
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  RefreshControl,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Card, StatusBadge } from '../../components/common';
-import { DeviceCard } from '../../components/device';
-import { HeartRateChart } from '../../components/charts';
-import { colors, spacing, typography } from '../../theme';
-import { useDogStore, useHealthStore, useBLEStore } from '../../store';
+import { useDogStore } from '../../store/dogStore';
+import { useHealthStore } from '../../store/healthStore';
+import { useBLEStore } from '../../store/bleStore';
+import { useAlertStore } from '../../store/alertStore';
+import { Card, StatusBadge, EmptyState } from '../../components/common';
+import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import type { DashboardScreenProps } from '../../navigation/types';
 
-export const DashboardScreen: React.FC = () => {
-  const dogs = useDogStore((state) => state.dogs);
-  const activeDogId = useDogStore((state) => state.activeDogId);
-  const currentMetrics = useHealthStore((s) => s.currentMetrics);
+const MetricCard: React.FC<{
+  icon: string;
+  iconColor: string;
+  iconBg: string;
+  label: string;
+  value: string;
+  unit: string;
+  status?: 'normal' | 'warning' | 'critical';
+}> = ({ icon, iconColor, iconBg, label, value, unit, status = 'normal' }) => (
+  <Card variant="default" padding="md" style={styles.metricCard}>
+    <View style={styles.metricHeader}>
+      <View style={[styles.metricIcon, { backgroundColor: iconBg }]}>
+        <Ionicons name={icon} size={20} color={iconColor} />
+      </View>
+      <Text style={styles.metricLabel}>{label}</Text>
+    </View>
+    <View style={styles.metricValueRow}>
+      <Text style={styles.metricValue}>{value}</Text>
+      <Text style={styles.metricUnit}>{unit}</Text>
+    </View>
+    {status !== 'normal' && (
+      <StatusBadge
+        label={status === 'warning' ? 'Attention' : 'Critical'}
+        variant={status === 'warning' ? 'warning' : 'error'}
+        size="sm"
+        dot
+      />
+    )}
+  </Card>
+);
+
+const QuickStat: React.FC<{
+  icon: string;
+  label: string;
+  value: string;
+  color: string;
+}> = ({ icon, label, value, color }) => (
+  <View style={styles.quickStat}>
+    <View style={[styles.quickStatIcon, { backgroundColor: color + '18' }]}>
+      <Ionicons name={icon} size={16} color={color} />
+    </View>
+    <Text style={styles.quickStatValue}>{value}</Text>
+    <Text style={styles.quickStatLabel}>{label}</Text>
+  </View>
+);
+
+export default function DashboardScreen({ navigation }: DashboardScreenProps<'Dashboard'>) {
+  const insets = useSafeAreaInsets();
+  const dogs = useDogStore((s) => s.dogs);
+  const activeDogId = useDogStore((s) => s.activeDogId);
   const heartRateHistory = useHealthStore((s) => s.heartRateHistory);
+  const currentMetrics = useHealthStore((s) => s.currentMetrics);
   const isConnected = useBLEStore((s) => s.isConnected);
-  const connectedDeviceName = useBLEStore((s) => s.connectedDeviceName);
+  const deviceName = useBLEStore((s) => s.connectedDeviceName);
+  const signalStrength = useBLEStore((s) => s.signalStrength);
+  const unacknowledgedCount = useAlertStore((s) => s.unacknowledgedCount);
 
-  const activeDog = useMemo(() => dogs.find((d) => d.id === activeDogId) ?? null, [dogs, activeDogId]);
-  const metrics = activeDog ? currentMetrics[activeDog.id] : null;
-  const heartRateData = useMemo(() => heartRateHistory.slice(-20), [heartRateHistory]);
+  const activeDog = useMemo(
+    () => dogs.find((d) => d.id === activeDogId) ?? null,
+    [dogs, activeDogId],
+  );
+
+  const metrics = activeDogId ? currentMetrics[activeDogId] : null;
+
+  const latestHeartRate = useMemo(() => {
+    if (heartRateHistory.length === 0) return null;
+    return heartRateHistory[heartRateHistory.length - 1].bpm;
+  }, [heartRateHistory]);
+
+  const latestTemperature = metrics?.temperature?.celsius ?? null;
+  const latestBattery = metrics?.battery?.level ?? null;
+  const latestActivity = metrics?.activity ?? null;
+
+  const heartRateStatus = useMemo(() => {
+    if (!latestHeartRate) return 'normal' as const;
+    if (latestHeartRate < 60 || latestHeartRate > 140) return 'critical' as const;
+    if (latestHeartRate < 70 || latestHeartRate > 120) return 'warning' as const;
+    return 'normal' as const;
+  }, [latestHeartRate]);
+
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => setRefreshing(false), 1200);
+  }, []);
+
+  if (!activeDog) {
+    return (
+      <EmptyState
+        icon="paw-outline"
+        title="No Dog Profile"
+        message="Add your dog to get started"
+        actionLabel="Get Started"
+        onAction={() => {
+          // User is already past onboarding - navigate to settings to add dog
+          navigation.navigate('Settings' as never);
+        }}
+      />
+    );
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <ScrollView
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: 100 }]}
+        showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary.DEFAULT} />}
+      >
+        {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>Hello!</Text>
-            <Text style={styles.title}>{activeDog?.name || 'Add your dog'}</Text>
+            <Text style={styles.greeting}>Good morning</Text>
+            <Text style={styles.dogName}>{activeDog.name}</Text>
           </View>
-          <View style={styles.connectionBadge}>
+          <View style={styles.headerRight}>
             <StatusBadge
-              label={isConnected ? 'Connected' : 'Disconnected'}
+              label={isConnected ? 'Live' : 'Offline'}
               variant={isConnected ? 'success' : 'default'}
               size="sm"
-              dot
+              dot={isConnected}
             />
           </View>
         </View>
 
-        <DeviceCard
-          deviceName={connectedDeviceName}
-          isConnected={isConnected}
-          batteryLevel={metrics?.battery?.level}
-        />
-
-        <View style={styles.metricsGrid}>
+        {/* Primary Metrics Row */}
+        <View style={styles.metricsRow}>
           <MetricCard
             icon="heart"
             iconColor={colors.health.heartRate}
-            title="Heart Rate"
-            value={metrics?.heartRate?.bpm ? `${metrics.heartRate.bpm}` : '--'}
+            iconBg={colors.health.heartRate + '18'}
+            label="Heart Rate"
+            value={latestHeartRate ? String(latestHeartRate) : '--'}
             unit="bpm"
-            subtitle={metrics?.heartRate?.zone || 'N/A'}
+            status={heartRateStatus}
           />
           <MetricCard
             icon="thermometer"
             iconColor={colors.health.temperature}
-            title="Temperature"
-            value={metrics?.temperature?.celsius ? `${metrics.temperature.celsius.toFixed(1)}` : '--'}
+            iconBg={colors.health.temperature + '18'}
+            label="Temperature"
+            value={latestTemperature !== null ? String(latestTemperature.toFixed(1)) : '--'}
             unit="°C"
-            subtitle={metrics?.temperature?.isAbnormal ? 'Abnormal' : 'Normal'}
-          />
-          <MetricCard
-            icon="fitness"
-            iconColor={colors.health.activity}
-            title="Steps"
-            value={metrics?.activity?.steps ? `${metrics.activity.steps}` : '--'}
-            unit="steps"
-            subtitle="Today"
-          />
-          <MetricCard
-            icon="moon"
-            iconColor={colors.health.sleep}
-            title="Sleep"
-            value={metrics?.sleep?.duration ? `${Math.floor(metrics.sleep.duration / 60)}` : '--'}
-            unit="hrs"
-            subtitle="Last night"
           />
         </View>
 
-        <Card style={styles.chartCard}>
-          <Text style={styles.chartTitle}>Heart Rate Today</Text>
-          <HeartRateChart data={heartRateData} showZone={false} />
-        </Card>
+        <View style={styles.metricsRow}>
+          <MetricCard
+            icon="footsteps"
+            iconColor={colors.status.success}
+            iconBg={colors.status.success + '18'}
+            label="Activity"
+            value={latestActivity ? String(latestActivity.steps) : '--'}
+            unit="steps"
+          />
+          <MetricCard
+            icon="flash"
+            iconColor={colors.primary.dark}
+            iconBg={colors.primary.DEFAULT + '18'}
+            label="Battery"
+            value={latestBattery !== null ? String(latestBattery) : '--'}
+            unit="%"
+          />
+        </View>
 
-        <Card style={styles.quickActions}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.actionRow}>
-            <ActionButton icon="walk" label="Walk" color={colors.health.activity} />
-            <ActionButton icon="medkit" label="Vet" color={colors.status.error} />
-            <ActionButton icon="nutrition" label="Feed" color={colors.status.warning} />
-            <ActionButton icon="play" label="Play" color={colors.accent[500]} />
+        {/* Quick Stats */}
+        <Card variant="default" padding="md" style={styles.quickStatsCard}>
+          <Text style={styles.sectionTitle}>Today's Summary</Text>
+          <View style={styles.quickStatsRow}>
+            <QuickStat icon="footsteps" label="Steps" value={latestActivity ? String(latestActivity.steps).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '--'} color={colors.status.success} />
+            <QuickStat icon="time" label="Active" value={latestActivity ? `${latestActivity.activeMinutes}m` : '--'} color={colors.primary.DEFAULT} />
+            <QuickStat icon="flame" label="Calories" value={latestActivity ? String(latestActivity.calories) : '--'} color={colors.health.heartRate} />
           </View>
         </Card>
+
+        {/* Device Status */}
+        <Card variant="default" padding="md" style={styles.deviceCard}>
+          <View style={styles.deviceRow}>
+            <View style={styles.deviceInfo}>
+              <Ionicons name="watch" size={20} color={colors.text.secondary} />
+              <View style={styles.deviceText}>
+                <Text style={styles.deviceName}>{deviceName || 'No device'}</Text>
+                <Text style={styles.deviceStatus}>
+                  {isConnected ? 'Connected' : 'Disconnected'}
+                </Text>
+              </View>
+            </View>
+            <StatusBadge
+              label={isConnected ? 'Live' : 'Offline'}
+              variant={isConnected ? 'success' : 'default'}
+              size="sm"
+            />
+          </View>
+        </Card>
+
+        {/* Alerts Banner */}
+        {unacknowledgedCount > 0 && (
+          <Card
+            variant="default"
+            padding="md"
+            onPress={() => navigation.navigate('Alerts')}
+            style={styles.alertBanner}
+          >
+            <View style={styles.alertRow}>
+              <View style={styles.alertIcon}>
+                <Ionicons name="warning" size={18} color={colors.status.warning} />
+              </View>
+              <Text style={styles.alertText}>
+                {unacknowledgedCount} new alert{unacknowledgedCount > 1 ? 's' : ''}
+              </Text>
+              <Ionicons name="chevron-forward" size={18} color={colors.text.tertiary} />
+            </View>
+          </Card>
+        )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
-};
-
-const MetricCard = ({
-  icon,
-  iconColor,
-  title,
-  value,
-  unit,
-  subtitle,
-}: {
-  icon: keyof typeof Ionicons.glyphMap;
-  iconColor: string;
-  title: string;
-  value: string;
-  unit: string;
-  subtitle: string;
-}) => (
-  <Card style={styles.metricCard}>
-    <View style={[styles.metricIcon, { backgroundColor: iconColor + '20' }]}>
-      <Ionicons name={icon} size={20} color={iconColor} />
-    </View>
-    <Text style={styles.metricTitle}>{title}</Text>
-    <View style={styles.metricValueRow}>
-      <Text style={[styles.metricValue, { color: iconColor }]}>{value}</Text>
-      <Text style={styles.metricUnit}>{unit}</Text>
-    </View>
-    <Text style={styles.metricSubtitle}>{subtitle}</Text>
-  </Card>
-);
-
-const ActionButton = ({
-  icon,
-  label,
-  color,
-}: {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  color: string;
-}) => (
-  <View style={styles.actionButton}>
-    <View style={[styles.actionIcon, { backgroundColor: color + '20' }]}>
-      <Ionicons name={icon} size={24} color={color} />
-    </View>
-    <Text style={styles.actionLabel}>{label}</Text>
-  </View>
-);
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.secondary,
+    backgroundColor: colors.background.primary,
   },
   scrollContent: {
-    padding: spacing.page,
-    gap: spacing.md,
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.lg,
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.sm,
+    justifyContent: 'space-between',
+    marginBottom: spacing.xxl,
   },
   greeting: {
-    ...typography.styles.bodyMedium,
-    color: colors.text.secondary,
+    ...typography.styles.bodySM,
+    color: colors.text.tertiary,
   },
-  title: {
-    ...typography.styles.displaySmall,
+  dogName: {
+    ...typography.styles.headingLG,
     color: colors.text.primary,
+    marginTop: 2,
   },
-  connectionBadge: {
-    alignItems: 'flex-end',
-  },
-  metricsGrid: {
+  headerRight: {},
+  metricsRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
+    gap: spacing.md,
+    marginBottom: spacing.md,
   },
   metricCard: {
-    width: '48%',
-    padding: spacing.md,
+    flex: 1,
+  },
+  metricHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.md,
   },
   metricIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: spacing.sm,
+    marginRight: spacing.sm,
   },
-  metricTitle: {
+  metricLabel: {
     ...typography.styles.caption,
-    color: colors.text.secondary,
+    color: colors.text.tertiary,
+    flex: 1,
   },
   metricValueRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    gap: spacing.xs,
+    marginBottom: spacing.xs,
   },
   metricValue: {
-    ...typography.styles.headlineLarge,
+    fontSize: 28,
     fontWeight: '700',
+    color: colors.text.primary,
   },
   metricUnit: {
     ...typography.styles.caption,
     color: colors.text.tertiary,
+    marginLeft: 4,
   },
-  metricSubtitle: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginTop: spacing.xxs,
-  },
-  chartCard: {
-    padding: spacing.md,
-  },
-  chartTitle: {
-    ...typography.styles.titleMedium,
-    color: colors.text.primary,
+  quickStatsCard: {
     marginBottom: spacing.md,
-  },
-  quickActions: {
-    padding: spacing.md,
   },
   sectionTitle: {
-    ...typography.styles.titleMedium,
-    color: colors.text.primary,
+    ...typography.styles.label,
+    color: colors.text.secondary,
     marginBottom: spacing.md,
   },
-  actionRow: {
+  quickStatsRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
-  actionButton: {
+  quickStat: {
     alignItems: 'center',
-    gap: spacing.xs,
   },
-  actionIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+  quickStatIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: spacing.xs,
   },
-  actionLabel: {
+  quickStatValue: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: colors.text.primary,
+  },
+  quickStatLabel: {
     ...typography.styles.caption,
-    color: colors.text.secondary,
+    color: colors.text.tertiary,
+  },
+  deviceCard: {
+    marginBottom: spacing.md,
+  },
+  deviceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  deviceInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  deviceText: {
+    marginLeft: spacing.md,
+  },
+  deviceName: {
+    ...typography.styles.bodyMD,
+    color: colors.text.primary,
+    fontWeight: '600',
+  },
+  deviceStatus: {
+    ...typography.styles.caption,
+    color: colors.text.tertiary,
+  },
+  alertBanner: {
+    marginBottom: spacing.md,
+    backgroundColor: colors.status.warning + '12',
+  },
+  alertRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  alertIcon: {
+    marginRight: spacing.md,
+  },
+  alertText: {
+    ...typography.styles.bodyMD,
+    color: colors.text.primary,
+    fontWeight: '500',
+    flex: 1,
   },
 });
-
-export default DashboardScreen;

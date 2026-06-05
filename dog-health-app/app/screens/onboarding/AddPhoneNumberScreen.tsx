@@ -3,71 +3,58 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Alert } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Button, Input } from '../../components/common';
+import { View, Text, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Button, Input, Header } from '../../components/common';
 import { colors, spacing, typography } from '../../theme';
-import { OnboardingStackParamList } from '../../navigation/types';
-import { authService } from '../../services/auth';
+import type { OnboardingScreenProps } from '../../navigation/types';
 
-type Props = NativeStackScreenProps<OnboardingStackParamList, 'AddPhoneNumber'>;
+export default function AddPhoneNumberScreen({
+  navigation,
+}: OnboardingScreenProps<'AddPhone'>) {
+  const insets = useSafeAreaInsets();
+  const [phoneNumber, setPhoneNumber] = useState('');
 
-export const AddPhoneNumberScreen: React.FC<Props> = ({ navigation }) => {
-  const [phone, setPhone] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleSendOTP = async () => {
-    if (!phone.trim()) {
-      Alert.alert('Error', 'Please enter your phone number');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const result = await authService.sendOTP(phone);
-      if (result.success) {
-        navigation.navigate('OTPVerification', { phoneNumber: phone });
-      } else {
-        Alert.alert('Error', result.error || 'Failed to send OTP');
-      }
-    } catch {
-      Alert.alert('Error', 'An unexpected error occurred');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const isValid = phoneNumber.length >= 10;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Enter your phone number</Text>
-        <Text style={styles.subtitle}>
-          We'll send you a verification code
-        </Text>
-        <Input
-          placeholder="+1 (555) 123-4567"
-          value={phone}
-          onChangeText={setPhone}
-          keyboardType="phone-pad"
-          autoComplete="tel"
-          containerStyle={styles.input}
-        />
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <Header showBack onBack={() => navigation.goBack()} title="" />
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.content}
+      >
+        <View style={styles.headerSection}>
+          <Text style={styles.title}>What's your number?</Text>
+          <Text style={styles.subtitle}>
+            We'll send you a verification code to get started
+          </Text>
+        </View>
+
+        <View style={styles.form}>
+          <Input
+            placeholder="(555) 123-4567"
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            keyboardType="phone-pad"
+            maxLength={14}
+          />
+        </View>
+      </KeyboardAvoidingView>
+
+      <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.lg }]}>
         <Button
-          title="Send Code"
-          onPress={handleSendOTP}
-          loading={loading}
-          style={styles.button}
-        />
-        <Button
-          title="Back"
-          onPress={() => navigation.goBack()}
-          variant="ghost"
-          style={styles.backButton}
+          title="Continue"
+          onPress={() => navigation.navigate('OTP', { phoneNumber })}
+          variant="primary"
+          size="lg"
+          disabled={!isValid}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -76,30 +63,24 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: spacing.page,
-    paddingTop: spacing.xxxl,
+    paddingHorizontal: spacing.xxl,
+  },
+  headerSection: {
+    marginBottom: spacing.xxxl,
   },
   title: {
-    ...typography.styles.headlineMedium,
+    ...typography.styles.headingLG,
     color: colors.text.primary,
-    textAlign: 'center',
+    marginBottom: spacing.sm,
   },
   subtitle: {
-    ...typography.styles.bodyLarge,
+    ...typography.styles.bodyMD,
     color: colors.text.secondary,
-    textAlign: 'center',
-    marginTop: spacing.sm,
-    marginBottom: spacing.xxl,
   },
-  input: {
-    marginBottom: spacing.lg,
+  form: {
+    marginBottom: spacing.xl,
   },
-  button: {
-    marginTop: spacing.md,
-  },
-  backButton: {
-    marginTop: spacing.md,
+  footer: {
+    paddingHorizontal: spacing.xxl,
   },
 });
-
-export default AddPhoneNumberScreen;

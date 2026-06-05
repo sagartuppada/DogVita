@@ -88,7 +88,8 @@ class StorageService {
   }
 
   async getAllKeysAsync(): Promise<string[]> {
-    return await AsyncStorage.getAllKeys();
+    const keys = await AsyncStorage.getAllKeys();
+    return [...keys];
   }
 }
 

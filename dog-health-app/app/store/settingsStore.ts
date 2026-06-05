@@ -27,6 +27,7 @@ interface SettingsActions {
   setDateFormat: (format: DateFormat) => void;
   setNotifications: (enabled: boolean) => void;
   setDarkMode: (enabled: boolean) => void;
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
   setAutoSync: (enabled: boolean) => void;
   setGPSInterval: (interval: number) => void;
   setHeartRateThreshold: (threshold: number) => void;
@@ -106,6 +107,8 @@ export const useSettingsStore = create<SettingsStore>()(
       setNotifications: (notifications) => set({ notifications }),
 
       setDarkMode: (darkMode) => set({ darkMode }),
+
+      setTheme: (theme) => set({ theme, darkMode: theme === 'dark' }),
 
       setAutoSync: (autoSync) => set({ autoSync }),
 

@@ -1,119 +1,138 @@
 /**
- * DeviceCard - Shows connected device status
+ * DeviceCard - BLE connection status card
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Card, StatusBadge } from '../../components/common';
-import { colors, spacing, typography } from '../../theme';
+import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import { StatusBadge } from '../common/StatusBadge';
 
 interface DeviceCardProps {
-  deviceName: string | null;
   isConnected: boolean;
-  batteryLevel?: number;
-  signalStrength?: number;
-  onPress?: () => void;
+  deviceName: string | null;
+  batteryLevel: number | null;
+  signalStrength: number | null;
 }
 
 export const DeviceCard: React.FC<DeviceCardProps> = ({
-  deviceName,
   isConnected,
+  deviceName,
   batteryLevel,
   signalStrength,
-  onPress,
 }) => {
-  const getBatteryIcon = () => {
-    if (batteryLevel === undefined) return 'battery-full';
-    if (batteryLevel < 20) return 'battery-dead';
-    if (batteryLevel < 50) return 'battery-half';
-    return 'battery-full';
+  const getBatteryColor = () => {
+    if (batteryLevel === null) return colors.text.tertiary;
+    if (batteryLevel > 60) return colors.status.success;
+    if (batteryLevel > 20) return colors.status.warning;
+    return colors.status.error;
   };
 
-  const getBatteryColor = () => {
-    if (batteryLevel === undefined) return colors.text.secondary;
-    if (batteryLevel < 20) return colors.status.error;
-    if (batteryLevel < 50) return colors.status.warning;
-    return colors.status.success;
+  const getBatteryIcon = () => {
+    if (batteryLevel === null) return 'battery-unknown';
+    if (batteryLevel > 80) return 'battery-full';
+    if (batteryLevel > 60) return 'battery-three-quarters';
+    if (batteryLevel > 40) return 'battery-half';
+    if (batteryLevel > 20) return 'battery-quarter';
+    return 'battery-dead';
   };
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
-      <Card variant="elevated">
-        <View style={styles.header}>
-          <View style={styles.iconContainer}>
-            <Ionicons name="bluetooth" size={24} color={isConnected ? colors.ble.connected : colors.ble.disconnected} />
-          </View>
-          <View style={styles.info}>
-            <Text style={styles.title}>{deviceName || 'No Device'}</Text>
-            <StatusBadge
-              label={isConnected ? 'Connected' : 'Disconnected'}
-              variant={isConnected ? 'success' : 'default'}
-              size="sm"
-              dot
+    <View style={styles.card}>
+      <View style={styles.header}>
+        <View style={styles.statusRow}>
+          <View style={styles.statusDot}>
+            <View
+              style={[
+                styles.dot,
+                { backgroundColor: isConnected ? colors.status.success : colors.text.tertiary },
+              ]}
             />
           </View>
-          <Ionicons name="chevron-forward" size={20} color={colors.text.tertiary} />
+          <Text style={styles.deviceName}>{deviceName || 'No device'}</Text>
         </View>
-        {isConnected && (
-          <View style={styles.stats}>
-            {batteryLevel !== undefined && (
-              <View style={styles.stat}>
-                <Ionicons name={getBatteryIcon()} size={20} color={getBatteryColor()} />
-                <Text style={[styles.statText, { color: getBatteryColor() }]}>{batteryLevel}%</Text>
-              </View>
-            )}
-            {signalStrength !== undefined && (
-              <View style={styles.stat}>
-                <Ionicons name="wifi" size={20} color={colors.text.secondary} />
-                <Text style={styles.statText}>{signalStrength}%</Text>
-              </View>
-            )}
-          </View>
-        )}
-      </Card>
-    </TouchableOpacity>
+        <StatusBadge
+          label={isConnected ? 'Connected' : 'Disconnected'}
+          variant={isConnected ? 'success' : 'default'}
+          size="sm"
+          dot
+        />
+      </View>
+
+      <View style={styles.metricsRow}>
+        <View style={styles.metric}>
+          <Ionicons
+            name={getBatteryIcon()}
+            size={18}
+            color={getBatteryColor()}
+          />
+          <Text style={styles.metricValue}>{batteryLevel ?? '--'}%</Text>
+        </View>
+        <View style={styles.divider} />
+        <View style={styles.metric}>
+          <Ionicons name="cellular" size={16} color={colors.text.secondary} />
+          <Text style={styles.metricValue}>{signalStrength ?? '--'} dBm</Text>
+        </View>
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  card: {
+    backgroundColor: colors.background.card,
+    borderRadius: borderRadius.xxl,
+    padding: spacing.xl,
+    ...shadows.card,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.lg,
   },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: colors.background.secondary,
+  statusRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: spacing.md,
   },
-  info: {
-    flex: 1,
+  statusDot: {
+    marginRight: spacing.sm,
   },
-  title: {
-    ...typography.styles.titleMedium,
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  deviceName: {
+    ...typography.styles.bodyMD,
     color: colors.text.primary,
-    marginBottom: spacing.xs,
+    fontWeight: '600',
   },
-  stats: {
-    flexDirection: 'row',
-    gap: spacing.xl,
-    marginTop: spacing.md,
-    paddingTop: spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.border.default,
-  },
-  stat: {
+  metricsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.xs,
+    backgroundColor: colors.background.secondary,
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
   },
-  statText: {
-    ...typography.styles.bodyMedium,
+  metric: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  metricValue: {
+    ...typography.styles.bodySM,
     color: colors.text.secondary,
+    marginLeft: spacing.xs,
+    fontWeight: '500',
+  },
+  divider: {
+    width: 1,
+    height: 20,
+    backgroundColor: colors.border.light,
+    marginHorizontal: spacing.md,
   },
 });
 

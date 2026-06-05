@@ -1,49 +1,54 @@
 /**
- * Spacing system for consistent layout
- * Based on a 4px grid system
+ * DogVita Spacing System
+ * Consistent spacing scale based on 4px grid
  */
 
 export const spacing = {
-  // Base spacing values (4px grid)
-  xxs: 2,
+  /** 4px */
   xs: 4,
+  /** 8px */
   sm: 8,
+  /** 12px */
   md: 12,
+  /** 16px */
   lg: 16,
+  /** 20px */
   xl: 20,
+  /** 24px */
   xxl: 24,
+  /** 32px */
   xxxl: 32,
+  /** 40px */
+  huge: 40,
+  /** 48px */
+  massive: 48,
+  /** 64px */
+  giant: 64,
 
-  // Specific spacing for common use cases
-  page: 16,
-  card: 16,
+  page: 20,
+  card: 20,
   section: 24,
-  screenPadding: 16,
+  screenPadding: 20,
 
-  // Component-specific spacing
   buttonPadding: {
-    sm: 8,
-    md: 12,
-    lg: 16,
+    sm: 12,
+    md: 16,
+    lg: 20,
   },
+
   inputPadding: {
     horizontal: 16,
-    vertical: 12,
-  },
-  listItemPadding: {
-    horizontal: 16,
-    vertical: 12,
+    vertical: 16,
   },
 
-  // Gap values for flex/grid
   gap: {
     xs: 4,
     sm: 8,
     md: 12,
     lg: 16,
-    xl: 24,
+    xl: 20,
+    xxl: 24,
   },
 } as const;
 
 export type Spacing = typeof spacing;
-export type SpacingKey = keyof typeof spacing;

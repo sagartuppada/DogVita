@@ -3,55 +3,49 @@
  */
 
 import { NavigatorScreenParams } from '@react-navigation/native';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { CompositeScreenProps } from '@react-navigation/native';
 
 export type OnboardingStackParamList = {
   Welcome: undefined;
-  AddPhoneNumber: undefined;
-  OTPVerification: { phoneNumber: string };
-  SetupDogProfile: undefined;
+  AddPhone: undefined;
+  OTP: { phoneNumber: string };
+  SetupDog: undefined;
   PairDevice: undefined;
 };
 
 export type MainTabParamList = {
-  DashboardTab: NavigatorScreenParams<DashboardStackParamList>;
-  HealthTab: NavigatorScreenParams<HealthStackParamList>;
-  TrackingTab: NavigatorScreenParams<TrackingStackParamList>;
-  AlertsTab: NavigatorScreenParams<AlertsStackParamList>;
-  SettingsTab: NavigatorScreenParams<SettingsStackParamList>;
-};
-
-export type DashboardStackParamList = {
   Dashboard: undefined;
-};
-
-export type HealthStackParamList = {
-  HealthOverview: undefined;
-  HeartRateDetail: undefined;
-  TemperatureDetail: undefined;
-  SleepDetail: undefined;
-};
-
-export type TrackingStackParamList = {
-  TrackingOverview: undefined;
-  LiveTracking: undefined;
-  Geofences: undefined;
-};
-
-export type AlertsStackParamList = {
-  AlertsList: undefined;
-};
-
-export type SettingsStackParamList = {
+  Health: undefined;
+  Tracking: undefined;
+  Alerts: undefined;
   Settings: undefined;
 };
 
 export type RootStackParamList = {
   Onboarding: NavigatorScreenParams<OnboardingStackParamList>;
-  Main: NavigatorScreenParams<MainTabParamList>;
-  DevicePairing: undefined;
-  AddDog: undefined;
-  DogDetail: { dogId: string };
+  Main: undefined;
 };
+
+// Screen props types
+export type OnboardingScreenProps<T extends keyof OnboardingStackParamList> =
+  NativeStackScreenProps<OnboardingStackParamList, T>;
+
+export type DashboardScreenProps<T extends keyof MainTabParamList> =
+  BottomTabScreenProps<MainTabParamList, T>;
+
+export type HealthTabScreenProps<T extends keyof MainTabParamList> =
+  BottomTabScreenProps<MainTabParamList, T>;
+
+export type TrackingTabScreenProps<T extends keyof MainTabParamList> =
+  BottomTabScreenProps<MainTabParamList, T>;
+
+export type AlertsTabScreenProps<T extends keyof MainTabParamList> =
+  BottomTabScreenProps<MainTabParamList, T>;
+
+export type SettingsTabScreenProps<T extends keyof MainTabParamList> =
+  BottomTabScreenProps<MainTabParamList, T>;
 
 declare global {
   namespace ReactNavigation {

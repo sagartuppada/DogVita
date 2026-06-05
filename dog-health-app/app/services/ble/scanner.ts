@@ -2,7 +2,8 @@
  * BLE Scanner - Discovers nearby BLE devices
  */
 
-import { BleManager, Device, ScanOptions } from 'react-native-ble-plx';
+import { BleManager, Device } from 'react-native-ble-plx';
+import { Platform, PermissionsAndroid } from 'react-native';
 import { BLEDevice } from '../../types';
 
 const SERVICE_UUIDS = [
@@ -37,12 +38,6 @@ class BLEScanner {
 
     this.isScanning = true;
     this.discoveredDevices.clear();
-
-    const options: ScanOptions = {
-      serviceUuids: SERVICE_UUIDS,
-      timeout: SCAN_TIMEOUT,
-      allowDuplicates: false,
-    };
 
     return new Promise((resolve, reject) => {
       this.manager.startDeviceScan(
@@ -95,25 +90,39 @@ class BLEScanner {
 
   private convertToBLEDevice(device: Device): BLEDevice {
     return {
-      ...device,
+      id: device.id,
+      name: device.name,
       rssi: device.rssi || -100,
       isConnectable: true,
       manufacturerData: undefined,
+      localName: device.localName,
+      txPowerLevel: device.txPowerLevel,
+      serviceUUIDs: device.serviceUUIDs,
+      serviceData: device.serviceData,
+      solicitedServiceUUIDs: device.solicitedServiceUUIDs,
+      mtu: device.mtu,
     };
   }
 
   async requestPermissions(): Promise<boolean> {
-    try {
-      const result = await this.manager.requestAttention(0);
-      return true;
-    } catch {
-      return false;
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Bluetooth Permission',
+          message: 'This app needs Bluetooth to connect to the dog collar.',
+          buttonPositive: 'OK',
+          buttonNegative: 'Cancel',
+        }
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
     }
+    return true;
   }
 
   async checkBluetoothState(): Promise<'PoweredOn' | 'PoweredOff' | 'Unauthorized' | 'Unsupported'> {
     const state = await this.manager.state();
-    return state;
+    return state as 'PoweredOn' | 'PoweredOff' | 'Unauthorized' | 'Unsupported';
   }
 
   destroy(): void {

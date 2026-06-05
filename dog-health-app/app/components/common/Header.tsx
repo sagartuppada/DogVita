@@ -1,11 +1,11 @@
 /**
- * Header - Screen header component
+ * Header - Clean screen header
  */
 
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, spacing, typography } from '../../theme';
+import { colors, spacing, typography, borderRadius } from '../../theme';
 
 interface HeaderProps {
   title: string;
@@ -26,7 +26,7 @@ export const Header: React.FC<HeaderProps> = ({
     <View style={styles.container}>
       <View style={styles.left}>
         {showBack && onBack && (
-          <TouchableOpacity onPress={onBack} style={styles.backButton}>
+          <TouchableOpacity onPress={onBack} style={styles.backButton} activeOpacity={0.6}>
             <Ionicons name="chevron-back" size={24} color={colors.text.primary} />
           </TouchableOpacity>
         )}
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: spacing.page,
     paddingVertical: spacing.md,
     backgroundColor: colors.background.primary,
   },
@@ -62,10 +62,15 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   backButton: {
-    padding: spacing.xs,
+    width: 40,
+    height: 40,
+    borderRadius: borderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.background.secondary,
   },
   title: {
-    ...typography.styles.titleLarge,
+    ...typography.styles.headingSM,
     color: colors.text.primary,
   },
   subtitle: {

@@ -1,8 +1,10 @@
 /**
- * Typography system for consistent text styling
+ * DogVita Typography System
+ * Modern, clean hierarchy for pet wellness
  */
 
 import { TextStyle, Platform } from 'react-native';
+import { colors } from './colors';
 
 const fontFamily = Platform.select({
   ios: {
@@ -26,171 +28,146 @@ const fontFamily = Platform.select({
 });
 
 export const typography = {
-  // Font sizes
+  fontFamily,
+
   fontSize: {
-    xs: 10,
-    sm: 12,
-    md: 14,
-    lg: 16,
-    xl: 18,
-    xxl: 20,
-    xxxl: 24,
-    display: 32,
-    hero: 40,
+    xs: 11,
+    sm: 13,
+    md: 15,
+    lg: 17,
+    xl: 19,
+    xxl: 22,
+    xxxl: 28,
+    display: 34,
+    hero: 42,
   },
 
-  // Line heights
   lineHeight: {
-    tight: 1.1,
-    normal: 1.4,
-    relaxed: 1.6,
+    tight: 1.2,
+    snug: 1.3,
+    normal: 1.5,
+    relaxed: 1.65,
     loose: 1.8,
   },
 
-  // Letter spacing
-  letterSpacing: {
-    tight: -0.5,
-    normal: 0,
-    wide: 0.5,
-    wider: 1,
-  },
-
-  // Text styles
   styles: {
-    // Display text
-    displayLarge: {
-      fontSize: 40,
-      lineHeight: 48,
+    headingXL: {
+      fontSize: 34,
+      lineHeight: 41,
       fontWeight: '700',
       fontFamily: fontFamily.bold,
+      color: colors.text.primary,
       letterSpacing: -0.5,
     } as TextStyle,
 
-    displayMedium: {
-      fontSize: 32,
-      lineHeight: 40,
+    headingLG: {
+      fontSize: 28,
+      lineHeight: 34,
       fontWeight: '700',
       fontFamily: fontFamily.bold,
-      letterSpacing: -0.25,
+      color: colors.text.primary,
+      letterSpacing: -0.3,
     } as TextStyle,
 
-    displaySmall: {
-      fontSize: 24,
-      lineHeight: 32,
-      fontWeight: '600',
-      fontFamily: fontFamily.semibold,
-    } as TextStyle,
-
-    // Headlines
-    headlineLarge: {
-      fontSize: 24,
-      lineHeight: 32,
-      fontWeight: '600',
-      fontFamily: fontFamily.semibold,
-    } as TextStyle,
-
-    headlineMedium: {
-      fontSize: 20,
+    headingMD: {
+      fontSize: 22,
       lineHeight: 28,
       fontWeight: '600',
       fontFamily: fontFamily.semibold,
+      color: colors.text.primary,
     } as TextStyle,
 
-    headlineSmall: {
-      fontSize: 18,
+    headingSM: {
+      fontSize: 19,
       lineHeight: 24,
       fontWeight: '600',
       fontFamily: fontFamily.semibold,
+      color: colors.text.primary,
     } as TextStyle,
 
-    // Title text
-    titleLarge: {
-      fontSize: 18,
-      lineHeight: 24,
-      fontWeight: '500',
-      fontFamily: fontFamily.medium,
+    bodyLG: {
+      fontSize: 17,
+      lineHeight: 26,
+      fontWeight: '400',
+      fontFamily: fontFamily.regular,
+      color: colors.text.primary,
     } as TextStyle,
 
-    titleMedium: {
-      fontSize: 16,
+    bodyMD: {
+      fontSize: 15,
       lineHeight: 22,
-      fontWeight: '500',
-      fontFamily: fontFamily.medium,
-    } as TextStyle,
-
-    titleSmall: {
-      fontSize: 14,
-      lineHeight: 20,
-      fontWeight: '500',
-      fontFamily: fontFamily.medium,
-    } as TextStyle,
-
-    // Body text
-    bodyLarge: {
-      fontSize: 16,
-      lineHeight: 24,
       fontWeight: '400',
       fontFamily: fontFamily.regular,
+      color: colors.text.primary,
     } as TextStyle,
 
-    bodyMedium: {
-      fontSize: 14,
-      lineHeight: 20,
+    bodySM: {
+      fontSize: 13,
+      lineHeight: 18,
       fontWeight: '400',
       fontFamily: fontFamily.regular,
+      color: colors.text.secondary,
     } as TextStyle,
 
-    bodySmall: {
-      fontSize: 12,
-      lineHeight: 16,
-      fontWeight: '400',
-      fontFamily: fontFamily.regular,
-    } as TextStyle,
-
-    // Label text
-    labelLarge: {
-      fontSize: 14,
-      lineHeight: 20,
-      fontWeight: '500',
-      fontFamily: fontFamily.medium,
-      letterSpacing: 0.1,
-    } as TextStyle,
-
-    labelMedium: {
-      fontSize: 12,
-      lineHeight: 16,
-      fontWeight: '500',
-      fontFamily: fontFamily.medium,
-      letterSpacing: 0.5,
-    } as TextStyle,
-
-    labelSmall: {
-      fontSize: 10,
-      lineHeight: 14,
-      fontWeight: '500',
-      fontFamily: fontFamily.medium,
-      letterSpacing: 0.5,
-    } as TextStyle,
-
-    // Caption text
     caption: {
       fontSize: 12,
       lineHeight: 16,
       fontWeight: '400',
       fontFamily: fontFamily.regular,
-      letterSpacing: 0.4,
+      color: colors.text.tertiary,
+    } as TextStyle,
+
+    label: {
+      fontSize: 13,
+      lineHeight: 18,
+      fontWeight: '600',
+      fontFamily: fontFamily.medium,
+      color: colors.text.secondary,
+      letterSpacing: 0.3,
+    } as TextStyle,
+
+    labelLG: {
+      fontSize: 15,
+      lineHeight: 20,
+      fontWeight: '600',
+      fontFamily: fontFamily.medium,
+      color: colors.text.secondary,
+      letterSpacing: 0.2,
+    } as TextStyle,
+
+    buttonLG: {
+      fontSize: 17,
+      lineHeight: 22,
+      fontWeight: '700',
+      fontFamily: fontFamily.bold,
+      letterSpacing: 0.3,
+    } as TextStyle,
+
+    buttonMD: {
+      fontSize: 15,
+      lineHeight: 20,
+      fontWeight: '700',
+      fontFamily: fontFamily.bold,
+      letterSpacing: 0.2,
+    } as TextStyle,
+
+    buttonSM: {
+      fontSize: 13,
+      lineHeight: 18,
+      fontWeight: '600',
+      fontFamily: fontFamily.semibold,
+      letterSpacing: 0.2,
     } as TextStyle,
 
     overline: {
-      fontSize: 10,
+      fontSize: 11,
       lineHeight: 14,
-      fontWeight: '500',
+      fontWeight: '600',
       fontFamily: fontFamily.medium,
-      letterSpacing: 1.5,
+      letterSpacing: 1.2,
       textTransform: 'uppercase',
     } as TextStyle,
   },
 } as const;
 
 export type Typography = typeof typography;
-export type TextStyleKey = keyof typeof typography.styles;

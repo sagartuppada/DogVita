@@ -32,6 +32,7 @@ interface TrackingActions {
   updateTotalDistance: (distance: number) => void;
   isInsideGeofence: (location: LocationData, geofence: Geofence) => boolean;
   checkGeofences: (location: LocationData) => Geofence[];
+  loadDemoData: () => void;
 }
 
 type TrackingStore = TrackingState & TrackingActions;
@@ -134,6 +135,22 @@ export const useTrackingStore = create<TrackingStore>()(
         return geofences.filter(
           (g) => g.isActive && isInsideGeofence(location, g)
         );
+      },
+
+      loadDemoData: () => {
+        const timestamp = new Date().toISOString();
+        set({
+          currentLocation: {
+            latitude: 37.7749,
+            longitude: -122.4194,
+            accuracy: 5,
+            speed: 0.5,
+            heading: 180,
+            timestamp,
+          },
+          isTracking: true,
+          lastLocationUpdate: timestamp,
+        });
       },
     }),
     {

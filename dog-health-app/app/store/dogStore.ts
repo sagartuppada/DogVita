@@ -23,6 +23,7 @@ interface DogActions {
   getActiveDog: () => Dog | null;
   fetchDogs: () => Promise<void>;
   clearError: () => void;
+  loadDemoData: () => void;
 }
 
 type DogStore = DogState & DogActions;
@@ -115,6 +116,24 @@ export const useDogStore = create<DogStore>()(
       },
 
       clearError: () => set({ error: null }),
+
+      loadDemoData: () => {
+        const demoDog: Dog = {
+          id: 'demo_dog_1',
+          name: 'Buddy',
+          breed: 'Golden Retriever',
+          birthDate: '2022-01-15',
+          weight: 30,
+          weightUnit: 'kg',
+          gender: 'male',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        set({
+          dogs: [demoDog],
+          activeDogId: demoDog.id,
+        });
+      },
     }),
     {
       name: 'dog-storage',

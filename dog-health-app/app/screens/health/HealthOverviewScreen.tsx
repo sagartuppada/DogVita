@@ -1,193 +1,272 @@
 /**
- * HealthOverviewScreen - Health metrics overview
+ * HealthOverviewScreen - Health metrics with chart cards and metric chips
  */
 
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Card, StatusBadge } from '../../components/common';
-import { HeartRateChart } from '../../components/charts';
-import { colors, spacing, typography } from '../../theme';
-import { useDogStore, useHealthStore } from '../../store';
+import { useDogStore } from '../../store/dogStore';
+import { useHealthStore } from '../../store/healthStore';
+import { Card, EmptyState } from '../../components/common';
+import HeartRateChart from '../../components/charts/HeartRateChart';
+import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import type { HealthTabScreenProps } from '../../navigation/types';
 
-export const HealthOverviewScreen: React.FC = () => {
-  const dogs = useDogStore((state) => state.dogs);
-  const activeDogId = useDogStore((state) => state.activeDogId);
-  const currentMetrics = useHealthStore((s) => s.currentMetrics);
+const MetricChip: React.FC<{
+  icon: string;
+  label: string;
+  value: string;
+  unit: string;
+  color: string;
+}> = ({ icon, label, value, unit, color }) => (
+  <View style={styles.chip}>
+    <View style={[styles.chipIcon, { backgroundColor: color + '18' }]}>
+      <Ionicons name={icon} size={16} color={color} />
+    </View>
+    <View style={styles.chipContent}>
+      <Text style={styles.chipLabel}>{label}</Text>
+      <View style={styles.chipValueRow}>
+        <Text style={styles.chipValue}>{value}</Text>
+        <Text style={styles.chipUnit}>{unit}</Text>
+      </View>
+    </View>
+  </View>
+);
+
+export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>) {
+  const insets = useSafeAreaInsets();
+  const dogs = useDogStore((s) => s.dogs);
+  const activeDogId = useDogStore((s) => s.activeDogId);
   const heartRateHistory = useHealthStore((s) => s.heartRateHistory);
-  const activeDog = useMemo(() => dogs.find((d) => d.id === activeDogId) ?? null, [dogs, activeDogId]);
-  const metrics = activeDog ? currentMetrics[activeDog.id] : null;
-  const recentHeartRate = useMemo(() => heartRateHistory.slice(-20), [heartRateHistory]);
+  const currentMetrics = useHealthStore((s) => s.currentMetrics);
+  const temperatureHistory = useHealthStore((s) => s.temperatureHistory);
+  const activityHistory = useHealthStore((s) => s.activityHistory);
 
-  const getHealthScore = () => {
-    if (!metrics) return 0;
-    let score = 100;
-    if (metrics.heartRate?.bpm && (metrics.heartRate.bpm < 50 || metrics.heartRate.bpm > 150)) score -= 30;
-    if (metrics.temperature?.isAbnormal) score -= 30;
-    return Math.max(0, score);
-  };
+  const activeDog = useMemo(
+    () => dogs.find((d) => d.id === activeDogId) ?? null,
+    [dogs, activeDogId],
+  );
+
+  const last20 = useMemo(() => heartRateHistory.slice(-20), [heartRateHistory]);
+  const last20Bpm = useMemo(() => last20.map((d) => d.bpm), [last20]);
+
+  const hrMin = useMemo(
+    () => (last20Bpm.length > 0 ? Math.min(...last20Bpm) : null),
+    [last20Bpm],
+  );
+  const hrMax = useMemo(
+    () => (last20Bpm.length > 0 ? Math.max(...last20Bpm) : null),
+    [last20Bpm],
+  );
+  const latestHR = useMemo(
+    () => (last20Bpm.length > 0 ? last20Bpm[last20Bpm.length - 1] : null),
+    [last20Bpm],
+  );
+
+  const metrics = activeDogId ? currentMetrics[activeDogId] : null;
+  const latestTemp = useMemo(() => {
+    if (temperatureHistory.length === 0) return null;
+    return temperatureHistory[temperatureHistory.length - 1];
+  }, [temperatureHistory]);
+  const latestActivity = metrics?.activity ?? null;
+  const latestBattery = metrics?.battery?.level ?? null;
+
+  if (!activeDog) {
+    return (
+      <EmptyState
+        icon="paw-outline"
+        title="No Dog Selected"
+        message="Add a dog profile to view health data"
+      />
+    );
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <ScrollView
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: 100 }]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Health</Text>
-          <Text style={styles.subtitle}>{activeDog?.name || 'No dog selected'}</Text>
+          <Text style={styles.dogName}>{activeDog.name}</Text>
         </View>
 
-        <Card style={styles.scoreCard}>
-          <View style={styles.scoreRow}>
-            <View>
-              <Text style={styles.scoreLabel}>Health Score</Text>
-              <Text style={[styles.scoreValue, { color: getHealthScore() > 70 ? colors.status.success : colors.status.warning }]}>
-                {getHealthScore()}
-              </Text>
-            </View>
-            <View style={styles.scoreIcon}>
-              <Ionicons
-                name={getHealthScore() > 70 ? 'checkmark-circle' : 'warning'}
-                size={48}
-                color={getHealthScore() > 70 ? colors.status.success : colors.status.warning}
-              />
-            </View>
-          </View>
-        </Card>
+        {/* Heart Rate Chart */}
+        <HeartRateChart
+          data={last20Bpm}
+          current={latestHR}
+          min={hrMin}
+          max={hrMax}
+        />
 
-        <Text style={styles.sectionTitle}>Heart Rate</Text>
-        <Card style={styles.metricCard}>
-          <View style={styles.metricHeader}>
-            <View style={[styles.iconContainer, { backgroundColor: colors.health.heartRate + '20' }]}>
-              <Ionicons name="heart" size={24} color={colors.health.heartRate} />
-            </View>
-            <View style={styles.metricInfo}>
-              <Text style={styles.metricValue}>
-                {metrics?.heartRate?.bpm || '--'}
-                <Text style={styles.metricUnit}> bpm</Text>
-              </Text>
-              <StatusBadge
-                label={metrics?.heartRate?.zone || 'N/A'}
-                variant={metrics?.heartRate?.zone === 'rest' ? 'success' : 'info'}
-                size="sm"
-              />
-            </View>
-          </View>
-          <HeartRateChart data={recentHeartRate} showZone />
-        </Card>
+        {/* Metric Chips */}
+        <Text style={styles.sectionTitle}>Current Vitals</Text>
+        <View style={styles.chipsGrid}>
+          <MetricChip
+            icon="thermometer"
+            label="Temperature"
+            value={latestTemp ? latestTemp.celsius.toFixed(1) : '--'}
+            unit="°C"
+            color={colors.health.temperature}
+          />
+          <MetricChip
+            icon="flash"
+            label="Battery"
+            value={latestBattery !== null ? String(latestBattery) : '--'}
+            unit="%"
+            color={colors.primary.dark}
+          />
+        </View>
 
-        <Text style={styles.sectionTitle}>Temperature</Text>
-        <Card style={styles.metricCard}>
-          <View style={styles.metricHeader}>
-            <View style={[styles.iconContainer, { backgroundColor: colors.health.temperature + '20' }]}>
-              <Ionicons name="thermometer" size={24} color={colors.health.temperature} />
-            </View>
-            <View style={styles.metricInfo}>
-              <Text style={styles.metricValue}>
-                {metrics?.temperature?.celsius?.toFixed(1) || '--'}
-                <Text style={styles.metricUnit}> °C</Text>
-              </Text>
-              <StatusBadge
-                label={metrics?.temperature?.isAbnormal ? 'Abnormal' : 'Normal'}
-                variant={metrics?.temperature?.isAbnormal ? 'warning' : 'success'}
-                size="sm"
-              />
-            </View>
-          </View>
-        </Card>
+        <View style={styles.chipsGrid}>
+          <MetricChip
+            icon="heart"
+            label="Heart Rate"
+            value={latestHR ? String(latestHR) : '--'}
+            unit="bpm"
+            color={colors.health.heartRate}
+          />
+          <MetricChip
+            icon="footsteps"
+            label="Steps"
+            value={latestActivity ? String(latestActivity.steps) : '--'}
+            unit="today"
+            color={colors.status.success}
+          />
+        </View>
 
-        <Text style={styles.sectionTitle}>Activity</Text>
-        <Card style={styles.metricCard}>
-          <View style={styles.metricHeader}>
-            <View style={[styles.iconContainer, { backgroundColor: colors.health.activity + '20' }]}>
-              <Ionicons name="fitness" size={24} color={colors.health.activity} />
+        {/* Activity Summary */}
+        <Card variant="default" padding="md" style={styles.activityCard}>
+          <Text style={styles.sectionTitle}>Activity Summary</Text>
+          <View style={styles.activityRow}>
+            <View style={styles.activityItem}>
+              <View style={[styles.activityCircle, { backgroundColor: colors.status.success + '18' }]}>
+                <Ionicons name="walk" size={20} color={colors.status.success} />
+              </View>
+              <Text style={styles.activityValue}>{latestActivity ? `${latestActivity.activeMinutes}m` : '--'}</Text>
+              <Text style={styles.activityLabel}>Active</Text>
             </View>
-            <View style={styles.metricInfo}>
-              <Text style={styles.metricValue}>
-                {metrics?.activity?.steps?.toLocaleString() || '--'}
-                <Text style={styles.metricUnit}> steps</Text>
-              </Text>
+            <View style={styles.activityItem}>
+              <View style={[styles.activityCircle, { backgroundColor: colors.primary.DEFAULT + '18' }]}>
+                <Ionicons name="flame" size={20} color={colors.primary.DEFAULT} />
+              </View>
+              <Text style={styles.activityValue}>{latestActivity ? String(latestActivity.calories) : '--'}</Text>
+              <Text style={styles.activityLabel}>Calories</Text>
+            </View>
+            <View style={styles.activityItem}>
+              <View style={[styles.activityCircle, { backgroundColor: colors.health.sleep + '18' }]}>
+                <Ionicons name="moon" size={20} color={colors.health.sleep} />
+              </View>
+              <Text style={styles.activityValue}>--</Text>
+              <Text style={styles.activityLabel}>Sleep</Text>
             </View>
           </View>
         </Card>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.secondary,
+    backgroundColor: colors.background.primary,
   },
   scrollContent: {
-    padding: spacing.page,
-    gap: spacing.md,
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.lg,
   },
   header: {
-    marginBottom: spacing.sm,
+    marginBottom: spacing.xxl,
   },
   title: {
-    ...typography.styles.displaySmall,
+    ...typography.styles.headingXL,
     color: colors.text.primary,
   },
-  subtitle: {
-    ...typography.styles.bodyMedium,
-    color: colors.text.secondary,
-  },
-  scoreCard: {
-    backgroundColor: colors.background.card,
-  },
-  scoreRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  scoreLabel: {
-    ...typography.styles.bodyMedium,
-    color: colors.text.secondary,
-  },
-  scoreValue: {
-    fontSize: 48,
-    fontWeight: '700',
-  },
-  scoreIcon: {
-    opacity: 0.8,
+  dogName: {
+    ...typography.styles.bodySM,
+    color: colors.text.tertiary,
+    marginTop: 2,
   },
   sectionTitle: {
-    ...typography.styles.titleMedium,
-    color: colors.text.primary,
-    marginTop: spacing.md,
-    marginBottom: spacing.xs,
+    ...typography.styles.label,
+    color: colors.text.secondary,
+    marginBottom: spacing.md,
+    marginTop: spacing.xl,
   },
-  metricCard: {
-    padding: spacing.md,
-  },
-  metricHeader: {
+  chipsGrid: {
     flexDirection: 'row',
-    alignItems: 'center',
     gap: spacing.md,
     marginBottom: spacing.md,
   },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  metricInfo: {
+  chip: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: colors.background.card,
+    borderRadius: borderRadius.xl,
+    padding: spacing.lg,
+    ...shadows.sm,
   },
-  metricValue: {
-    ...typography.styles.headlineMedium,
+  chipIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.md,
+  },
+  chipContent: {
+    flex: 1,
+  },
+  chipLabel: {
+    ...typography.styles.caption,
+    color: colors.text.tertiary,
+    marginBottom: 2,
+  },
+  chipValueRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  chipValue: {
+    fontSize: 17,
+    fontWeight: '700',
     color: colors.text.primary,
   },
-  metricUnit: {
-    ...typography.styles.bodyMedium,
-    color: colors.text.secondary,
+  chipUnit: {
+    ...typography.styles.caption,
+    color: colors.text.tertiary,
+    marginLeft: 3,
+  },
+  activityCard: {
+    marginBottom: spacing.xl,
+  },
+  activityRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  activityItem: {
+    alignItems: 'center',
+  },
+  activityCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.sm,
+  },
+  activityValue: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: colors.text.primary,
+  },
+  activityLabel: {
+    ...typography.styles.caption,
+    color: colors.text.tertiary,
+    marginTop: 2,
   },
 });
-
-export default HealthOverviewScreen;

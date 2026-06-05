@@ -1,39 +1,21 @@
 {
-  "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "lib": ["es2019", "dom"],
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@components/*": [
-        "./app/components/*"
-      ],
-      "@screens/*": [
-        "./app/screens/*"
-      ],
-      "@services/*": [
-        "./app/services/*"
-      ],
-      "@hooks/*": [
-        "./app/hooks/*"
-      ],
-      "@store/*": [
-        "./app/store/*"
-      ],
-      "@types/*": [
-        "./app/types/*"
-      ],
-      "@utils/*": [
-        "./app/utils/*"
-      ],
-      "@theme/*": [
-        "./app/theme/*"
-      ],
-      "@config/*": [
-        "./app/config/*"
-      ],
-      "@assets/*": [
-        "./app/assets/*"
-      ]
+      "@components/*": ["./app/components/*"],
+      "@screens/*": ["./app/screens/*"],
+      "@services/*": ["./app/services/*"],
+      "@hooks/*": ["./app/hooks/*"],
+      "@store/*": ["./app/store/*"],
+      "@types/*": ["./app/types/*"],
+      "@utils/*": ["./app/utils/*"],
+      "@theme/*": ["./app/theme/*"],
+      "@config/*": ["./app/config/*"],
+      "@assets/*": ["./app/assets/*"]
     },
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -43,11 +25,6 @@
     "noEmit": true,
     "jsx": "react-native"
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

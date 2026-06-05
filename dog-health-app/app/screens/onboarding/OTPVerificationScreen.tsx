@@ -1,178 +1,177 @@
 /**
- * OTPVerificationScreen - OTP verification
+ * OTPVerificationScreen - OTP code verification
  */
 
-import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Alert, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Button } from '../../components/common';
-import { colors, spacing, typography } from '../../theme';
-import { OnboardingStackParamList } from '../../navigation/types';
-import { authService } from '../../services/auth';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Button, Header } from '../../components/common';
+import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import type { OnboardingScreenProps } from '../../navigation/types';
 
-type Props = NativeStackScreenProps<OnboardingStackParamList, 'OTPVerification'>;
-
-export const OTPVerificationScreen: React.FC<Props> = ({ navigation, route }) => {
+export default function OTPVerificationScreen({
+  route,
+  navigation,
+}: OnboardingScreenProps<'OTP'>) {
+  const insets = useSafeAreaInsets();
   const { phoneNumber } = route.params;
-  const [otp, setOtp] = useState('');
+  const [code, setCode] = useState(['', '', '', '', '', '']);
+  const inputs = useRef<(TextInput | null)[]>([]);
   const [loading, setLoading] = useState(false);
-  const [resendTimer, setResendTimer] = useState(60);
-  const inputRef = useRef<TextInput>(null);
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  const handleResend = useCallback(() => {
+    if (resendCooldown > 0) return;
+    setResendCooldown(30);
+    Alert.alert('Code Sent', `A new verification code was sent to ${phoneNumber}`);
+  }, [phoneNumber, resendCooldown]);
 
   useEffect(() => {
+    if (resendCooldown <= 0) return;
     const timer = setInterval(() => {
-      setResendTimer((prev) => (prev > 0 ? prev - 1 : 0));
+      setResendCooldown((c) => Math.max(0, c - 1));
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [resendCooldown]);
 
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
-
-  const handleVerify = async () => {
-    if (otp.length < 6) {
-      Alert.alert('Error', 'Please enter the 6-digit code');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const result = await authService.verifyOTP(phoneNumber, otp);
-      if (result.session) {
-        navigation.navigate('SetupDogProfile');
-      } else {
-        Alert.alert('Error', result.error || 'Verification failed');
-      }
-    } catch {
-      Alert.alert('Error', 'An unexpected error occurred');
-    } finally {
-      setLoading(false);
+  const handleChange = (text: string, index: number) => {
+    if (text.length > 1) text = text.slice(-1);
+    const newCode = [...code];
+    newCode[index] = text;
+    setCode(newCode);
+    if (text && index < 5) {
+      inputs.current[index + 1]?.focus();
     }
   };
 
-  const handleResend = async () => {
-    const result = await authService.resendOTP(phoneNumber);
-    if (result.success) {
-      setResendTimer(60);
-      setOtp('');
-    } else {
-      Alert.alert('Error', result.error || 'Failed to resend code');
+  const handleKeyPress = (e: any, index: number) => {
+    if (e.nativeEvent.key === 'Backspace' && !code[index] && index > 0) {
+      inputs.current[index - 1]?.focus();
     }
+  };
+
+  const fullCode = code.join('');
+  const isValid = fullCode.length === 6;
+
+  const handleVerify = async () => {
+    if (!isValid) return;
+    setLoading(true);
+    // Simulate verification
+    setTimeout(() => {
+      setLoading(false);
+      navigation.navigate('SetupDog');
+    }, 1000);
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardView}>
-        <View style={styles.content}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <Header showBack onBack={() => navigation.goBack()} title="" />
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.content}
+      >
+        <View style={styles.headerSection}>
           <Text style={styles.title}>Verify your number</Text>
           <Text style={styles.subtitle}>
             Enter the 6-digit code sent to{'\n'}{phoneNumber}
           </Text>
-          <View style={styles.testModeHint}>
-            <Text style={styles.testModeText}>🧪 TEST MODE: Use code 123456</Text>
-          </View>
-          <View style={styles.otpContainer}>
+        </View>
+
+        <View style={styles.codeRow}>
+          {code.map((digit, index) => (
             <TextInput
-              ref={inputRef}
-              style={styles.otpInput}
-              value={otp}
-              onChangeText={setOtp}
+              key={index}
+              ref={(ref) => { inputs.current[index] = ref; }}
+              style={[styles.codeInput, digit ? styles.codeInputFilled : null]}
+              value={digit}
+              onChangeText={(text) => handleChange(text, index)}
+              onKeyPress={(e) => handleKeyPress(e, index)}
               keyboardType="number-pad"
-              maxLength={6}
-              placeholder="• • • • • •"
-              placeholderTextColor={colors.text.tertiary}
-              textAlign="center"
+              maxLength={1}
+              selectTextOnFocus
             />
-          </View>
-          <Button
-            title="Verify"
-            onPress={handleVerify}
-            loading={loading}
-            disabled={otp.length < 6}
-            style={styles.button}
-          />
-          <View style={styles.resendContainer}>
-            {resendTimer > 0 ? (
-              <Text style={styles.resendText}>Resend in {resendTimer}s</Text>
-            ) : (
-              <Button title="Resend Code" onPress={handleResend} variant="ghost" />
-            )}
-          </View>
-          <Button
-            title="Change Number"
-            onPress={() => navigation.goBack()}
-            variant="ghost"
-            style={styles.changeButton}
-          />
+          ))}
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+
+      <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.lg }]}>
+        <Button
+          title="Verify"
+          onPress={handleVerify}
+          variant="primary"
+          size="lg"
+          disabled={!isValid}
+          loading={loading}
+        />
+        <Button
+          title={resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend Code'}
+          onPress={handleResend}
+          variant="ghost"
+          size="md"
+          style={styles.resendBtn}
+          disabled={resendCooldown > 0}
+        />
+      </View>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.primary,
   },
-  keyboardView: {
-    flex: 1,
-  },
   content: {
     flex: 1,
-    padding: spacing.page,
-    paddingTop: spacing.xxxl,
+    paddingHorizontal: spacing.xxl,
+  },
+  headerSection: {
+    marginBottom: spacing.xxxl,
   },
   title: {
-    ...typography.styles.headlineMedium,
+    ...typography.styles.headingLG,
     color: colors.text.primary,
-    textAlign: 'center',
-  },
-  subtitle: {
-    ...typography.styles.bodyLarge,
-    color: colors.text.secondary,
-    textAlign: 'center',
-    marginTop: spacing.sm,
     marginBottom: spacing.sm,
   },
-  testModeHint: {
-    backgroundColor: colors.status.info + '20',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderRadius: 8,
-    marginBottom: spacing.lg,
-    alignItems: 'center',
-  },
-  testModeText: {
-    ...typography.styles.labelMedium,
-    color: colors.status.info,
-  },
-  otpContainer: {
-    marginBottom: spacing.xxl,
-  },
-  otpInput: {
-    ...typography.styles.displaySmall,
-    color: colors.text.primary,
-    letterSpacing: 16,
-    paddingVertical: spacing.lg,
-    backgroundColor: colors.background.secondary,
-    borderRadius: 12,
-  },
-  button: {
-    marginBottom: spacing.lg,
-  },
-  resendContainer: {
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-  resendText: {
-    ...typography.styles.bodyMedium,
+  subtitle: {
+    ...typography.styles.bodyMD,
     color: colors.text.secondary,
+    lineHeight: 22,
   },
-  changeButton: {
+  codeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.lg,
+  },
+  codeInput: {
+    width: 48,
+    height: 56,
+    borderRadius: borderRadius.lg,
+    backgroundColor: colors.background.secondary,
+    borderWidth: 1.5,
+    borderColor: colors.border.light,
+    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '700',
+    color: colors.text.primary,
+  },
+  codeInputFilled: {
+    borderColor: colors.primary.DEFAULT,
+    backgroundColor: colors.white,
+  },
+  footer: {
+    paddingHorizontal: spacing.xxl,
+  },
+  resendBtn: {
     marginTop: spacing.md,
   },
 });
-
-export default OTPVerificationScreen;

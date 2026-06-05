@@ -3,202 +3,238 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, FlatList, Alert } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { View, Text, StyleSheet, Animated } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Button, Card, StatusBadge, Loader } from '../../components/common';
-import { colors, spacing, typography } from '../../theme';
-import { OnboardingStackParamList } from '../../navigation/types';
-import { useBLE } from '../../hooks';
-import { useSettingsStore } from '../../store';
-import { BLEDevice } from '../../types';
+import { Button, Header, StatusBadge } from '../../components/common';
+import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import type { OnboardingScreenProps } from '../../navigation/types';
+import { useSettingsStore } from '../../store/settingsStore';
 
-type Props = NativeStackScreenProps<OnboardingStackParamList, 'PairDevice'>;
-
-export const PairDeviceScreen: React.FC<Props> = ({ navigation }) => {
-  const [selectedDevice, setSelectedDevice] = useState<BLEDevice | null>(null);
-  const { isScanning, devices, isConnected, connectionStatus, connectedDeviceName, startScan, stopScan, connect } = useBLE();
-  const setOnboardingComplete = useSettingsStore((state) => state.setOnboardingComplete);
+export default function PairDeviceScreen({
+  navigation,
+}: OnboardingScreenProps<'PairDevice'>) {
+  const insets = useSafeAreaInsets();
+  const [status, setStatus] = useState<'scanning' | 'found' | 'pairing' | 'connected' | 'error'>('scanning');
+  const pulseAnim = new Animated.Value(1);
 
   useEffect(() => {
-    return () => {
-      stopScan();
-    };
-  }, [stopScan]);
+    if (status === 'scanning') {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, { toValue: 1.15, duration: 1000, useNativeDriver: true }),
+          Animated.timing(pulseAnim, { toValue: 1, duration: 1000, useNativeDriver: true }),
+        ])
+      ).start();
 
-  const handleConnect = async () => {
-    if (!selectedDevice) return;
-    const success = await connect(selectedDevice.id);
-    if (success) {
-      Alert.alert('Success', 'Device connected successfully', [
-        {
-          text: 'Continue',
-          onPress: () => {
-            setOnboardingComplete();
-          },
-        },
-      ]);
-    } else {
-      Alert.alert('Error', 'Failed to connect to device');
+      // Simulate finding device
+      const timer = setTimeout(() => setStatus('found'), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
+
+  const getStatusConfig = () => {
+    switch (status) {
+      case 'scanning':
+        return { icon: 'bluetooth', color: colors.primary.DEFAULT, text: 'Scanning for devices...' };
+      case 'found':
+        return { icon: 'watch', color: colors.status.info, text: 'DogVita Collar found!' };
+      case 'pairing':
+        return { icon: 'sync', color: colors.primary.DEFAULT, text: 'Pairing...' };
+      case 'connected':
+        return { icon: 'checkmark-circle', color: colors.status.success, text: 'Connected!' };
+      case 'error':
+        return { icon: 'alert-circle', color: colors.status.error, text: 'Pairing failed' };
     }
   };
 
-  const renderDeviceItem = ({ item }: { item: BLEDevice }) => (
-    <Card
-      style={[styles.deviceCard, selectedDevice?.id === item.id && styles.selectedCard]}
-      onPress={() => setSelectedDevice(item)}
-    >
-      <View style={styles.deviceRow}>
-        <View style={styles.deviceInfo}>
-          <Ionicons name="bluetooth" size={24} color={colors.ble.connected} />
-          <View style={styles.deviceDetails}>
-            <Text style={styles.deviceName}>{item.name || 'Unknown Device'}</Text>
-            <Text style={styles.deviceId}>ID: {item.id}</Text>
-          </View>
-        </View>
-        <StatusBadge
-          label={item.rssi > -50 ? 'Strong' : item.rssi > -70 ? 'Good' : 'Weak'}
-          variant={item.rssi > -50 ? 'success' : item.rssi > -70 ? 'info' : 'warning'}
-          size="sm"
-          dot
-        />
-      </View>
-    </Card>
-  );
+  const config = getStatusConfig();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Pair your device</Text>
-        <Text style={styles.subtitle}>Make sure your ESP32-S3 collar is turned on</Text>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <Header showBack onBack={() => navigation.goBack()} title="" />
+
+      <View style={styles.content}>
+        {/* Pulse Animation */}
+        <View style={styles.pulseArea}>
+          <Animated.View
+            style={[
+              styles.pulseRing,
+              { transform: [{ scale: pulseAnim }], borderColor: config.color + '30' },
+            ]}
+          />
+          <Animated.View
+            style={[
+              styles.pulseRingInner,
+              { transform: [{ scale: pulseAnim }], borderColor: config.color + '20' },
+            ]}
+          />
+          <View style={[styles.pulseIcon, { backgroundColor: config.color + '18' }]}>
+            <Ionicons name={config.icon} size={40} color={config.color} />
+          </View>
+        </View>
+
+        <Text style={styles.statusText}>{config.text}</Text>
+
+        {status === 'found' && (
+          <View style={styles.devicePreview}>
+            <View style={styles.deviceRow}>
+              <Ionicons name="watch" size={24} color={colors.text.secondary} />
+              <View style={styles.deviceInfo}>
+                <Text style={styles.deviceName}>DogVita Collar</Text>
+                <Text style={styles.deviceId}>Signal: Strong</Text>
+              </View>
+              <StatusBadge label="Ready" variant="success" size="sm" />
+            </View>
+          </View>
+        )}
+
+        {status === 'error' && (
+          <Text style={styles.errorHint}>
+            Make sure your collar is charged and nearby
+          </Text>
+        )}
       </View>
 
-      {isScanning ? (
-        <View style={styles.scanningContainer}>
-          <Loader size="large" message="Scanning for devices..." />
-        </View>
-      ) : (
-        <>
-          <FlatList
-            data={devices}
-            keyExtractor={(item) => item.id}
-            renderItem={renderDeviceItem}
-            contentContainerStyle={styles.list}
-            ListEmptyComponent={
-              <View style={styles.emptyState}>
-                <Ionicons name="bluetooth-outline" size={64} color={colors.text.tertiary} />
-                <Text style={styles.emptyText}>No devices found</Text>
-                <Text style={styles.emptySubtext}>Tap scan to search again</Text>
-              </View>
-            }
+      <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.lg }]}>
+        {status === 'scanning' && (
+          <Button
+            title="Cancel"
+            onPress={() => navigation.goBack()}
+            variant="secondary"
+            size="lg"
           />
-          <View style={styles.footer}>
-            <Button
-              title={isScanning ? 'Scanning...' : 'Scan for Devices'}
-              onPress={startScan}
-              variant={isScanning ? 'outline' : 'primary'}
-              style={styles.scanButton}
-            />
-            <Button
-              title="Connect"
-              onPress={handleConnect}
-              disabled={!selectedDevice || connectionStatus === 'connecting'}
-              loading={connectionStatus === 'connecting'}
-              style={styles.connectButton}
-            />
-            <Button
-              title="Skip for now"
-              onPress={() => {
-                setOnboardingComplete();
-              }}
-              variant="ghost"
-            />
-          </View>
-        </>
-      )}
-    </SafeAreaView>
+        )}
+        {status === 'found' && (
+          <Button
+            title="Pair Now"
+            onPress={() => {
+              setStatus('pairing');
+              setTimeout(() => setStatus('connected'), 2000);
+            }}
+            variant="primary"
+            size="lg"
+          />
+        )}
+        {status === 'connected' && (
+          <Button
+            title="Start Using DogVita"
+            onPress={() => {
+              useSettingsStore.getState().setOnboardingComplete();
+              const rootNav = navigation.getParent()?.getParent();
+              if (rootNav) {
+                rootNav.navigate('Main');
+              }
+            }}
+            variant="primary"
+            size="lg"
+          />
+        )}
+        {status === 'error' && (
+          <Button
+            title="Try Again"
+            onPress={() => setStatus('scanning')}
+            variant="primary"
+            size="lg"
+          />
+        )}
+        <Button
+          title="Skip for Now"
+          onPress={() => {
+            useSettingsStore.getState().setOnboardingComplete();
+            const rootNav = navigation.getParent()?.getParent();
+            if (rootNav) {
+              rootNav.navigate('Main');
+            }
+          }}
+          variant="ghost"
+          size="md"
+          style={styles.skipBtn}
+        />
+      </View>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.primary,
   },
-  header: {
-    padding: spacing.page,
-    paddingTop: spacing.lg,
-  },
-  title: {
-    ...typography.styles.headlineMedium,
-    color: colors.text.primary,
-  },
-  subtitle: {
-    ...typography.styles.bodyLarge,
-    color: colors.text.secondary,
-    marginTop: spacing.xs,
-  },
-  scanningContainer: {
+  content: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.xxl,
   },
-  list: {
-    padding: spacing.page,
-    gap: spacing.md,
+  pulseArea: {
+    width: 160,
+    height: 160,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.xxl,
   },
-  deviceCard: {
-    marginBottom: spacing.sm,
-  },
-  selectedCard: {
+  pulseRing: {
+    position: 'absolute',
+    width: 160,
+    height: 160,
+    borderRadius: 80,
     borderWidth: 2,
-    borderColor: colors.primary[500],
+  },
+  pulseRingInner: {
+    position: 'absolute',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 1.5,
+  },
+  pulseIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statusText: {
+    ...typography.styles.headingSM,
+    color: colors.text.primary,
+    textAlign: 'center',
+    marginBottom: spacing.xxl,
+  },
+  devicePreview: {
+    width: '100%',
+    backgroundColor: colors.background.card,
+    borderRadius: borderRadius.xl,
+    padding: spacing.xl,
+    ...shadows.card,
   },
   deviceRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
   },
   deviceInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  deviceDetails: {
-    gap: spacing.xxs,
+    flex: 1,
+    marginLeft: spacing.md,
   },
   deviceName: {
-    ...typography.styles.titleMedium,
+    ...typography.styles.bodyMD,
     color: colors.text.primary,
+    fontWeight: '600',
   },
   deviceId: {
     ...typography.styles.caption,
     color: colors.text.tertiary,
   },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: spacing.xxxl,
-  },
-  emptyText: {
-    ...typography.styles.titleMedium,
+  errorHint: {
+    ...typography.styles.bodySM,
     color: colors.text.secondary,
-    marginTop: spacing.md,
-  },
-  emptySubtext: {
-    ...typography.styles.bodyMedium,
-    color: colors.text.tertiary,
-    marginTop: spacing.xs,
+    textAlign: 'center',
+    marginTop: spacing.lg,
   },
   footer: {
-    padding: spacing.page,
-    gap: spacing.sm,
+    paddingHorizontal: spacing.xxl,
   },
-  scanButton: {
-    marginBottom: spacing.xs,
-  },
-  connectButton: {
-    marginBottom: spacing.xs,
+  skipBtn: {
+    marginTop: spacing.md,
   },
 });
-
-export default PairDeviceScreen;

@@ -3,7 +3,7 @@
  */
 
 export * from './dog';
-export * from './health';
+export { type HealthMetrics, type HeartRateData, type HeartRateZone, type TemperatureData, type ActivityData, type SleepData, type BatteryData, type LocationData, type Geofence, type GeofenceAlert, type HealthAlert, type AlertType, type AlertSeverity, type HealthTrend } from './health';
 export * from './ble';
 export * from './navigation';
 export * from './api';

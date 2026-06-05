@@ -3,189 +3,228 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useSettingsStore } from '../../store/settingsStore';
 import { Card } from '../../components/common';
-import { colors, spacing, typography } from '../../theme';
-import { useSettingsStore } from '../../store';
+import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import type { SettingsTabScreenProps } from '../../navigation/types';
 
-interface SettingItemProps {
-  icon: keyof typeof Ionicons.glyphMap;
+const SettingRow: React.FC<{
+  icon: string;
   iconColor: string;
-  title: string;
-  subtitle?: string;
-  rightElement?: React.ReactNode;
+  label: string;
+  value?: string;
   onPress?: () => void;
-}
-
-const SettingItem: React.FC<SettingItemProps> = ({ icon, iconColor, title, subtitle, rightElement, onPress }) => (
-  <TouchableOpacity onPress={onPress} disabled={!onPress}>
-    <View style={styles.settingItem}>
-      <View style={[styles.settingIcon, { backgroundColor: iconColor + '20' }]}>
-        <Ionicons name={icon} size={20} color={iconColor} />
-      </View>
-      <View style={styles.settingContent}>
-        <Text style={styles.settingTitle}>{title}</Text>
-        {subtitle && <Text style={styles.settingSubtitle}>{subtitle}</Text>}
-      </View>
-      {rightElement || (onPress && <Ionicons name="chevron-forward" size={20} color={colors.text.tertiary} />)}
+  showChevron?: boolean;
+}> = ({ icon, iconColor, label, value, onPress, showChevron = true }) => (
+  <TouchableOpacity
+    onPress={onPress}
+    activeOpacity={0.6}
+    style={styles.settingRow}
+  >
+    <View style={[styles.settingIcon, { backgroundColor: iconColor + '18' }]}>
+      <Ionicons name={icon} size={18} color={iconColor} />
     </View>
+    <Text style={styles.settingLabel}>{label}</Text>
+    {value && <Text style={styles.settingValue}>{value}</Text>}
+    {showChevron && (
+      <Ionicons name="chevron-forward" size={16} color={colors.text.tertiary} />
+    )}
   </TouchableOpacity>
 );
 
-export const SettingsScreen: React.FC = () => {
-  const notifications = useSettingsStore((s) => s.notifications);
-  const darkMode = useSettingsStore((s) => s.darkMode);
-  const autoSync = useSettingsStore((s) => s.autoSync);
-  const isBLEEnabled = useSettingsStore((s) => s.isBLEEnabled);
-  const isLocationEnabled = useSettingsStore((s) => s.isLocationEnabled);
-  const setNotifications = useSettingsStore((s) => s.setNotifications);
-  const setDarkMode = useSettingsStore((s) => s.setDarkMode);
-  const setAutoSync = useSettingsStore((s) => s.setAutoSync);
-  const setBLEEnabled = useSettingsStore((s) => s.setBLEEnabled);
-  const setLocationEnabled = useSettingsStore((s) => s.setLocationEnabled);
+export default function SettingsScreen({ navigation }: SettingsTabScreenProps<'Settings'>) {
+  const insets = useSafeAreaInsets();
+  const theme = useSettingsStore((s) => s.theme);
+  const setTheme = useSettingsStore((s) => s.setTheme);
+  const handleLogout = () => {
+    Alert.alert(
+      'Log Out',
+      'Are you sure you want to log out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Log Out',
+          style: 'destructive',
+          onPress: () => {
+            useSettingsStore.getState().resetSettings();
+          },
+        },
+      ]
+    );
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.title}>Settings</Text>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <ScrollView
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: 100 }]}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.header}>
+          <Text style={styles.title}>Settings</Text>
+        </View>
 
-        <Text style={styles.sectionHeader}>DEVICE</Text>
-        <Card style={styles.section}>
-          <SettingItem
-            icon="bluetooth"
-            iconColor={colors.ble.connected}
-            title="Bluetooth"
-            subtitle={isBLEEnabled ? 'Enabled' : 'Disabled'}
-            rightElement={<Switch value={isBLEEnabled} onValueChange={setBLEEnabled} trackColor={{ true: colors.primary[600] }} />}
+        {/* Dog Profile */}
+        <Card variant="default" padding="none" style={styles.section}>
+          <SettingRow
+            icon="paw"
+            iconColor={colors.primary.DEFAULT}
+            label="Dog Profile"
+            value="Buddy"
+            onPress={() => Alert.alert('Dog Profile', 'Coming soon')}
           />
-          <View style={styles.divider} />
-          <SettingItem
-            icon="location"
-            iconColor={colors.health.gps}
-            title="Location"
-            subtitle={isLocationEnabled ? 'Enabled' : 'Disabled'}
-            rightElement={<Switch value={isLocationEnabled} onValueChange={setLocationEnabled} trackColor={{ true: colors.primary[600] }} />}
+          <View style={styles.separator} />
+          <SettingRow
+            icon="watch"
+            iconColor={colors.status.info}
+            label="Device"
+            value="Connected"
+            onPress={() => Alert.alert('Device', 'Coming soon')}
           />
         </Card>
 
-        <Text style={styles.sectionHeader}>NOTIFICATIONS</Text>
-        <Card style={styles.section}>
-          <SettingItem
+        {/* Preferences */}
+        <Card variant="default" padding="none" style={styles.section}>
+          <SettingRow
             icon="notifications"
             iconColor={colors.status.warning}
-            title="Push Notifications"
-            subtitle="Receive alerts and updates"
-            rightElement={<Switch value={notifications} onValueChange={setNotifications} trackColor={{ true: colors.primary[600] }} />}
+            label="Notifications"
+            onPress={() => Alert.alert('Notifications', 'Coming soon')}
           />
-          <View style={styles.divider} />
-          <SettingItem
-            icon="sync"
-            iconColor={colors.secondary[600]}
-            title="Auto Sync"
-            subtitle="Sync data automatically"
-            rightElement={<Switch value={autoSync} onValueChange={setAutoSync} trackColor={{ true: colors.primary[600] }} />}
+          <View style={styles.separator} />
+          <SettingRow
+            icon="location"
+            iconColor={colors.status.success}
+            label="Location Services"
+            onPress={() => Alert.alert('Location Services', 'Coming soon')}
           />
-        </Card>
-
-        <Text style={styles.sectionHeader}>APPEARANCE</Text>
-        <Card style={styles.section}>
-          <SettingItem
+          <View style={styles.separator} />
+          <SettingRow
             icon="moon"
-            iconColor={colors.accent[600]}
-            title="Dark Mode"
-            subtitle="Use dark theme"
-            rightElement={<Switch value={darkMode} onValueChange={setDarkMode} trackColor={{ true: colors.primary[600] }} />}
+            iconColor={colors.health.sleep}
+            label="Appearance"
+            value={theme === 'light' ? 'Light' : theme === 'dark' ? 'Dark' : 'System'}
+            onPress={() => {
+              Alert.alert(
+                'Appearance',
+                'Choose your theme',
+                [
+                  { text: 'Light', onPress: () => setTheme('light') },
+                  { text: 'Dark', onPress: () => setTheme('dark') },
+                  { text: 'System', onPress: () => setTheme('system') },
+                  { text: 'Cancel', style: 'cancel' },
+                ],
+                { cancelable: true }
+              );
+            }}
           />
         </Card>
 
-        <Text style={styles.sectionHeader}>ACCOUNT</Text>
-        <Card style={styles.section}>
-          <SettingItem icon="person" iconColor={colors.primary[600]} title="Account" onPress={() => {}} />
-          <View style={styles.divider} />
-          <SettingItem icon="help-circle" iconColor={colors.status.info} title="Help & Support" onPress={() => {}} />
-          <View style={styles.divider} />
-          <SettingItem icon="document-text" iconColor={colors.neutral[600]} title="Privacy Policy" onPress={() => {}} />
-          <View style={styles.divider} />
-          <SettingItem icon="information-circle" iconColor={colors.neutral[600]} title="About" subtitle="Version 1.0.0" onPress={() => {}} />
+        {/* Health Thresholds */}
+        <Card variant="default" padding="none" style={styles.section}>
+          <SettingRow
+            icon="heart"
+            iconColor={colors.health.heartRate}
+            label="Heart Rate Alerts"
+            onPress={() => Alert.alert('Heart Rate Alerts', 'Coming soon')}
+          />
+          <View style={styles.separator} />
+          <SettingRow
+            icon="thermometer"
+            iconColor={colors.health.temperature}
+            label="Temperature Alerts"
+            onPress={() => Alert.alert('Temperature Alerts', 'Coming soon')}
+          />
         </Card>
 
-        <TouchableOpacity style={styles.signOutButton}>
-          <Ionicons name="log-out" size={20} color={colors.status.error} />
-          <Text style={styles.signOutText}>Sign Out</Text>
-        </TouchableOpacity>
+        {/* Account */}
+        <Card variant="default" padding="none" style={styles.section}>
+          <SettingRow
+            icon="person"
+            iconColor={colors.text.secondary}
+            label="Account"
+            onPress={() => Alert.alert('Account', 'Coming soon')}
+          />
+          <View style={styles.separator} />
+          <SettingRow
+            icon="help-circle"
+            iconColor={colors.status.info}
+            label="Help & Support"
+            onPress={() => Alert.alert('Help & Support', 'Coming soon')}
+          />
+          <View style={styles.separator} />
+          <SettingRow
+            icon="information-circle"
+            iconColor={colors.text.tertiary}
+            label="About"
+            value="v1.0.0"
+            onPress={() => Alert.alert('About', 'DogVita v1.0.0\nSmart health monitoring for your best friend')}
+          />
+        </Card>
+
+        {/* Logout */}
+        <Card variant="default" padding="none" style={styles.section}>
+          <SettingRow
+            icon="log-out"
+            iconColor={colors.status.error}
+            label="Log Out"
+            showChevron={false}
+            onPress={handleLogout}
+          />
+        </Card>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.secondary,
+    backgroundColor: colors.background.primary,
   },
   scrollContent: {
-    padding: spacing.page,
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.lg,
+  },
+  header: {
+    marginBottom: spacing.xxl,
   },
   title: {
-    ...typography.styles.displaySmall,
+    ...typography.styles.headingXL,
     color: colors.text.primary,
-    marginBottom: spacing.lg,
-  },
-  sectionHeader: {
-    ...typography.styles.overline,
-    color: colors.text.tertiary,
-    marginTop: spacing.lg,
-    marginBottom: spacing.sm,
-    marginLeft: spacing.xs,
   },
   section: {
-    padding: spacing.sm,
+    marginBottom: spacing.xl,
   },
-  settingItem: {
+  settingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.xl,
   },
   settingIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: spacing.md,
   },
-  settingContent: {
+  settingLabel: {
+    ...typography.styles.bodyMD,
+    color: colors.text.primary,
     flex: 1,
   },
-  settingTitle: {
-    ...typography.styles.bodyLarge,
-    color: colors.text.primary,
+  settingValue: {
+    ...typography.styles.bodySM,
+    color: colors.text.tertiary,
+    marginRight: spacing.sm,
   },
-  settingSubtitle: {
-    ...typography.styles.caption,
-    color: colors.text.secondary,
-    marginTop: 2,
-  },
-  divider: {
+  separator: {
     height: 1,
-    backgroundColor: colors.border.default,
-    marginLeft: 52,
-  },
-  signOutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-    paddingVertical: spacing.lg,
-    marginTop: spacing.lg,
-  },
-  signOutText: {
-    ...typography.styles.bodyLarge,
-    color: colors.status.error,
-    fontWeight: '600',
+    backgroundColor: colors.border.light,
+    marginLeft: spacing.xl + 32 + spacing.md,
   },
 });
-
-export default SettingsScreen;

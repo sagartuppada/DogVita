@@ -58,8 +58,8 @@ export const DogMap: React.FC<DogMapProps> = ({
             <Circle
               center={geofence.center}
               radius={geofence.radius}
-              fillColor={colors.secondary[400] + '30'}
-              strokeColor={colors.secondary[600]}
+              fillColor={colors.secondary.light + '30'}
+              strokeColor={colors.secondary.dark}
               strokeWidth={2}
             />
             <Marker
