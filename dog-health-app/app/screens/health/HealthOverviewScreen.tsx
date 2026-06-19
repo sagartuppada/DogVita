@@ -2,8 +2,8 @@
  * HealthOverviewScreen - Health metrics with chart cards and metric chips
  */
 
-import React, { useMemo } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import React, { useMemo, useEffect, useCallback } from 'react';
+import { View, Text, ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDogStore } from '../../store/dogStore';
@@ -42,11 +42,35 @@ export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>)
   const currentMetrics = useHealthStore((s) => s.currentMetrics);
   const temperatureHistory = useHealthStore((s) => s.temperatureHistory);
   const activityHistory = useHealthStore((s) => s.activityHistory);
+  const fetchHeartRateHistory = useHealthStore((s) => s.fetchHeartRateHistory);
+  const fetchTemperatureHistory = useHealthStore((s) => s.fetchTemperatureHistory);
+  const fetchActivityHistory = useHealthStore((s) => s.fetchActivityHistory);
+  const fetchLatestMetrics = useHealthStore((s) => s.fetchLatestMetrics);
 
   const activeDog = useMemo(
     () => dogs.find((d) => d.id === activeDogId) ?? null,
     [dogs, activeDogId],
   );
+
+  const fetchAllData = useCallback(async () => {
+    if (!activeDogId) return;
+    await Promise.all([
+      fetchHeartRateHistory(activeDogId),
+      fetchTemperatureHistory(activeDogId),
+      fetchActivityHistory(activeDogId),
+      fetchLatestMetrics(activeDogId),
+    ]);
+  }, [activeDogId, fetchHeartRateHistory, fetchTemperatureHistory, fetchActivityHistory, fetchLatestMetrics]);
+
+  useEffect(() => {
+    fetchAllData();
+  }, [fetchAllData]);
+
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchAllData().finally(() => setRefreshing(false));
+  }, [fetchAllData]);
 
   const last20 = useMemo(() => heartRateHistory.slice(-20), [heartRateHistory]);
   const last20Bpm = useMemo(() => last20.map((d) => d.bpm), [last20]);
@@ -87,6 +111,7 @@ export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>)
       <ScrollView
         contentContainerStyle={[styles.scrollContent, { paddingBottom: 100 }]}
         showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary.DEFAULT} />}
       >
         {/* Header */}
         <View style={styles.header}>

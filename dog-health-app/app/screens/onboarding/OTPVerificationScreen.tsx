@@ -15,6 +15,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Header } from '../../components/common';
 import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import { authService } from '../../services/auth/service';
 import type { OnboardingScreenProps } from '../../navigation/types';
 
 export default function OTPVerificationScreen({
@@ -28,10 +29,15 @@ export default function OTPVerificationScreen({
   const [loading, setLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
 
-  const handleResend = useCallback(() => {
+  const handleResend = useCallback(async () => {
     if (resendCooldown > 0) return;
-    setResendCooldown(30);
-    Alert.alert('Code Sent', `A new verification code was sent to ${phoneNumber}`);
+    const { success, error } = await authService.resendOTP(phoneNumber);
+    if (success) {
+      setResendCooldown(30);
+      Alert.alert('Code Sent', `A new verification code was sent to ${phoneNumber}`);
+    } else {
+      Alert.alert('Error', error || 'Failed to resend code');
+    }
   }, [phoneNumber, resendCooldown]);
 
   useEffect(() => {
@@ -64,11 +70,14 @@ export default function OTPVerificationScreen({
   const handleVerify = async () => {
     if (!isValid) return;
     setLoading(true);
-    // Simulate verification
-    setTimeout(() => {
-      setLoading(false);
+    const token = fullCode;
+    const { session, error } = await authService.verifyOTP(phoneNumber, token);
+    setLoading(false);
+    if (session) {
       navigation.navigate('SetupDog');
-    }, 1000);
+    } else {
+      Alert.alert('Verification Failed', error || 'Invalid code. Please try again.');
+    }
   };
 
   return (

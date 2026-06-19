@@ -6,6 +6,8 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Dog, CreateDogInput, UpdateDogInput } from '../types';
+import { dogsService } from '../services/api/dogs';
+import { supabase, isSupabaseConfigured } from '../services/api/supabase';
 
 interface DogState {
   dogs: Dog[];
@@ -45,6 +47,29 @@ export const useDogStore = create<DogStore>()(
       addDog: async (input) => {
         set({ isLoading: true, error: null });
         try {
+          if (isSupabaseConfigured()) {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              const created = await dogsService.createDog({
+                ownerId: user.id,
+                name: input.name,
+                breed: input.breed,
+                birthDate: input.birthDate,
+                weight: input.weight,
+                weightUnit: input.weightUnit,
+                gender: input.gender,
+                imageUrl: input.imageUrl,
+              });
+              if (created) {
+                set((state) => ({
+                  dogs: [...state.dogs, created],
+                  activeDogId: created.id,
+                  isLoading: false,
+                }));
+                return created;
+              }
+            }
+          }
           const newDog: Dog = {
             id: `dog_${Date.now()}`,
             ...input,
@@ -58,18 +83,39 @@ export const useDogStore = create<DogStore>()(
           }));
           return newDog;
         } catch (error) {
-          set({ isLoading: false, error: (error as Error).message });
-          throw error;
+          console.warn('[dogStore.addDog] Supabase insert failed, using local:', (error as Error).message);
+          const newDog: Dog = {
+            id: `dog_${Date.now()}`,
+            ...input,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          set((state) => ({
+            dogs: [...state.dogs, newDog],
+            activeDogId: newDog.id,
+            isLoading: false,
+          }));
+          return newDog;
         }
       },
 
       updateDog: async (input) => {
         set({ isLoading: true, error: null });
         try {
+          if (isSupabaseConfigured()) {
+            const { id, ...updates } = input;
+            const updated = await dogsService.updateDog(id, updates);
+            if (updated) {
+              set((state) => ({
+                dogs: state.dogs.map((d) => (d.id === id ? updated : d)),
+                isLoading: false,
+              }));
+              return updated;
+            }
+          }
           const { dogs } = get();
           const index = dogs.findIndex((d) => d.id === input.id);
           if (index === -1) throw new Error('Dog not found');
-
           const updatedDog: Dog = {
             ...dogs[index],
             ...input,
@@ -88,6 +134,9 @@ export const useDogStore = create<DogStore>()(
       deleteDog: async (dogId) => {
         set({ isLoading: true, error: null });
         try {
+          if (isSupabaseConfigured()) {
+            await dogsService.deleteDog(dogId);
+          }
           set((state) => ({
             dogs: state.dogs.filter((d) => d.id !== dogId),
             activeDogId: state.activeDogId === dogId ? null : state.activeDogId,
@@ -109,9 +158,22 @@ export const useDogStore = create<DogStore>()(
       fetchDogs: async () => {
         set({ isLoading: true, error: null });
         try {
-          set({ isLoading: false });
+          if (isSupabaseConfigured()) {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              const dogs = await dogsService.getDogs(user.id);
+              set({
+                dogs,
+                isLoading: false,
+                activeDogId: dogs.length > 0 ? (get().activeDogId || dogs[0].id) : null,
+              });
+              return;
+            }
+          }
+          set({ dogs: [], activeDogId: null, isLoading: false });
         } catch (error) {
-          set({ isLoading: false, error: (error as Error).message });
+          console.warn('[dogStore.fetchDogs] Supabase fetch failed, using local data:', (error as Error).message);
+          set({ isLoading: false });
         }
       },
 

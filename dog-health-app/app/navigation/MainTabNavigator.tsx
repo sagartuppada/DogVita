@@ -12,8 +12,7 @@ import { spacing, borderRadius, shadows } from '../theme';
 import DashboardScreen from '../screens/dashboard/DashboardScreen';
 import HealthOverviewScreen from '../screens/health/HealthOverviewScreen';
 import TrackingOverviewScreen from '../screens/tracking/TrackingOverviewScreen';
-import AlertsListScreen from '../screens/alerts/AlertsListScreen';
-import SettingsScreen from '../screens/settings/SettingsScreen';
+import ChatbotScreen from '../screens/chatbot/ChatbotScreen';
 
 import type { MainTabParamList } from './types';
 
@@ -23,8 +22,7 @@ const TAB_ICONS: Record<keyof MainTabParamList, { active: string; inactive: stri
   Dashboard: { active: 'home', inactive: 'home-outline' },
   Health: { active: 'heart', inactive: 'heart-outline' },
   Tracking: { active: 'map', inactive: 'map-outline' },
-  Alerts: { active: 'notifications', inactive: 'notifications-outline' },
-  Settings: { active: 'settings', inactive: 'settings-outline' },
+  Chatbot: { active: 'chatbubble-ellipses', inactive: 'chatbubble-ellipses-outline' },
 };
 
 export const MainTabNavigator: React.FC = () => {
@@ -45,13 +43,13 @@ export const MainTabNavigator: React.FC = () => {
         tabBarStyle: {
           position: 'absolute',
           bottom: spacing.lg,
-          left: spacing.lg,
-          right: spacing.lg,
-          height: 64,
+          left: 290,
+          right: 290,
+          height: 56,
           borderRadius: borderRadius.xl,
           backgroundColor: colors.white,
-          paddingTop: spacing.sm,
-          paddingBottom: spacing.sm,
+          paddingTop: spacing.xs,
+          paddingBottom: spacing.xs,
           ...shadows.tabBar,
           ...Platform.select({
             ios: {},
@@ -68,8 +66,7 @@ export const MainTabNavigator: React.FC = () => {
       />
       <Tab.Screen name="Health" component={HealthOverviewScreen} />
       <Tab.Screen name="Tracking" component={TrackingOverviewScreen} />
-      <Tab.Screen name="Alerts" component={AlertsListScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+      <Tab.Screen name="Chatbot" component={ChatbotScreen} options={{ tabBarLabel: 'AI' }} />
     </Tab.Navigator>
   );
 };

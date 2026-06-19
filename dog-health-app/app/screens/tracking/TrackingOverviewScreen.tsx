@@ -2,16 +2,16 @@
  * TrackingOverviewScreen - GPS tracking with map and floating FABs
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDogStore } from '../../store/dogStore';
 import { useTrackingStore } from '../../store/trackingStore';
 import { Card, StatusBadge, EmptyState } from '../../components/common';
 import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
 import type { TrackingTabScreenProps } from '../../navigation/types';
+import { OfflineMapView } from '../../components/maps/OfflineMapView';
 
 export default function TrackingOverviewScreen({}: TrackingTabScreenProps<'Tracking'>) {
   const insets = useSafeAreaInsets();
@@ -28,6 +28,12 @@ export default function TrackingOverviewScreen({}: TrackingTabScreenProps<'Track
     () => dogs.find((d) => d.id === activeDogId) ?? null,
     [dogs, activeDogId],
   );
+
+  useEffect(() => {
+    if (!currentLocation) {
+      useTrackingStore.getState().loadDemoData();
+    }
+  }, [currentLocation]);
 
   if (!activeDog) {
     return (
@@ -57,29 +63,12 @@ export default function TrackingOverviewScreen({}: TrackingTabScreenProps<'Track
       {/* Map */}
       <View style={styles.mapContainer}>
         {hasLocation ? (
-          <MapView
-            provider={PROVIDER_DEFAULT}
-            style={styles.map}
-            initialRegion={{
-              latitude: currentLatitude!,
-              longitude: currentLongitude!,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }}
-            showsUserLocation={false}
-            showsMyLocationButton={false}
-          >
-            <Marker
-              coordinate={{
-                latitude: currentLatitude!,
-                longitude: currentLongitude!,
-              }}
-            >
-              <View style={styles.markerContainer}>
-                <View style={styles.markerDot} />
-              </View>
-            </Marker>
-          </MapView>
+          <OfflineMapView
+            latitude={currentLatitude!}
+            longitude={currentLongitude!}
+            latitudeDelta={0.01}
+            longitudeDelta={0.01}
+          />
         ) : (
           <View style={styles.mapPlaceholder}>
             <Ionicons name="map-outline" size={48} color={colors.text.tertiary} />

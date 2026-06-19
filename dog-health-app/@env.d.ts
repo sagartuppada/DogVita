@@ -1,0 +1,19 @@
+declare module '@env' {
+  export const SUPABASE_URL: string;
+  export const SUPABASE_ANON_KEY: string;
+  export const EXPO_PUBLIC_SUPABASE_URL: string;
+  export const EXPO_PUBLIC_SUPABASE_ANON_KEY: string;
+  export const EXPO_PUBLIC_API_URL: string;
+  export const EXPO_PUBLIC_BLE_SERVICE_UUID: string;
+  export const EXPO_PUBLIC_BLE_HEART_RATE_UUID: string;
+  export const EXPO_PUBLIC_BLE_GPS_UUID: string;
+  export const EXPO_PUBLIC_BLE_TEMPERATURE_UUID: string;
+  export const EXPO_PUBLIC_BLE_BATTERY_UUID: string;
+  export const EXPO_PUBLIC_BLE_ACTIVITY_UUID: string;
+  export const EXPO_PUBLIC_APP_VERSION: string;
+  export const EXPO_PUBLIC_GOOGLE_MAPS_API_KEY: string;
+  export const EXPO_PUBLIC_GEOFENCE_RADIUS_METERS: string;
+  export const EXPO_PUBLIC_GPS_UPDATE_INTERVAL_MS: string;
+  export const EXPO_PUBLIC_HEART_RATE_ALERT_THRESHOLD: string;
+  export const EXPO_PUBLIC_LOW_BATTERY_THRESHOLD: string;
+}

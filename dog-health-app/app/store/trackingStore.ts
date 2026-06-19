@@ -6,6 +6,9 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LocationData, Geofence, GeofenceAlert } from '../types';
+import { trackingService } from '../services/api/tracking';
+import { isSupabaseConfigured } from '../services/api/supabase';
+import { useDogStore } from './dogStore';
 
 interface TrackingState {
   currentLocation: LocationData | null;
@@ -32,6 +35,8 @@ interface TrackingActions {
   updateTotalDistance: (distance: number) => void;
   isInsideGeofence: (location: LocationData, geofence: Geofence) => boolean;
   checkGeofences: (location: LocationData) => Geofence[];
+  fetchLocations: (dogId: string) => Promise<void>;
+  fetchGeofences: (dogId: string) => Promise<void>;
   loadDemoData: () => void;
 }
 
@@ -61,13 +66,22 @@ export const useTrackingStore = create<TrackingStore>()(
           lastLocationUpdate: new Date().toISOString(),
         })),
 
-      addLocationToHistory: (location) =>
+      addLocationToHistory: (location) => {
         set((state) => ({
           locationHistory: [
             ...state.locationHistory.slice(-MAX_LOCATION_HISTORY + 1),
             location,
           ],
-        })),
+        }));
+        if (isSupabaseConfigured()) {
+          const activeDogId = useDogStore.getState().activeDogId;
+          if (activeDogId) {
+            trackingService.addLocation(activeDogId, location).catch((err) =>
+              console.warn('[trackingStore] Failed to persist location:', err)
+            );
+          }
+        }
+      },
 
       clearLocationHistory: () => set({ locationHistory: [], totalDistance: 0 }),
 
@@ -135,6 +149,34 @@ export const useTrackingStore = create<TrackingStore>()(
         return geofences.filter(
           (g) => g.isActive && isInsideGeofence(location, g)
         );
+      },
+
+      fetchLocations: async (dogId) => {
+        if (!isSupabaseConfigured()) return;
+        try {
+          const locations = await trackingService.getLocations(dogId);
+          if (locations.length > 0) {
+            set({
+              locationHistory: locations,
+              currentLocation: locations[0],
+              lastLocationUpdate: locations[0].timestamp,
+            });
+          }
+        } catch (error) {
+          console.warn('[trackingStore.fetchLocations] Supabase fetch failed:', (error as Error).message);
+        }
+      },
+
+      fetchGeofences: async (_dogId) => {
+        if (!isSupabaseConfigured()) return;
+        try {
+          const geofences = await trackingService.getGeofences(_dogId);
+          if (geofences.length > 0) {
+            set({ geofences });
+          }
+        } catch (error) {
+          console.warn('[trackingStore.fetchGeofences] Supabase fetch failed:', (error as Error).message);
+        }
       },
 
       loadDemoData: () => {

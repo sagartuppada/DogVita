@@ -2,13 +2,14 @@
  * DashboardScreen - Main dashboard with health metrics cards
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
   ScrollView,
   StyleSheet,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -76,11 +77,31 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
   const deviceName = useBLEStore((s) => s.connectedDeviceName);
   const signalStrength = useBLEStore((s) => s.signalStrength);
   const unacknowledgedCount = useAlertStore((s) => s.unacknowledgedCount);
+  const fetchHeartRateHistory = useHealthStore((s) => s.fetchHeartRateHistory);
+  const fetchTemperatureHistory = useHealthStore((s) => s.fetchTemperatureHistory);
+  const fetchActivityHistory = useHealthStore((s) => s.fetchActivityHistory);
+  const fetchLatestMetrics = useHealthStore((s) => s.fetchLatestMetrics);
+  const fetchAlerts = useAlertStore((s) => s.fetchAlerts);
 
   const activeDog = useMemo(
     () => dogs.find((d) => d.id === activeDogId) ?? null,
     [dogs, activeDogId],
   );
+
+  const fetchAllData = useCallback(async () => {
+    if (!activeDogId) return;
+    await Promise.all([
+      fetchHeartRateHistory(activeDogId),
+      fetchTemperatureHistory(activeDogId),
+      fetchActivityHistory(activeDogId),
+      fetchLatestMetrics(activeDogId),
+      fetchAlerts(),
+    ]);
+  }, [activeDogId, fetchHeartRateHistory, fetchTemperatureHistory, fetchActivityHistory, fetchLatestMetrics, fetchAlerts]);
+
+  useEffect(() => {
+    fetchAllData();
+  }, [fetchAllData]);
 
   const metrics = activeDogId ? currentMetrics[activeDogId] : null;
 
@@ -103,8 +124,8 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 1200);
-  }, []);
+    fetchAllData().finally(() => setRefreshing(false));
+  }, [fetchAllData]);
 
   if (!activeDog) {
     return (
@@ -114,8 +135,7 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
         message="Add your dog to get started"
         actionLabel="Get Started"
         onAction={() => {
-          // User is already past onboarding - navigate to settings to add dog
-          navigation.navigate('Settings' as never);
+          navigation.getParent()?.navigate('Settings');
         }}
       />
     );
@@ -135,14 +155,46 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
             <Text style={styles.dogName}>{activeDog.name}</Text>
           </View>
           <View style={styles.headerRight}>
-            <StatusBadge
-              label={isConnected ? 'Live' : 'Offline'}
-              variant={isConnected ? 'success' : 'default'}
-              size="sm"
-              dot={isConnected}
-            />
+            <TouchableOpacity
+              style={styles.accountButton}
+              onPress={() => navigation.getParent()?.navigate('Settings')}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="person-circle-outline" size={32} color={colors.text.secondary} />
+            </TouchableOpacity>
           </View>
         </View>
+
+        {/* All Dogs */}
+        <Card variant="default" padding="md" style={styles.dogsCard}>
+          <Text style={styles.sectionTitle}>Your Dogs ({dogs.length})</Text>
+          {dogs.map((dog) => (
+            <TouchableOpacity
+              key={dog.id}
+              style={[
+                styles.dogRow,
+                dog.id === activeDogId && styles.dogRowActive,
+              ]}
+              onPress={() => useDogStore.getState().setActiveDog(dog.id)}
+              activeOpacity={0.7}
+            >
+              <Ionicons
+                name={dog.id === activeDogId ? 'paw' : 'paw-outline'}
+                size={16}
+                color={dog.id === activeDogId ? colors.primary.DEFAULT : colors.text.tertiary}
+              />
+              <Text
+                style={[
+                  styles.dogNameText,
+                  dog.id === activeDogId && styles.dogNameTextActive,
+                ]}
+              >
+                {dog.name}
+              </Text>
+              <Text style={styles.dogBreed}>{dog.breed}</Text>
+            </TouchableOpacity>
+          ))}
+        </Card>
 
         {/* Primary Metrics Row */}
         <View style={styles.metricsRow}>
@@ -262,7 +314,13 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
     marginTop: 2,
   },
-  headerRight: {},
+  headerRight: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  accountButton: {
+    padding: 4,
+  },
   metricsRow: {
     flexDirection: 'row',
     gap: spacing.md,
@@ -376,5 +434,33 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
     fontWeight: '500',
     flex: 1,
+  },
+  dogsCard: {
+    marginBottom: spacing.md,
+  },
+  dogRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: borderRadius.lg,
+    marginBottom: spacing.xs,
+  },
+  dogRowActive: {
+    backgroundColor: colors.primary.DEFAULT + '12',
+  },
+  dogNameText: {
+    ...typography.styles.bodyMD,
+    color: colors.text.primary,
+    marginLeft: spacing.sm,
+    flex: 1,
+  },
+  dogNameTextActive: {
+    fontWeight: '600',
+    color: colors.primary.DEFAULT,
+  },
+  dogBreed: {
+    ...typography.styles.caption,
+    color: colors.text.tertiary,
   },
 });

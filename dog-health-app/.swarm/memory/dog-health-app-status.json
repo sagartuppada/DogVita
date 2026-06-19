@@ -29,7 +29,6 @@
     "JAVA_HOME": "C:\\Program Files\\Android\\Android Studio\\jbr",
     "ANDROID_HOME": "C:\\Users\\User\\AppData\\Local\\Android\\Sdk",
     "build_command": "$env:ANDROID_HOME='C:\\Users\\User\\AppData\\Local\\Android\\Sdk'; .\\gradlew.bat app:assembleDebug --no-daemon -PreactNativeArchitectures=x86_64",
-    "metro_command": "cd dog-health-app && npx react-native start --reset-cache",
     "git_commit": "2805fb1 (104 files, 17,924 lines)"
   },
   "next_steps": [

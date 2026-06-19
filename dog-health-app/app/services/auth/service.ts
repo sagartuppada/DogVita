@@ -1,17 +1,23 @@
 /**
- * Authentication service for phone + OTP flow
- * Includes TEST MODE for local development (OTP: 123456)
+ * Authentication service — email+password + phone+OTP
+ * All methods call Supabase directly — no test mode bypass
  */
 
-import { supabase, isSupabaseConfigured } from '../api/supabase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from '../api/supabase';
 import { AuthUser, AuthSession } from '../../types';
 
-const TEST_MODE = !isSupabaseConfigured() || process.env.NODE_ENV === 'development';
-const TEST_OTP = '123456';
+const STORE_KEYS = [
+  'dog-storage',
+  'health-storage',
+  'alert-storage',
+  'tracking-storage',
+  'ble-storage',
+  'settings-storage',
+];
 
 class AuthService {
   private static instance: AuthService;
-  private testUser: AuthUser | null = null;
 
   private constructor() {}
 
@@ -22,12 +28,63 @@ class AuthService {
     return AuthService.instance;
   }
 
-  async sendOTP(phone: string): Promise<{ success: boolean; error?: string }> {
-    if (TEST_MODE) {
-      console.log('[TEST MODE] OTP would be sent to:', phone, '(mock success)');
-      return { success: true };
-    }
+  async signUpWithEmail(email: string, password: string): Promise<{ session?: AuthSession; error?: string }> {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
 
+      if (error) {
+        return { error: error.message };
+      }
+
+      if (data.session) {
+        const session: AuthSession = {
+          accessToken: data.session.access_token,
+          refreshToken: data.session.refresh_token,
+          expiresAt: data.session.expires_at || 0,
+          expiresIn: data.session.expires_in || 0,
+          user: this.mapUser(data.session.user),
+        };
+        return { session };
+      }
+
+      return { error: 'Check your email for a confirmation link' };
+    } catch (err) {
+      return { error: (err as Error).message };
+    }
+  }
+
+  async signInWithEmail(email: string, password: string): Promise<{ session?: AuthSession; error?: string }> {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        return { error: error.message };
+      }
+
+      if (data.session) {
+        const session: AuthSession = {
+          accessToken: data.session.access_token,
+          refreshToken: data.session.refresh_token,
+          expiresAt: data.session.expires_at || 0,
+          expiresIn: data.session.expires_in || 0,
+          user: this.mapUser(data.session.user),
+        };
+        return { session };
+      }
+
+      return { error: 'No session returned' };
+    } catch (err) {
+      return { error: (err as Error).message };
+    }
+  }
+
+  async sendOTP(phone: string): Promise<{ success: boolean; error?: string }> {
     try {
       const { error } = await supabase.auth.signInWithOtp({
         phone,
@@ -45,29 +102,6 @@ class AuthService {
   }
 
   async verifyOTP(phone: string, token: string): Promise<{ session?: AuthSession; error?: string }> {
-    if (TEST_MODE) {
-      if (token === TEST_OTP) {
-        console.log('[TEST MODE] OTP verified successfully');
-        const testUser: AuthUser = {
-          id: 'test-user-001',
-          phone: phone,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          lastLoginAt: new Date().toISOString(),
-        };
-        this.testUser = testUser;
-        const session: AuthSession = {
-          accessToken: 'test-token-' + Date.now(),
-          refreshToken: 'test-refresh-' + Date.now(),
-          expiresAt: Date.now() + 3600000,
-          expiresIn: 3600,
-          user: testUser,
-        };
-        return { session };
-      }
-      return { error: 'Invalid OTP. Use 123456 in test mode.' };
-    }
-
     try {
       const { data, error } = await supabase.auth.verifyOtp({
         phone,
@@ -101,16 +135,35 @@ class AuthService {
   }
 
   async signOut(): Promise<{ success: boolean; error?: string }> {
-    if (TEST_MODE) {
-      this.testUser = null;
-      return { success: true };
-    }
-
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
         return { success: false, error: error.message };
       }
+      await AsyncStorage.multiRemove(STORE_KEYS);
+
+      // Reset Zustand stores to initial state in memory
+      // AsyncStorage is cleared but Zustand keeps old state in memory
+      const { useSettingsStore } = require('../../store/settingsStore');
+      const { useDogStore } = require('../../store/dogStore');
+      const { useAlertStore } = require('../../store/alertStore');
+      const { useTrackingStore } = require('../../store/trackingStore');
+      const { useHealthStore } = require('../../store/healthStore');
+
+      useSettingsStore.setState({
+        hasCompletedOnboarding: false,
+        isFirstLaunch: true,
+      });
+      useDogStore.setState({ dogs: [], activeDogId: null });
+      useAlertStore.setState({ alerts: [] });
+      useHealthStore.setState({
+        heartRateHistory: [],
+        temperatureHistory: [],
+        activityHistory: [],
+        currentMetrics: {},
+      });
+      useTrackingStore.setState({ locations: [], geofences: [] });
+
       return { success: true };
     } catch (err) {
       return { success: false, error: (err as Error).message };
@@ -118,10 +171,6 @@ class AuthService {
   }
 
   async getCurrentUser(): Promise<AuthUser | null> {
-    if (TEST_MODE) {
-      return this.testUser;
-    }
-
     try {
       const { data } = await supabase.auth.getUser();
       if (data.user) {
@@ -134,19 +183,6 @@ class AuthService {
   }
 
   async getSession(): Promise<AuthSession | null> {
-    if (TEST_MODE) {
-      if (this.testUser) {
-        return {
-          accessToken: 'test-token-' + Date.now(),
-          refreshToken: 'test-refresh-' + Date.now(),
-          expiresAt: Date.now() + 3600000,
-          expiresIn: 3600,
-          user: this.testUser,
-        };
-      }
-      return null;
-    }
-
     try {
       const { data } = await supabase.auth.getSession();
       if (data.session) {
@@ -165,13 +201,6 @@ class AuthService {
   }
 
   onAuthStateChange(callback: (user: AuthUser | null) => void): () => void {
-    if (TEST_MODE) {
-      if (this.testUser) {
-        setTimeout(() => callback(this.testUser), 0);
-      }
-      return () => {};
-    }
-
     const { data } = supabase.auth.onAuthStateChange((_, session) => {
       if (session?.user) {
         callback(this.mapUser(session.user));
@@ -188,6 +217,7 @@ class AuthService {
   private mapUser(user: import('@supabase/supabase-js').User): AuthUser {
     return {
       id: user.id,
+      email: user.email || '',
       phone: user.phone || '',
       createdAt: user.created_at,
       updatedAt: user.updated_at || user.created_at,
@@ -197,10 +227,6 @@ class AuthService {
   }
 
   async refreshSession(): Promise<{ success: boolean; error?: string }> {
-    if (TEST_MODE) {
-      return { success: true };
-    }
-
     try {
       const { error } = await supabase.auth.refreshSession();
       if (error) {
@@ -210,10 +236,6 @@ class AuthService {
     } catch (err) {
       return { success: false, error: (err as Error).message };
     }
-  }
-
-  isTestMode(): boolean {
-    return TEST_MODE;
   }
 }
 

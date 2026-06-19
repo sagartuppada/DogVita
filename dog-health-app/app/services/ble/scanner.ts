@@ -5,9 +5,11 @@
 import { BleManager, Device } from 'react-native-ble-plx';
 import { Platform, PermissionsAndroid } from 'react-native';
 import { BLEDevice } from '../../types';
+// @ts-ignore - react-native-dotenv module
+import { EXPO_PUBLIC_BLE_SERVICE_UUID } from '@env';
 
 const SERVICE_UUIDS = [
-  process.env.EXPO_PUBLIC_BLE_SERVICE_UUID || '12345678-1234-1234-1234-123456789abc',
+  EXPO_PUBLIC_BLE_SERVICE_UUID || '12345678-1234-1234-1234-123456789abc',
 ];
 
 const SCAN_TIMEOUT = 10000; // 10 seconds

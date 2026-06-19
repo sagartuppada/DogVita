@@ -14,6 +14,8 @@ import {
   BatteryData,
   LocationData,
 } from '../types';
+import { healthService } from '../services/api/health';
+import { isSupabaseConfigured } from '../services/api/supabase';
 
 interface HealthState {
   currentMetrics: Record<string, HealthMetrics>;
@@ -37,6 +39,10 @@ interface HealthActions {
   clearHistory: (dogId: string) => void;
   getLatestHeartRate: (dogId: string) => HeartRateData | null;
   getLatestTemperature: (dogId: string) => TemperatureData | null;
+  fetchHeartRateHistory: (dogId: string) => Promise<void>;
+  fetchTemperatureHistory: (dogId: string) => Promise<void>;
+  fetchActivityHistory: (dogId: string) => Promise<void>;
+  fetchLatestMetrics: (dogId: string) => Promise<void>;
   loadDemoData: () => void;
 }
 
@@ -147,6 +153,64 @@ export const useHealthStore = create<HealthStore>()(
       getLatestTemperature: (dogId) => {
         const { temperatureHistory } = get();
         return temperatureHistory[temperatureHistory.length - 1] || null;
+      },
+
+      fetchHeartRateHistory: async (dogId) => {
+        if (!isSupabaseConfigured()) return;
+        try {
+          const history = await healthService.getHeartRateHistory(dogId);
+          if (history.length > 0) {
+            set({ heartRateHistory: history });
+          }
+        } catch (error) {
+          console.warn('[healthStore.fetchHeartRateHistory] Supabase fetch failed:', (error as Error).message);
+        }
+      },
+
+      fetchTemperatureHistory: async (dogId) => {
+        if (!isSupabaseConfigured()) return;
+        try {
+          const history = await healthService.getTemperatureHistory(dogId);
+          if (history.length > 0) {
+            set({ temperatureHistory: history });
+          }
+        } catch (error) {
+          console.warn('[healthStore.fetchTemperatureHistory] Supabase fetch failed:', (error as Error).message);
+        }
+      },
+
+      fetchActivityHistory: async (dogId) => {
+        if (!isSupabaseConfigured()) return;
+        try {
+          const history = await healthService.getActivityHistory(dogId);
+          if (history.length > 0) {
+            set({ activityHistory: history });
+          }
+        } catch (error) {
+          console.warn('[healthStore.fetchActivityHistory] Supabase fetch failed:', (error as Error).message);
+        }
+      },
+
+      fetchLatestMetrics: async (dogId) => {
+        if (!isSupabaseConfigured()) return;
+        try {
+          const latest = await healthService.getLatestMetrics(dogId);
+          if (latest) {
+            set((state) => ({
+              currentMetrics: {
+                ...state.currentMetrics,
+                [dogId]: {
+                  dogId,
+                  timestamp: latest.timestamp ?? new Date().toISOString(),
+                  ...latest,
+                },
+              },
+              lastUpdated: new Date().toISOString(),
+            }));
+          }
+        } catch (error) {
+          console.warn('[healthStore.fetchLatestMetrics] Supabase fetch failed:', (error as Error).message);
+        }
       },
 
       loadDemoData: () => {

@@ -138,19 +138,7 @@ export default function PairDeviceScreen({
             size="lg"
           />
         )}
-        <Button
-          title="Skip for Now"
-          onPress={() => {
-            useSettingsStore.getState().setOnboardingComplete();
-            const rootNav = navigation.getParent()?.getParent();
-            if (rootNav) {
-              rootNav.navigate('Main');
-            }
-          }}
-          variant="ghost"
-          size="md"
-          style={styles.skipBtn}
-        />
+
       </View>
     </View>
   );
@@ -234,7 +222,5 @@ const styles = StyleSheet.create({
   footer: {
     paddingHorizontal: spacing.xxl,
   },
-  skipBtn: {
-    marginTop: spacing.md,
-  },
+
 });

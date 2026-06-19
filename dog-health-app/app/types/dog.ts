@@ -6,10 +6,10 @@ export interface Dog {
   id: string;
   name: string;
   breed: string;
-  birthDate: string;
-  weight: number;
-  weightUnit: 'kg' | 'lb';
-  gender: 'male' | 'female';
+  birthDate?: string;
+  weight?: number;
+  weightUnit?: 'kg' | 'lb';
+  gender?: 'male' | 'female';
   imageUrl?: string;
   microchipId?: string;
   vetInfo?: VetInfo;
@@ -67,10 +67,10 @@ export interface DogBreed {
 export interface CreateDogInput {
   name: string;
   breed: string;
-  birthDate: string;
-  weight: number;
-  weightUnit: 'kg' | 'lb';
-  gender: 'male' | 'female';
+  birthDate?: string;
+  weight?: number;
+  weightUnit?: 'kg' | 'lb';
+  gender?: 'male' | 'female';
   imageUrl?: string;
   microchipId?: string;
 }

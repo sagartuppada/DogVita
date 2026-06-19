@@ -9,30 +9,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button } from '../../components/common';
 import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
 import type { OnboardingScreenProps } from '../../navigation/types';
-import { useSettingsStore } from '../../store/settingsStore';
-import { useDogStore } from '../../store/dogStore';
-import { useHealthStore } from '../../store/healthStore';
-import { useBLEStore } from '../../store/bleStore';
-import { useTrackingStore } from '../../store/trackingStore';
-import { useAlertStore } from '../../store/alertStore';
 
 export default function WelcomeScreen({ navigation }: OnboardingScreenProps<'Welcome'>) {
   const insets = useSafeAreaInsets();
-  const setOnboardingComplete = useSettingsStore((s) => s.setOnboardingComplete);
-  const loadDogDemo = useDogStore((s) => s.loadDemoData);
-  const loadHealthDemo = useHealthStore((s) => s.loadDemoData);
-  const loadBLEDemo = useBLEStore((s) => s.loadDemoData);
-  const loadTrackingDemo = useTrackingStore((s) => s.loadDemoData);
-  const loadAlertsDemo = useAlertStore((s) => s.loadDemoData);
-
-  const handleSkip = () => {
-    loadDogDemo();
-    loadHealthDemo();
-    loadBLEDemo();
-    loadTrackingDemo();
-    loadAlertsDemo();
-    setOnboardingComplete();
-  };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
@@ -82,12 +61,16 @@ export default function WelcomeScreen({ navigation }: OnboardingScreenProps<'Wel
       <View style={styles.cta}>
         <Button
           title="Get Started"
-          onPress={() => navigation.navigate('AddPhone')}
+          onPress={() => navigation.navigate('SignUp')}
           variant="primary"
           size="lg"
         />
-        <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
-          <Text style={styles.skipText}>Skip for now</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Login')}
+          style={styles.signInLink}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.signInText}>Already have an account? Sign In</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -158,13 +141,13 @@ const styles = StyleSheet.create({
   cta: {
     paddingBottom: spacing.xl,
   },
-  skipButton: {
+  signInLink: {
     alignItems: 'center',
-    paddingVertical: spacing.md,
-    marginTop: spacing.sm,
+    marginTop: spacing.lg,
   },
-  skipText: {
+  signInText: {
     ...typography.styles.bodyMD,
-    color: colors.text.secondary,
+    color: colors.primary.dark,
+    fontWeight: '500',
   },
 });

@@ -69,6 +69,8 @@ export interface LocationData {
 
 export interface Geofence {
   id: string;
+  dogId: string;
+  ownerId: string;
   name: string;
   center: {
     latitude: number;
@@ -77,6 +79,8 @@ export interface Geofence {
   radius: number;
   isActive: boolean;
   alertsEnabled: boolean;
+  createdAt?: string;
+  timestamp?: string;
 }
 
 export interface GeofenceAlert {

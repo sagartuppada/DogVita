@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-06-05T12:36:20.972Z",
+  "projectRoot": "C:\\Users\\User\\Desktop\\Santo\\DogVita",
+  "structure": {
+    "hasPackageJson": false,
+    "hasTsConfig": false,
+    "hasClaudeConfig": true,
+    "hasClaudeFlow": true
+  },
+  "scannedAt": 1780662980973
+}

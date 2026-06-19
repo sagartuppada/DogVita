@@ -47,6 +47,7 @@ export interface RealtimeSubscription {
 // Auth types
 export interface AuthUser {
   id: string;
+  email: string;
   phone: string;
   createdAt: string;
   updatedAt: string;

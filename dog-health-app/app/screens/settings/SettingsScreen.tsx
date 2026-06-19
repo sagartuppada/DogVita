@@ -7,9 +7,10 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'rea
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSettingsStore } from '../../store/settingsStore';
+import { authService } from '../../services/auth/service';
 import { Card } from '../../components/common';
 import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
-import type { SettingsTabScreenProps } from '../../navigation/types';
+import type { SettingsScreenProps } from '../../navigation/types';
 
 const SettingRow: React.FC<{
   icon: string;
@@ -35,10 +36,25 @@ const SettingRow: React.FC<{
   </TouchableOpacity>
 );
 
-export default function SettingsScreen({ navigation }: SettingsTabScreenProps<'Settings'>) {
+export default function SettingsScreen({ navigation }: SettingsScreenProps) {
   const insets = useSafeAreaInsets();
   const theme = useSettingsStore((s) => s.theme);
   const setTheme = useSettingsStore((s) => s.setTheme);
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerTitle: 'Settings',
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="chevron-back" size={24} color={colors.text.primary} />
+        </TouchableOpacity>
+      ),
+      headerStyle: { backgroundColor: colors.background.primary },
+      headerShadowVisible: false,
+    });
+  }, [navigation, colors]);
+
   const handleLogout = () => {
     Alert.alert(
       'Log Out',
@@ -48,8 +64,8 @@ export default function SettingsScreen({ navigation }: SettingsTabScreenProps<'S
         {
           text: 'Log Out',
           style: 'destructive',
-          onPress: () => {
-            useSettingsStore.getState().resetSettings();
+          onPress: async () => {
+            await authService.signOut();
           },
         },
       ]
@@ -87,13 +103,6 @@ export default function SettingsScreen({ navigation }: SettingsTabScreenProps<'S
 
         {/* Preferences */}
         <Card variant="default" padding="none" style={styles.section}>
-          <SettingRow
-            icon="notifications"
-            iconColor={colors.status.warning}
-            label="Notifications"
-            onPress={() => Alert.alert('Notifications', 'Coming soon')}
-          />
-          <View style={styles.separator} />
           <SettingRow
             icon="location"
             iconColor={colors.status.success}
@@ -187,6 +196,9 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: spacing.page,
     paddingTop: spacing.lg,
+  },
+  backButton: {
+    paddingRight: spacing.md,
   },
   header: {
     marginBottom: spacing.xxl,

@@ -6,6 +6,8 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HealthAlert, AlertType, AlertSeverity } from '../types';
+import { alertsService } from '../services/api/alerts';
+import { supabase, isSupabaseConfigured } from '../services/api/supabase';
 
 interface AlertState {
   alerts: HealthAlert[];
@@ -37,6 +39,7 @@ interface AlertActions {
   getAlertsByDog: (dogId: string) => HealthAlert[];
   getAlertsByType: (type: AlertType) => HealthAlert[];
   getUnacknowledgedAlerts: () => HealthAlert[];
+  fetchAlerts: () => Promise<void>;
   loadDemoData: () => void;
 }
 
@@ -142,6 +145,27 @@ export const useAlertStore = create<AlertStore>()(
       getUnacknowledgedAlerts: () => {
         const { alerts } = get();
         return alerts.filter((a) => !a.acknowledged);
+      },
+
+      fetchAlerts: async () => {
+        if (!isSupabaseConfigured()) return;
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const alerts = await alertsService.getAlerts(user.id);
+            if (alerts.length > 0) {
+              set({
+                alerts,
+                unacknowledgedCount: alerts.filter((a) => !a.acknowledged).length,
+                criticalAlerts: alerts.filter(
+                  (a) => a.severity === 'critical' && !a.acknowledged
+                ),
+              });
+            }
+          }
+        } catch (error) {
+          console.warn('[alertStore.fetchAlerts] Supabase fetch failed:', (error as Error).message);
+        }
       },
 
       loadDemoData: () => {

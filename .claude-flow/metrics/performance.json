@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-06-05T12:36:20.992Z",
+  "mode": "headless",
+  "workerType": "optimize",
+  "model": "sonnet",
+  "durationMs": 11,
+  "executionId": "optimize_1780662980981_isf2pr",
+  "success": false,
+  "findings": null,
+  "rawOutputPreview": "",
+  "rawOutputLength": 0
+}

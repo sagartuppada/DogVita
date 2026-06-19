@@ -2,14 +2,14 @@
  * AlertsListScreen - Alert history list
  */
 
-import React, { useMemo } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import React, { useMemo, useEffect, useCallback } from 'react';
+import { View, Text, FlatList, StyleSheet, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAlertStore } from '../../store/alertStore';
 import { Card, EmptyState } from '../../components/common';
 import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
-import type { AlertsTabScreenProps } from '../../navigation/types';
+import type { ChatbotTabScreenProps } from '../../navigation/types';
 
 const getAlertIcon = (type: string) => {
   switch (type) {
@@ -63,9 +63,20 @@ const getAlertColor = (severity: string) => {
   }
 };
 
-export default function AlertsListScreen({}: AlertsTabScreenProps<'Alerts'>) {
+export default function AlertsListScreen({}: ChatbotTabScreenProps<'Chatbot'>) {
   const insets = useSafeAreaInsets();
   const alerts = useAlertStore((s) => s.alerts);
+  const fetchAlerts = useAlertStore((s) => s.fetchAlerts);
+
+  useEffect(() => {
+    fetchAlerts();
+  }, [fetchAlerts]);
+
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchAlerts().finally(() => setRefreshing(false));
+  }, [fetchAlerts]);
 
   const sortedAlerts = useMemo(
     () => [...alerts].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
@@ -108,6 +119,7 @@ export default function AlertsListScreen({}: AlertsTabScreenProps<'Alerts'>) {
         renderItem={renderAlert}
         contentContainerStyle={[styles.list, { paddingBottom: 100 }]}
         showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary.DEFAULT} />}
         ListEmptyComponent={
           <EmptyState
             icon="notifications-off-outline"

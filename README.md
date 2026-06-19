@@ -66,7 +66,6 @@ cp .env.example .env        # configure Supabase + BLE UUIDs
 ### Run
 
 ```bash
-npx react-native start --reset-cache    # start Metro
 npx react-native run-android            # build + launch on device/emulator
 ```
 
@@ -74,7 +73,6 @@ npx react-native run-android            # build + launch on device/emulator
 
 | Command | Description |
 |---------|-------------|
-| `npm start` | Start Metro dev server |
 | `npm run android` | Build and run on Android |
 | `npm run typecheck` | TypeScript type checking |
 | `npm run lint` | ESLint |

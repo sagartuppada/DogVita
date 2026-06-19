@@ -4,8 +4,10 @@
 
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import { ApiResponse, ApiError } from '../../types';
+// @ts-ignore - react-native-dotenv module
+import { EXPO_PUBLIC_API_URL } from '@env';
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://api.doghealthapp.com';
+const BASE_URL = EXPO_PUBLIC_API_URL || 'https://api.doghealthapp.com';
 
 class APIClient {
   private client: AxiosInstance;

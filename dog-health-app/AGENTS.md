@@ -6,7 +6,6 @@ React Native (bare, no Expo) TypeScript app for monitoring a BLE dog-collar (ESP
 
 ```bash
 npm install
-npx react-native start --reset-cache  # Metro dev server
 npx react-native run-android          # Build + run on Android
 npm run typecheck                      # tsc --noEmit
 npm run lint                           # ESLint
@@ -30,13 +29,13 @@ The app intentionally bypasses Supabase when `isSupabaseConfigured()` is false (
 
 `WelcomeScreen` and `OTPVerificationScreen` display a yellow "TEST MODE" banner so users know.
 
-If you want real Supabase auth, fill in `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` in `.env` and restart Metro.
+If you want real Supabase auth, fill in `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` in `.env` and restart the app.
 
 ## Path Aliases — Use Relative Imports
 
-`@components/*`, `@screens/*`, `@services/*`, `@hooks/*`, `@store/*`, `@types/*`, `@theme/*`, `@config/*`, `@navigation/*` are still **defined** in `tsconfig.json`, `babel.config.js`, and `metro.config.js` — but the source files all use **relative** imports.
+`@components/*`, `@screens/*`, `@services/*`, `@hooks/*`, `@store/*`, `@types/*`, `@theme/*`, `@config/*`, `@navigation/*` are still **defined** in `tsconfig.json` and `babel.config.js` — but the source files all use **relative** imports.
 
-**Use relative imports for any new code.** The aliases are dead config kept for backward compat. Re-enabling them causes a Metro resolution error in production builds (this was a real bug — see commit history). Safe re-enable requires changes to all three config files plus reverting ~50 imports.
+**Use relative imports for any new code.** The aliases are dead config kept for backward compat. Re-enabling them causes a resolution error in production builds (this was a real bug — see commit history). Safe re-enable requires changes to both config files plus reverting ~50 imports.
 
 ## Android Build Prerequisites
 

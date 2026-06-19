@@ -16,7 +16,7 @@ interface DogCardProps {
 }
 
 export const DogCard: React.FC<DogCardProps> = ({ dog, onPress, isActive = false }) => {
-  const age = new Date().getFullYear() - new Date(dog.birthDate).getFullYear();
+  const age = dog.birthDate ? new Date().getFullYear() - new Date(dog.birthDate).getFullYear() : null;
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
@@ -34,18 +34,24 @@ export const DogCard: React.FC<DogCardProps> = ({ dog, onPress, isActive = false
           </View>
         </View>
         <View style={styles.stats}>
-          <View style={styles.stat}>
-            <Ionicons name="calendar-outline" size={16} color={colors.text.secondary} />
-            <Text style={styles.statText}>{age} years</Text>
-          </View>
-          <View style={styles.stat}>
-            <Ionicons name="fitness-outline" size={16} color={colors.text.secondary} />
-            <Text style={styles.statText}>{dog.weight} {dog.weightUnit}</Text>
-          </View>
-          <View style={styles.stat}>
-            <Ionicons name={dog.gender === 'male' ? 'male' : 'female'} size={16} color={colors.text.secondary} />
-            <Text style={styles.statText}>{dog.gender}</Text>
-          </View>
+          {age != null && (
+            <View style={styles.stat}>
+              <Ionicons name="calendar-outline" size={16} color={colors.text.secondary} />
+              <Text style={styles.statText}>{age} years</Text>
+            </View>
+          )}
+          {dog.weight != null && (
+            <View style={styles.stat}>
+              <Ionicons name="fitness-outline" size={16} color={colors.text.secondary} />
+              <Text style={styles.statText}>{dog.weight} {dog.weightUnit}</Text>
+            </View>
+          )}
+          {dog.gender && (
+            <View style={styles.stat}>
+              <Ionicons name={dog.gender === 'male' ? 'male' : 'female'} size={16} color={colors.text.secondary} />
+              <Text style={styles.statText}>{dog.gender}</Text>
+            </View>
+          )}
         </View>
       </Card>
     </TouchableOpacity>

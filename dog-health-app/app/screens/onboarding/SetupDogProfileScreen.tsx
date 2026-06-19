@@ -1,5 +1,5 @@
 /**
- * SetupDogProfileScreen - Dog profile creation
+ * SetupDogProfileScreen - Dog profile creation (saves to Supabase)
  */
 
 import React, { useState } from 'react';
@@ -9,12 +9,13 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Image,
+  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button, Input, Header } from '../../components/common';
 import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import { useDogStore } from '../../store/dogStore';
 import type { OnboardingScreenProps } from '../../navigation/types';
 
 const BREEDS = [
@@ -31,8 +32,33 @@ export default function SetupDogProfileScreen({
   const [age, setAge] = useState('');
   const [weight, setWeight] = useState('');
   const [showBreedPicker, setShowBreedPicker] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const isValid = name.trim().length > 0 && breed.length > 0;
+
+  const addDog = useDogStore((s) => s.addDog);
+
+  const handleContinue = async () => {
+    if (!isValid) return;
+    setLoading(true);
+
+    try {
+      const birthDate = age ? calculateBirthDate(parseInt(age)) : undefined;
+
+      await addDog({
+        name: name.trim(),
+        breed,
+        birthDate,
+        weight: weight ? parseFloat(weight) : undefined,
+        weightUnit: 'kg',
+      });
+
+      navigation.navigate('PairDevice');
+    } catch (err) {
+      Alert.alert('Error', `Failed to save dog profile: ${(err as Error).message}`);
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -138,14 +164,21 @@ export default function SetupDogProfileScreen({
       <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.lg }]}>
         <Button
           title="Continue"
-          onPress={() => navigation.navigate('PairDevice')}
+          onPress={handleContinue}
           variant="primary"
           size="lg"
           disabled={!isValid}
+          loading={loading}
         />
       </View>
     </View>
   );
+}
+
+function calculateBirthDate(ageYears: number): string {
+  const now = new Date();
+  now.setFullYear(now.getFullYear() - ageYears);
+  return now.toISOString().split('T')[0];
 }
 
 const styles = StyleSheet.create({

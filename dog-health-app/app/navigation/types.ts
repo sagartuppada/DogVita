@@ -9,6 +9,8 @@ import type { CompositeScreenProps } from '@react-navigation/native';
 
 export type OnboardingStackParamList = {
   Welcome: undefined;
+  SignUp: undefined;
+  Login: undefined;
   AddPhone: undefined;
   OTP: { phoneNumber: string };
   SetupDog: undefined;
@@ -19,13 +21,13 @@ export type MainTabParamList = {
   Dashboard: undefined;
   Health: undefined;
   Tracking: undefined;
-  Alerts: undefined;
-  Settings: undefined;
+  Chatbot: undefined;
 };
 
 export type RootStackParamList = {
   Onboarding: NavigatorScreenParams<OnboardingStackParamList>;
   Main: undefined;
+  Settings: undefined;
 };
 
 // Screen props types
@@ -41,11 +43,10 @@ export type HealthTabScreenProps<T extends keyof MainTabParamList> =
 export type TrackingTabScreenProps<T extends keyof MainTabParamList> =
   BottomTabScreenProps<MainTabParamList, T>;
 
-export type AlertsTabScreenProps<T extends keyof MainTabParamList> =
+export type ChatbotTabScreenProps<T extends keyof MainTabParamList> =
   BottomTabScreenProps<MainTabParamList, T>;
 
-export type SettingsTabScreenProps<T extends keyof MainTabParamList> =
-  BottomTabScreenProps<MainTabParamList, T>;
+export type SettingsScreenProps = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
 declare global {
   namespace ReactNavigation {
