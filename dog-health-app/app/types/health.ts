@@ -132,3 +132,14 @@ export interface HealthTrend {
   max: number;
   trend: 'increasing' | 'decreasing' | 'stable';
 }
+
+export interface Route {
+  id: string;
+  dogId: string;
+  name: string;
+  startTime: string;
+  endTime?: string;
+  locations: LocationData[];
+  totalDistance: number;
+  duration: number;
+}

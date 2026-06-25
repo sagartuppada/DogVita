@@ -1,6 +1,26 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 import type { Dog } from '../../types';
 
+async function ensureProfileExists(userId: string): Promise<boolean> {
+  const { data: existing } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', userId)
+    .single();
+
+  if (existing) return true;
+
+  const { error } = await supabase
+    .from('profiles')
+    .insert({ id: userId });
+
+  if (error) {
+    console.warn('[dogsService.ensureProfileExists] Failed to create profile:', error.message);
+    return false;
+  }
+  return true;
+}
+
 export const dogsService = {
   async getDogs(userId: string): Promise<Dog[]> {
     if (!isSupabaseConfigured()) return [];
@@ -47,6 +67,8 @@ export const dogsService = {
     imageUrl?: string;
   }): Promise<Dog | null> {
     if (!isSupabaseConfigured()) return null;
+
+    await ensureProfileExists(input.ownerId);
 
     const insertData: Record<string, unknown> = {
       owner_id: input.ownerId,

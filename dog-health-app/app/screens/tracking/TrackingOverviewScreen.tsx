@@ -1,24 +1,54 @@
 /**
- * TrackingOverviewScreen - GPS tracking with map and floating FABs
+ * TrackingOverviewScreen - GPS tracking with native map, route recording, and geofence management
  */
 
-import React, { useMemo, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useMemo, useEffect, useCallback } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDogStore } from '../../store/dogStore';
 import { useTrackingStore } from '../../store/trackingStore';
 import { Card, StatusBadge, EmptyState } from '../../components/common';
+import { DogMap } from '../../components/maps';
+import { useLocation } from '../../hooks/useLocation';
 import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
 import type { TrackingTabScreenProps } from '../../navigation/types';
-import { OfflineMapView } from '../../components/maps/OfflineMapView';
 
-export default function TrackingOverviewScreen({}: TrackingTabScreenProps<'Tracking'>) {
+const formatDuration = (seconds: number) => {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+};
+
+const formatDistance = (meters: number) => {
+  if (meters >= 1000) return `${(meters / 1000).toFixed(2)} km`;
+  return `${Math.round(meters)} m`;
+};
+
+export default function TrackingOverviewScreen({ navigation }: TrackingTabScreenProps<'Tracking'>) {
   const insets = useSafeAreaInsets();
   const dogs = useDogStore((s) => s.dogs);
   const activeDogId = useDogStore((s) => s.activeDogId);
   const currentLocation = useTrackingStore((s) => s.currentLocation);
   const isTracking = useTrackingStore((s) => s.isTracking);
+  const activeRoute = useTrackingStore((s) => s.activeRoute);
+  const geofences = useTrackingStore((s) => s.geofences);
+  const totalDistance = useTrackingStore((s) => s.totalDistance);
+  const locationHistory = useTrackingStore((s) => s.locationHistory);
+
+  const {
+    startRouteRecording,
+    stopRouteRecording,
+    startTracking,
+    stopTracking,
+  } = useLocation();
 
   const currentLatitude = currentLocation?.latitude ?? null;
   const currentLongitude = currentLocation?.longitude ?? null;
@@ -35,6 +65,58 @@ export default function TrackingOverviewScreen({}: TrackingTabScreenProps<'Track
     }
   }, [currentLocation]);
 
+  useEffect(() => {
+    if (activeDogId) {
+      useTrackingStore.getState().fetchGeofences(activeDogId);
+      useTrackingStore.getState().fetchRoutes(activeDogId);
+    }
+  }, [activeDogId]);
+
+  const handleStartRoute = useCallback(() => {
+    if (!activeDogId) return;
+    const routeName = `${activeDog?.name || 'Dog'} Walk`;
+    startRouteRecording(activeDogId, routeName);
+    Alert.alert('Route Started', `Recording: ${routeName}`);
+  }, [activeDogId, activeDog, startRouteRecording]);
+
+  const handleEndRoute = useCallback(() => {
+    const route = stopRouteRecording();
+    if (route) {
+      Alert.alert(
+        'Route Completed',
+        `${route.name}\nDistance: ${formatDistance(route.totalDistance)}\nDuration: ${formatDuration(route.duration)}`,
+        [
+          {
+            text: 'View Route',
+            onPress: () => navigation.getParent()?.navigate('RouteDetail', { routeId: route.id }),
+          },
+          { text: 'OK', style: 'default' },
+        ]
+      );
+    }
+  }, [stopRouteRecording, navigation]);
+
+  const handleToggleTracking = useCallback(() => {
+    if (isTracking) {
+      stopTracking();
+    } else {
+      startTracking();
+    }
+  }, [isTracking, startTracking, stopTracking]);
+
+  const handleNavigateToRoutes = useCallback(() => {
+    navigation.getParent()?.navigate('RouteHistory');
+  }, [navigation]);
+
+  const handleNavigateToGeofences = useCallback(() => {
+    navigation.getParent()?.navigate('GeofenceManager');
+  }, [navigation]);
+
+  const dogGeofences = useMemo(() => {
+    if (!activeDogId) return [];
+    return geofences.filter((g) => g.dogId === activeDogId);
+  }, [geofences, activeDogId]);
+
   if (!activeDog) {
     return (
       <EmptyState
@@ -47,27 +129,16 @@ export default function TrackingOverviewScreen({}: TrackingTabScreenProps<'Track
 
   const hasLocation = currentLatitude !== null && currentLongitude !== null;
 
-  const handleLocate = () => {
-    if (currentLatitude !== null && currentLongitude !== null) {
-      // Pan map to current location (MapView ref would be needed for full implementation)
-      // For now, show an alert confirming location
-    }
-  };
-
-  const handleToggleTracking = () => {
-    useTrackingStore.getState().setTracking(!isTracking);
-  };
-
   return (
     <View style={styles.container}>
       {/* Map */}
       <View style={styles.mapContainer}>
         {hasLocation ? (
-          <OfflineMapView
-            latitude={currentLatitude!}
-            longitude={currentLongitude!}
-            latitudeDelta={0.01}
-            longitudeDelta={0.01}
+          <DogMap
+            location={currentLocation}
+            geofences={dogGeofences}
+            route={activeRoute}
+            followLocation={isTracking}
           />
         ) : (
           <View style={styles.mapPlaceholder}>
@@ -81,24 +152,41 @@ export default function TrackingOverviewScreen({}: TrackingTabScreenProps<'Track
           <TouchableOpacity
             style={[styles.fab, styles.fabSecondary]}
             activeOpacity={0.7}
-            onPress={handleLocate}
+            onPress={handleNavigateToRoutes}
           >
-            <Ionicons name="locate" size={20} color={colors.text.primary} />
+            <Ionicons name="list" size={20} color={colors.text.primary} />
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.fab, styles.fabPrimary]}
+            style={[styles.fab, styles.fabSecondary]}
             activeOpacity={0.7}
-            onPress={handleToggleTracking}
+            onPress={handleNavigateToGeofences}
           >
-            <Ionicons name={isTracking ? 'pause' : 'play'} size={22} color={colors.white} />
+            <Ionicons name="locate-outline" size={20} color={colors.text.primary} />
           </TouchableOpacity>
+          {activeRoute ? (
+            <TouchableOpacity
+              style={[styles.fab, styles.fabRecording]}
+              activeOpacity={0.7}
+              onPress={handleEndRoute}
+            >
+              <Ionicons name="stop" size={22} color={colors.white} />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[styles.fab, styles.fabPrimary]}
+              activeOpacity={0.7}
+              onPress={handleStartRoute}
+            >
+              <Ionicons name="play" size={22} color={colors.white} />
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Status Overlay */}
         <View style={[styles.statusOverlay, { top: insets.top + spacing.lg }]}>
           <StatusBadge
-            label={isTracking ? 'Tracking' : 'Paused'}
-            variant={isTracking ? 'success' : 'warning'}
+            label={activeRoute ? 'Recording' : isTracking ? 'Tracking' : 'Paused'}
+            variant={activeRoute ? 'error' : isTracking ? 'success' : 'warning'}
             size="md"
             dot
           />
@@ -108,9 +196,46 @@ export default function TrackingOverviewScreen({}: TrackingTabScreenProps<'Track
       {/* Info Card */}
       <Card variant="elevated" padding="lg" style={styles.infoCard}>
         <View style={styles.infoHeader}>
-          <Text style={styles.dogName}>{activeDog.name}</Text>
-          <Text style={styles.breed}>{activeDog.breed}</Text>
+          <View>
+            <Text style={styles.dogName}>{activeDog.name}</Text>
+            <Text style={styles.breed}>{activeDog.breed}</Text>
+          </View>
+          <View style={styles.headerActions}>
+            <TouchableOpacity
+              style={styles.headerActionBtn}
+              onPress={handleToggleTracking}
+              activeOpacity={0.7}
+            >
+              <Ionicons
+                name={isTracking ? 'pause-circle' : 'play-circle'}
+                size={28}
+                color={isTracking ? colors.status.warning : colors.status.success}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
+
+        {/* Active route stats */}
+        {activeRoute && (
+          <View style={styles.routeStatsBanner}>
+            <View style={styles.routeStat}>
+              <Text style={styles.routeStatValue}>{formatDistance(activeRoute.totalDistance)}</Text>
+              <Text style={styles.routeStatLabel}>Distance</Text>
+            </View>
+            <View style={styles.routeStatDivider} />
+            <View style={styles.routeStat}>
+              <Text style={styles.routeStatValue}>
+                {formatDuration(Math.floor((Date.now() - new Date(activeRoute.startTime).getTime()) / 1000))}
+              </Text>
+              <Text style={styles.routeStatLabel}>Duration</Text>
+            </View>
+            <View style={styles.routeStatDivider} />
+            <View style={styles.routeStat}>
+              <Text style={styles.routeStatValue}>{activeRoute.locations.length}</Text>
+              <Text style={styles.routeStatLabel}>Points</Text>
+            </View>
+          </View>
+        )}
 
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
@@ -120,20 +245,40 @@ export default function TrackingOverviewScreen({}: TrackingTabScreenProps<'Track
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
-            <Ionicons name="location" size={18} color={colors.status.info} />
+            <Ionicons name="trail-sign-outline" size={18} color={colors.status.success} />
             <Text style={styles.statValue}>
-              {currentLatitude ? currentLatitude.toFixed(4) : '--'}
+              {totalDistance > 0 ? formatDistance(totalDistance) : '--'}
             </Text>
-            <Text style={styles.statLabel}>Lat</Text>
+            <Text style={styles.statLabel}>Total</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
             <Ionicons name="location" size={18} color={colors.status.info} />
             <Text style={styles.statValue}>
-              {currentLongitude ? currentLongitude.toFixed(4) : '--'}
+              {locationHistory.length}
             </Text>
-            <Text style={styles.statLabel}>Lng</Text>
+            <Text style={styles.statLabel}>Points</Text>
           </View>
+        </View>
+
+        {/* Quick action buttons */}
+        <View style={styles.actionRow}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handleNavigateToRoutes}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="list-outline" size={18} color={colors.primary.DEFAULT} />
+            <Text style={styles.actionButtonText}>Route History</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handleNavigateToGeofences}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="locate-outline" size={18} color={colors.status.info} />
+            <Text style={styles.actionButtonText}>Geofences</Text>
+          </TouchableOpacity>
         </View>
       </Card>
     </View>
@@ -149,9 +294,6 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
-  map: {
-    flex: 1,
-  },
   mapPlaceholder: {
     flex: 1,
     backgroundColor: colors.background.secondary,
@@ -162,22 +304,6 @@ const styles = StyleSheet.create({
     ...typography.styles.bodySM,
     color: colors.text.tertiary,
     marginTop: spacing.md,
-  },
-  markerContainer: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: colors.primary.DEFAULT + '30',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  markerDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: colors.primary.DEFAULT,
-    borderWidth: 2,
-    borderColor: colors.white,
   },
   fabContainer: {
     position: 'absolute',
@@ -196,6 +322,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary.DEFAULT,
     ...shadows.fab,
   },
+  fabRecording: {
+    backgroundColor: colors.status.error,
+    ...shadows.fab,
+  },
   fabSecondary: {
     backgroundColor: colors.white,
     ...shadows.md,
@@ -211,7 +341,17 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   infoHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
     marginBottom: spacing.lg,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  headerActionBtn: {
+    padding: 2,
   },
   dogName: {
     ...typography.styles.headingMD,
@@ -219,6 +359,33 @@ const styles = StyleSheet.create({
   },
   breed: {
     ...typography.styles.bodySM,
+    color: colors.text.tertiary,
+    marginTop: 2,
+  },
+  routeStatsBanner: {
+    flexDirection: 'row',
+    backgroundColor: colors.status.error + '10',
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  routeStat: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  routeStatDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: colors.border.light,
+    alignSelf: 'center',
+  },
+  routeStatValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.text.primary,
+  },
+  routeStatLabel: {
+    ...typography.styles.caption,
     color: colors.text.tertiary,
     marginTop: 2,
   },
@@ -248,5 +415,25 @@ const styles = StyleSheet.create({
     height: 32,
     backgroundColor: colors.border.light,
     alignSelf: 'center',
+  },
+  actionRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    marginTop: spacing.lg,
+  },
+  actionButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.background.secondary,
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.md,
+    gap: spacing.sm,
+  },
+  actionButtonText: {
+    ...typography.styles.bodySM,
+    color: colors.text.primary,
+    fontWeight: '600',
   },
 });

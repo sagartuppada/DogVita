@@ -77,4 +77,59 @@ export interface CreateDogInput {
 
 export interface UpdateDogInput extends Partial<CreateDogInput> {
   id: string;
+  vetInfo?: VetInfo;
+}
+
+// ── Weight History ──
+
+export interface WeightRecord {
+  id: string;
+  dogId: string;
+  weight: number;
+  weightUnit: 'kg' | 'lb';
+  date: string;
+  notes?: string;
+  trend?: 'up' | 'down' | 'stable';
+}
+
+export type WeightRecordInput = Omit<WeightRecord, 'id' | 'trend'>;
+
+// ── Vaccination Records ──
+
+export type VaccinationStatus = 'upcoming' | 'due' | 'overdue' | 'completed' | 'skipped';
+
+export interface VaccinationRecord {
+  id: string;
+  dogId: string;
+  name: string;
+  status: VaccinationStatus;
+  dateAdministered?: string;
+  nextDueDate?: string;
+  vetName?: string;
+  batchNumber?: string;
+  notes?: string;
+  reminderEnabled: boolean;
+}
+
+export type VaccinationRecordInput = Omit<VaccinationRecord, 'id' | 'status'> & {
+  status?: VaccinationStatus;
+};
+
+// ── Breed Info (enriched) ──
+
+export interface BreedInfo {
+  id: string;
+  name: string;
+  size: DogSize;
+  avgLifeSpan: string;
+  avgWeightKg: { min: number; max: number };
+  avgHeightCm: { min: number; max: number };
+  traits: string[];
+  healthConcerns: string[];
+  temperament: string[];
+  exerciseNeeds: 'low' | 'moderate' | 'high';
+  groomingNeeds: 'low' | 'moderate' | 'high';
+  trainability: 'easy' | 'moderate' | 'stubborn';
+  description: string;
+  origin: string;
 }

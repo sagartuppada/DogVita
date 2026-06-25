@@ -26,8 +26,8 @@ begin
   insert into public.profiles (id, email, phone)
   values (
     new.id,
-    new.email,
-    new.phone
+    coalesce(new.email, new.raw_user_meta_data ->> 'email'),
+    coalesce(new.phone, new.raw_user_meta_data ->> 'phone')
   );
   return new;
 end;
@@ -148,6 +148,24 @@ create table if not exists public.geofences (
 );
 
 -- ============================================================
+-- ROUTES (recorded walks)
+-- ============================================================
+create table if not exists public.routes (
+  id uuid default uuid_generate_v4() primary key,
+  dog_id uuid references public.dogs(id) on delete cascade not null,
+  name text not null default 'Walk',
+  start_time timestamptz not null,
+  end_time timestamptz,
+  total_distance double precision default 0 not null,
+  duration integer default 0 not null,
+  locations_json text default '[]',
+  created_at timestamptz default now() not null
+);
+
+create index if not exists idx_routes_dog_start
+  on public.routes (dog_id, start_time desc);
+
+-- ============================================================
 -- ROW LEVEL SECURITY (RLS)
 -- ============================================================
 
@@ -159,6 +177,7 @@ alter table public.health_metrics enable row level security;
 alter table public.alerts enable row level security;
 alter table public.locations enable row level security;
 alter table public.geofences enable row level security;
+alter table public.routes enable row level security;
 
 -- Profiles: users can only read/write their own
 create policy "Users can view own profile" on public.profiles
@@ -215,6 +234,16 @@ create policy "Users can update own geofences" on public.geofences
   for update using (auth.uid() = owner_id);
 create policy "Users can delete own geofences" on public.geofences
   for delete using (auth.uid() = owner_id);
+
+-- Routes: users can CRUD routes for their dogs
+create policy "Users can view routes for own dogs" on public.routes
+  for select using (auth.uid() = (select owner_id from public.dogs where id = routes.dog_id));
+create policy "Users can insert routes for own dogs" on public.routes
+  for insert with check (auth.uid() = (select owner_id from public.dogs where id = routes.dog_id));
+create policy "Users can update routes for own dogs" on public.routes
+  for update using (auth.uid() = (select owner_id from public.dogs where id = routes.dog_id));
+create policy "Users can delete routes for own dogs" on public.routes
+  for delete using (auth.uid() = (select owner_id from public.dogs where id = routes.dog_id));
 
 -- ============================================================
 -- Done

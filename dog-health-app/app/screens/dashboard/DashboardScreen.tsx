@@ -152,7 +152,9 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
         <View style={styles.header}>
           <View>
             <Text style={styles.greeting}>Good morning</Text>
+            <TouchableOpacity onPress={() => navigation.getParent()?.navigate('DogProfile', { dogId: activeDog.id })} activeOpacity={0.7}>
             <Text style={styles.dogName}>{activeDog.name}</Text>
+          </TouchableOpacity>
           </View>
           <View style={styles.headerRight}>
             <TouchableOpacity
@@ -271,7 +273,7 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
           <Card
             variant="default"
             padding="md"
-            onPress={() => navigation.navigate('Alerts')}
+            onPress={() => navigation.navigate('Chatbot')}
             style={styles.alertBanner}
           >
             <View style={styles.alertRow}>

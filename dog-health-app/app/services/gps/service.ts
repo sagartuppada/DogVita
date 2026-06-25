@@ -8,8 +8,8 @@
 import { Platform, PermissionsAndroid } from 'react-native';
 import { LocationData } from '../../types';
 
-// navigator.geolocation is available at runtime in React Native but not typed
-const geolocation = (navigator as unknown as { geolocation: Geolocation }).geolocation;
+// RN 0.76 may not have navigator.geolocation — fallback safely
+const geolocation = (typeof navigator !== 'undefined' && (navigator as any).geolocation) || null;
 
 class GPSService {
   private static instance: GPSService;
@@ -47,6 +47,7 @@ class GPSService {
 
   async getCurrentLocation(): Promise<LocationData | null> {
     try {
+      if (!geolocation) return null;
       const hasPermission = await this.requestPermissions();
       if (!hasPermission) return null;
 
@@ -70,6 +71,7 @@ class GPSService {
 
   async startTracking(intervalMs: number = 5000): Promise<boolean> {
     try {
+      if (!geolocation) { console.warn('GPS not available on this device'); return false; }
       const hasPermission = await this.requestPermissions();
       if (!hasPermission) return false;
 

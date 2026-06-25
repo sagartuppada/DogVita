@@ -19,6 +19,14 @@ import OTPVerificationScreen from '../screens/onboarding/OTPVerificationScreen';
 import SetupDogProfileScreen from '../screens/onboarding/SetupDogProfileScreen';
 import PairDeviceScreen from '../screens/onboarding/PairDeviceScreen';
 import SettingsScreen from '../screens/settings/SettingsScreen';
+import RouteHistoryScreen from '../screens/tracking/RouteHistoryScreen';
+import RouteDetailScreen from '../screens/tracking/RouteDetailScreen';
+import GeofenceManagerScreen from '../screens/tracking/GeofenceManagerScreen';
+import DogProfileScreen from '../screens/dog/DogProfileScreen';
+import WeightHistoryScreen from '../screens/dog/WeightHistoryScreen';
+import VaccinationRecordsScreen from '../screens/dog/VaccinationRecordsScreen';
+import SymptomCheckerScreen from '../screens/ai/SymptomCheckerScreen';
+import DietFeedingScreen from '../screens/ai/DietFeedingScreen';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
@@ -85,6 +93,14 @@ export const RootNavigator: React.FC = () => {
           <>
             <RootStack.Screen name="Main" component={MainTabNavigator} />
             <RootStack.Screen name="Settings" component={SettingsScreen} />
+            <RootStack.Screen name="RouteHistory" component={RouteHistoryScreen} />
+            <RootStack.Screen name="RouteDetail" component={RouteDetailScreen} />
+            <RootStack.Screen name="GeofenceManager" component={GeofenceManagerScreen} />
+            <RootStack.Screen name="DogProfile" component={DogProfileScreen} />
+            <RootStack.Screen name="WeightHistory" component={WeightHistoryScreen} />
+            <RootStack.Screen name="VaccinationRecords" component={VaccinationRecordsScreen} />
+            <RootStack.Screen name="SymptomChecker" component={SymptomCheckerScreen} />
+            <RootStack.Screen name="DietFeeding" component={DietFeedingScreen} />
           </>
         ) : (
           <RootStack.Screen name="Onboarding" component={OnboardingNavigator} />

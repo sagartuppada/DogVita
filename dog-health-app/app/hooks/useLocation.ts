@@ -1,5 +1,5 @@
 /**
- * useLocation - Hook for GPS tracking
+ * useLocation - Hook for GPS tracking with route recording
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -15,9 +15,14 @@ export const useLocation = () => {
     currentLocation,
     locationHistory,
     totalDistance,
+    activeRoute,
+    routes,
     setCurrentLocation,
     addLocationToHistory,
+    addLocationToRoute,
     updateTotalDistance,
+    startRoute,
+    endRoute,
   } = useTrackingStore();
 
   const requestPermissions = useCallback(async () => {
@@ -53,24 +58,42 @@ export const useLocation = () => {
     return location;
   }, [setCurrentLocation, addLocationToHistory]);
 
+  const startRouteRecording = useCallback((dogId: string, name?: string) => {
+    const route = startRoute(dogId, name);
+    // Also start GPS tracking if not already
+    startTracking();
+    return route;
+  }, [startRoute, startTracking]);
+
+  const stopRouteRecording = useCallback(() => {
+    const route = endRoute();
+    stopTracking();
+    return route;
+  }, [endRoute, stopTracking]);
+
   useEffect(() => {
     const unsubscribe = gpsService.onLocationUpdate((location) => {
       setCurrentLocation(location);
       addLocationToHistory(location);
+      addLocationToRoute(location);
     });
     return unsubscribe;
-  }, [setCurrentLocation, addLocationToHistory]);
+  }, [setCurrentLocation, addLocationToHistory, addLocationToRoute]);
 
   return {
     currentLocation,
     locationHistory,
     totalDistance,
+    activeRoute,
+    routes,
     isTracking,
     permissionGranted,
     startTracking,
     stopTracking,
     getCurrentLocation,
     requestPermissions,
+    startRouteRecording,
+    stopRouteRecording,
   };
 };
 

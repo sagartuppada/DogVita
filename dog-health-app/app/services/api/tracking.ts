@@ -1,5 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabase';
-import type { LocationData, Geofence } from '../../types';
+import type { LocationData, Geofence, Route } from '../../types';
 
 export const trackingService = {
   async getLocations(dogId: string, limit = 500): Promise<LocationData[]> {
@@ -121,6 +121,27 @@ export const trackingService = {
     return mapGeofenceRow(data as Record<string, unknown>);
   },
 
+  async updateGeofence(geofence: Geofence): Promise<boolean> {
+    if (!isSupabaseConfigured()) return false;
+
+    const { error } = await supabase
+      .from('geofences')
+      .update({
+        name: geofence.name,
+        latitude: geofence.center.latitude,
+        longitude: geofence.center.longitude,
+        radius_meters: geofence.radius,
+        is_active: geofence.isActive,
+      })
+      .eq('id', geofence.id);
+
+    if (error) {
+      console.error('[trackingService.updateGeofence]', error);
+      return false;
+    }
+    return true;
+  },
+
   async deleteGeofence(geofenceId: string): Promise<boolean> {
     if (!isSupabaseConfigured()) return false;
 
@@ -131,6 +152,87 @@ export const trackingService = {
 
     if (error) {
       console.error('[trackingService.deleteGeofence]', error);
+      return false;
+    }
+    return true;
+  },
+
+  // ── Routes ──
+
+  async getRoutes(dogId: string): Promise<Route[]> {
+    if (!isSupabaseConfigured()) return [];
+
+    const { data, error } = await supabase
+      .from('routes')
+      .select('*')
+      .eq('dog_id', dogId)
+      .order('start_time', { ascending: false });
+
+    if (error) {
+      console.error('[trackingService.getRoutes]', error);
+      return [];
+    }
+
+    return (data ?? []).map(mapRouteRow);
+  },
+
+  async createRoute(route: Omit<Route, 'id'>): Promise<Route | null> {
+    if (!isSupabaseConfigured()) return null;
+
+    const { data, error } = await supabase
+      .from('routes')
+      .insert([
+        {
+          dog_id: route.dogId,
+          name: route.name,
+          start_time: route.startTime,
+          end_time: route.endTime ?? null,
+          total_distance: route.totalDistance,
+          duration: route.duration,
+          locations_json: JSON.stringify(route.locations),
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('[trackingService.createRoute]', error);
+      return null;
+    }
+
+    return mapRouteRow(data as Record<string, unknown>);
+  },
+
+  async updateRoute(route: Route): Promise<boolean> {
+    if (!isSupabaseConfigured()) return false;
+
+    const { error } = await supabase
+      .from('routes')
+      .update({
+        end_time: route.endTime ?? null,
+        total_distance: route.totalDistance,
+        duration: route.duration,
+        locations_json: JSON.stringify(route.locations),
+      })
+      .eq('id', route.id);
+
+    if (error) {
+      console.error('[trackingService.updateRoute]', error);
+      return false;
+    }
+    return true;
+  },
+
+  async deleteRoute(routeId: string): Promise<boolean> {
+    if (!isSupabaseConfigured()) return false;
+
+    const { error } = await supabase
+      .from('routes')
+      .delete()
+      .eq('id', routeId);
+
+    if (error) {
+      console.error('[trackingService.deleteRoute]', error);
       return false;
     }
     return true;
@@ -151,6 +253,27 @@ function mapGeofenceRow(row: Record<string, unknown>): Geofence {
     isActive: row.is_active as boolean,
     alertsEnabled: true,
     createdAt: row.created_at as string,
+  };
+}
+
+function mapRouteRow(row: Record<string, unknown>): Route {
+  let locations: LocationData[] = [];
+  try {
+    const raw = row.locations_json as string;
+    if (raw) locations = JSON.parse(raw) as LocationData[];
+  } catch {
+    locations = [];
+  }
+
+  return {
+    id: row.id as string,
+    dogId: row.dog_id as string,
+    name: row.name as string,
+    startTime: row.start_time as string,
+    endTime: (row.end_time as string) ?? undefined,
+    locations,
+    totalDistance: (row.total_distance as number) ?? 0,
+    duration: (row.duration as number) ?? 0,
   };
 }
 

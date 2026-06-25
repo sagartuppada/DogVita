@@ -6,6 +6,7 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useDogStore } from '../../store/dogStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { authService } from '../../services/auth/service';
 import { Card } from '../../components/common';
@@ -38,6 +39,7 @@ const SettingRow: React.FC<{
 
 export default function SettingsScreen({ navigation }: SettingsScreenProps) {
   const insets = useSafeAreaInsets();
+  const activeDog = useDogStore((s) => s.dogs.find((d) => d.id === s.activeDogId));
   const theme = useSettingsStore((s) => s.theme);
   const setTheme = useSettingsStore((s) => s.setTheme);
 
@@ -72,6 +74,46 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
     );
   };
 
+  const handleDogProfile = () => {
+    if (activeDog) {
+      navigation.navigate('DogProfile', { dogId: activeDog.id });
+    } else {
+      Alert.alert('No Dog', 'Please add a dog profile first.');
+    }
+  };
+
+  const handleDeviceSettings = () => {
+    navigation.getParent()?.navigate('Main', { screen: 'Tracking' });
+  };
+
+  const handleLocationSettings = () => {
+    navigation.getParent()?.navigate('GeofenceManager');
+  };
+
+  const handleWeight = () => {
+    if (activeDog) {
+      navigation.navigate('WeightHistory', { dogId: activeDog.id });
+    } else {
+      Alert.alert('No Dog', 'Please add a dog profile first.');
+    }
+  };
+
+  const handleVaccinations = () => {
+    if (activeDog) {
+      navigation.navigate('VaccinationRecords', { dogId: activeDog.id });
+    } else {
+      Alert.alert('No Dog', 'Please add a dog profile first.');
+    }
+  };
+
+  const handleAccount = () => {
+    Alert.alert('Account', 'Account settings coming in a future update.');
+  };
+
+  const handleHelp = () => {
+    Alert.alert('Help & Support', 'For support, contact us at support@dogvita.app');
+  };
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <ScrollView
@@ -88,8 +130,8 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
             icon="paw"
             iconColor={colors.primary.DEFAULT}
             label="Dog Profile"
-            value="Buddy"
-            onPress={() => Alert.alert('Dog Profile', 'Coming soon')}
+            value={activeDog?.name ?? 'Add dog'}
+            onPress={handleDogProfile}
           />
           <View style={styles.separator} />
           <SettingRow
@@ -97,7 +139,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
             iconColor={colors.status.info}
             label="Device"
             value="Connected"
-            onPress={() => Alert.alert('Device', 'Coming soon')}
+            onPress={handleDeviceSettings}
           />
         </Card>
 
@@ -106,8 +148,8 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           <SettingRow
             icon="location"
             iconColor={colors.status.success}
-            label="Location Services"
-            onPress={() => Alert.alert('Location Services', 'Coming soon')}
+            label="Location & Geofences"
+            onPress={handleLocationSettings}
           />
           <View style={styles.separator} />
           <SettingRow
@@ -131,20 +173,20 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           />
         </Card>
 
-        {/* Health Thresholds */}
+        {/* Health Records */}
         <Card variant="default" padding="none" style={styles.section}>
           <SettingRow
-            icon="heart"
-            iconColor={colors.health.heartRate}
-            label="Heart Rate Alerts"
-            onPress={() => Alert.alert('Heart Rate Alerts', 'Coming soon')}
+            icon="fitness"
+            iconColor={colors.primary.DEFAULT}
+            label="Weight"
+            onPress={handleWeight}
           />
           <View style={styles.separator} />
           <SettingRow
-            icon="thermometer"
-            iconColor={colors.health.temperature}
-            label="Temperature Alerts"
-            onPress={() => Alert.alert('Temperature Alerts', 'Coming soon')}
+            icon="medical"
+            iconColor={colors.status.success}
+            label="Vaccinations"
+            onPress={handleVaccinations}
           />
         </Card>
 
@@ -154,14 +196,14 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
             icon="person"
             iconColor={colors.text.secondary}
             label="Account"
-            onPress={() => Alert.alert('Account', 'Coming soon')}
+            onPress={handleAccount}
           />
           <View style={styles.separator} />
           <SettingRow
             icon="help-circle"
             iconColor={colors.status.info}
             label="Help & Support"
-            onPress={() => Alert.alert('Help & Support', 'Coming soon')}
+            onPress={handleHelp}
           />
           <View style={styles.separator} />
           <SettingRow

@@ -1,100 +1,184 @@
 # AGENTS.md — dog-health-app
 
-React Native (bare, no Expo) TypeScript app for monitoring a BLE dog-collar (ESP32-S3). Zustand state, React Navigation 7, Supabase backend, react-native-ble-plx.
+React Native 0.76 (bare, no Expo) TypeScript app for monitoring a BLE dog-collar (ESP32-S3). Zustand state, React Navigation 7, Supabase backend, react-native-ble-plx.
 
 ## Quick Start
 
 ```bash
 npm install
-npx react-native run-android          # Build + run on Android
-npm run typecheck                      # tsc --noEmit
+npm run typecheck                      # tsc --noEmit — run first, cheapest check
 npm run lint                           # ESLint
 ```
 
-There is no test suite. `npm test` referenced in the README is a lie — the script is not defined in `package.json`.
+No test suite exists. `npm test` in package.json maps to `jest` but there are no test files — do not rely on it.
+
+## Build & Deploy
+
+**Canonical source**: `C:\Users\User\Desktop\Santo\DogVita\dog-health-app` (git repo)
+**Build copy**: `C:\R\dog-health-app` (sync from canonical before building)
+
+Windows `MAX_PATH` (260 chars) blocks Gradle from the canonical path. Always build from the short path.
+
+### Sync files before building
+
+```powershell
+# Individual files (preferred — fast):
+Copy-Item "C:\Users\User\Desktop\Santo\DogVita\dog-health-app\app\screens\foo.tsx" "C:\R\dog-health-app\app\screens\foo.tsx" -Force
+
+# Full mirror (slow, use after large changes):
+robocopy "C:\Users\User\Desktop\Santo\DogVita\dog-health-app" "C:\R\dog-health-app" /MIR /XD "node_modules" ".git" "android" "ios" "graphify-out" /XF "*.apk" /np /njh /njs /ndl /nc /ns
+```
+
+`robocopy` does NOT work with individual file params on PowerShell — use `Copy-Item` for single files.
+
+### Build release APK
+
+```powershell
+$env:ANDROID_HOME = "C:\Users\User\AppData\Local\Android\Sdk"
+$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
+cd C:\R\dog-health-app\android
+.\gradlew.bat app:assembleRelease --no-daemon -PreactNativeArchitectures=x86_64
+```
+
+APK output: `C:\R\dog-health-app\android\app\build\outputs\apk\release\app-release.apk`
+
+### Install on device/emulator
+
+```powershell
+C:\Users\User\AppData\Local\Android\Sdk\platform-tools\adb.exe install -r <path-to-apk>
+```
+
+- Emulator: `emulator-5554`
+- Physical device: `00116651G005894`
+
+### JAVA_HOME
+
+Must point to Android Studio's bundled JDK (`C:\Program Files\Android\Android Studio\jbr`). A system JDK breaks the Gradle build.
 
 ## Entry Points & Layout
 
-- `App.tsx` (root) re-exports from `app/App.tsx` — RN loads via `index.js` → `AppRegistry.registerComponent`.
-- `app/App.tsx` — actual root component. Wraps everything in `GestureHandlerRootView` + `SafeAreaProvider`, then renders `RootNavigator`.
-- `app/navigation/RootNavigator.tsx` — switches between the onboarding stack and the main tab navigator based on `useSettingsStore.hasCompletedOnboarding`.
-- `app/screens/onboarding/` — Welcome → AddPhoneNumber → OTPVerification → SetupDogProfile → PairDevice.
-- `app/screens/{dashboard,health,tracking,alerts,settings}/` — the 5 tabs (see `MainTabNavigator.tsx`).
-- `app/services/` — `auth/`, `ble/{scanner,connection,packetParser,service}.ts`, `gps/`, `api/`, `notifications/`, `analytics/`, `storage/`.
-- `app/store/` — Zustand stores: `dog`, `health`, `ble`, `tracking`, `alert`, `settings`.
+- `index.js` → `AppRegistry.registerComponent` → `app/App.tsx` → `RootNavigator`
+- `app/navigation/RootNavigator.tsx` — `OnboardingGuard`: shows onboarding if `!hasCompletedOnboarding`, else shows `MainTabNavigator`. On session restore, calls `fetchDogs()` and auto-completes onboarding if dogs exist in Supabase.
+- `app/navigation/MainTabNavigator.tsx` — 4 tabs: Home, Health, Tracking, AI (chatbot)
+- `app/screens/onboarding/` — Welcome → SignUp → Login → AddPhone → OTP → SetupDog → PairDevice
+- `app/screens/{dashboard,health,tracking,chatbot,settings}/` — main screens
+- `app/services/api/` — Supabase services: `dogs.ts`, `health.ts`, `alerts.ts`, `tracking.ts`
+- `app/services/auth/service.ts` — email+password + phone+OTP auth (all methods call Supabase directly)
+- `app/store/` — Zustand stores: `dogStore`, `healthStore`, `bleStore`, `trackingStore`, `alertStore`, `settingsStore`
 
-## Auth — Test Mode
+## Auth
 
-The app intentionally bypasses Supabase when `isSupabaseConfigured()` is false (placeholder `.env`) or `NODE_ENV === 'development'`. In test mode, **any phone number + OTP `123456` is accepted** — see `app/services/auth/service.ts:9-10` (`TEST_MODE` + `TEST_OTP`).
+Email+password and phone+OTP. All auth methods call Supabase directly — no test mode bypass (README claims OTP `123456` works without Supabase, but the code has no such bypass).
 
-`WelcomeScreen` and `OTPVerificationScreen` display a yellow "TEST MODE" banner so users know.
+- `signUpWithEmail(email, password)` — creates Supabase user + triggers profile auto-create
+- `signInWithEmail(email, password)` — standard Supabase sign in
+- `sendOTP(phone)` — sends OTP via Supabase (requires Twilio configured in dashboard)
+- `verifyOTP(phone, code)` — verifies OTP code
 
-If you want real Supabase auth, fill in `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` in `.env` and restart the app.
+### Onboarding guard
+
+`RootNavigator` checks `hasCompletedOnboarding` from `settingsStore`. If false, shows onboarding stack. On Supabase session restore, `fetchDogs()` runs — if dogs exist, onboarding is auto-marked complete.
+
+### Sign out
+
+`authService.signOut()` clears: Supabase session + all 6 AsyncStorage persisted store keys + resets Zustand in-memory state. Partial resets cause stale data to leak between accounts.
+
+## Hermes Polyfills (index.js)
+
+Hermes in RN 0.76 is missing several Web APIs. `index.js` polyfills them before app load:
+
+- `URL.prototype.hostname`, `.host`, `.origin` — used by Supabase client
+- `URLSearchParams.prototype.set`, `.append`, `.delete` — used by Supabase client
+
+**Do not remove these polyfills.** Supabase-js crashes without them. Error symptoms: `URL.hostname is not implemented`, `URLSearchParams.set is not implemented`.
 
 ## Path Aliases — Use Relative Imports
 
-`@components/*`, `@screens/*`, `@services/*`, `@hooks/*`, `@store/*`, `@types/*`, `@theme/*`, `@config/*`, `@navigation/*` are still **defined** in `tsconfig.json` and `babel.config.js` — but the source files all use **relative** imports.
+`@components/*`, `@screens/*`, etc. are defined in `tsconfig.json` and `babel.config.js` but source files use **relative imports**. Use relative imports for new code. Re-enabling aliases causes production build failures.
 
-**Use relative imports for any new code.** The aliases are dead config kept for backward compat. Re-enabling them causes a resolution error in production builds (this was a real bug — see commit history). Safe re-enable requires changes to both config files plus reverting ~50 imports.
+## Env Loading
 
-## Android Build Prerequisites
+Env vars loaded via `react-native-dotenv` (`@env` module) in babel.config.js. However, `@env` does NOT inline variables in release builds — hardcoded fallback values in `supabase.ts` and `config/index.ts` ensure the app works in production.
 
-- Android Studio installed with SDK at `C:\Users\User\AppData\Local\Android\Sdk`
-- `JAVA_HOME` must point at Android Studio's bundled JDK (e.g. `C:\Program Files\Android\Android Studio\jbr`). Setting it to a system JDK breaks the Gradle build.
-- `android/local.properties` is already populated with `sdk.dir=...` and is **not** committed (see `.gitignore`).
-- The `android/` and `ios/` directories are prebuild artifacts. Regenerate with `npx react-native prebuild` if you change `app.json` plugins or config.
-- Build command: `$env:ANDROID_HOME="C:\Users\User\AppData\Local\Android\Sdk"; .\gradlew.bat app:assembleDebug --no-daemon -PreactNativeArchitectures=x86_64` (from `android/` dir)
+Both `SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_URL` are supported (dual naming for backward compat).
 
 ## State Management
 
-Zustand stores, one per domain. Persist middleware writes to `AsyncStorage` (already wired in most stores).
+Zustand stores, one per domain. Persist middleware writes to AsyncStorage.
 
 ### CRITICAL: Zustand Selector Rules
 
-**Never call methods or return new references inside Zustand selectors.** This causes infinite re-render loops ("Maximum update depth exceeded").
+**Never call methods or return new references inside Zustand selectors.** Infinite re-render loops.
 
-**BAD — creates new object/array each render:**
 ```tsx
-const activeDog = useDogStore((state) => state.getActiveDog());  // new ref each time
-const heartRateData = useHealthStore((state) => state.heartRateHistory.slice(-20));  // new array each time
-```
+// BAD — new ref each render:
+const activeDog = useDogStore((state) => state.getActiveDog());
+const heartRateData = useHealthStore((state) => state.heartRateHistory.slice(-20));
 
-**GOOD — narrow selectors + useMemo:**
-```tsx
+// GOOD — narrow selectors + useMemo:
 const dogs = useDogStore((s) => s.dogs);
 const activeDogId = useDogStore((s) => s.activeDogId);
 const activeDog = useMemo(() => dogs.find((d) => d.id === activeDogId) ?? null, [dogs, activeDogId]);
 ```
 
-**BAD — destructuring the whole store:**
+### Store → Service wiring pattern
+
+Stores try Supabase first (via service layer), fall back to local data on failure:
+
 ```tsx
-const { isConnected, connectedDeviceName } = useBLEStore();  // re-renders on ANY store change
+// Pattern used in all stores:
+if (isSupabaseConfigured()) {
+  const data = await service.fetchFromDB();
+  if (data) { set({ data }); return; }
+}
+// fallback to local/demo data
 ```
 
-**GOOD — individual narrow selectors:**
-```tsx
-const isConnected = useBLEStore((s) => s.isConnected);
-const connectedDeviceName = useBLEStore((s) => s.connectedDeviceName);
+### `dogsService.createDog()` throws on failure
+
+Unlike older code that returned `null` silently, `createDog()` now throws errors. The store catches and falls back to local-only storage. Check `console.warn` output for Supabase insert failures.
+
+### Persisted store keys (all cleared on sign out)
+
+`dog-storage`, `health-storage`, `alert-storage`, `tracking-storage`, `ble-storage`, `settings-storage`
+
+## Supabase Schema
+
+SQL already run in Supabase dashboard:
+
+```sql
+-- profiles table gets email column + updated trigger
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS email text;
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, phone)
+  VALUES (new.id, new.email, new.phone);
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- dogs table gets gender column
+ALTER TABLE public.dogs ADD COLUMN IF NOT EXISTS gender text;
 ```
 
-## Graphify (Knowledge Graph)
-
-`graphify-out/` is a pre-generated AST knowledge graph of this codebase. Open `graphify-out/graph.html` in a browser for an interactive view. After editing source, refresh with:
-
-```bash
-graphify update .        # AST-only, no API key required
-```
-
-Use `graphify query "..."` to BFS-traverse `graph.json` for architecture questions. Community structure + god nodes are in `graphify-out/GRAPH_REPORT.md`.
+RLS policies + auto-create profile trigger exist in `supabase/schema.sql`.
 
 ## BLE / Hardware
 
-Real BLE UUIDs are placeholder in `.env` (`EXPO_PUBLIC_BLE_*`). The packet parser (`app/services/ble/packetParser.ts`) expects little-endian binary frames from the ESP32-S3 collar. Test on a real device — `react-native-ble-plx` does not work in iOS Simulator or Android Emulator.
+Real BLE UUIDs are placeholder in `.env` (`EXPO_PUBLIC_BLE_*`). The packet parser (`app/services/ble/packetParser.ts`) expects little-endian binary frames from the ESP32-S3 collar. `react-native-ble-plx` does not work in iOS Simulator or Android Emulator — test on a real device.
+
+## Debugging
+
+- `console.log` is stripped in release builds. Use `Alert.alert()` for debug output visible on device.
+- `adb shell uiautomator dump /sdcard/ui.xml` — reliable way to check current screen in release builds.
+- `graphify-out/` has a pre-generated AST knowledge graph. Open `graphify-out/graph.html` in a browser.
 
 ## Conventions
 
-- **No Redux.** Only Zustand. (Per project requirement — do not introduce Redux.)
-- **TypeScript strict** is on. `npm run typecheck` is the cheapest correctness check — run it before lint.
-- **Theme tokens** come from `app/theme/` (`colors`, `spacing`, `typography`, `shadows`, `borderRadius`). Do not hardcode hex values in components.
+- **No Redux.** Only Zustand. Do not introduce Redux.
+- **TypeScript strict** is on. `npm run typecheck` before lint.
+- **Theme tokens** from `app/theme/` — do not hardcode hex values.
 - **Icons** use `react-native-vector-icons/Ionicons`.
-- No comments added on edits unless the code is non-obvious (mirrors the original style — most files are clean of explanatory comments).
+- No comments added on edits unless non-obvious (mirrors original style).
+- Dog type fields `birthDate`, `weight`, `weightUnit`, `gender` are all optional in the schema.

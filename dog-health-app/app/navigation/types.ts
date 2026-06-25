@@ -28,6 +28,14 @@ export type RootStackParamList = {
   Onboarding: NavigatorScreenParams<OnboardingStackParamList>;
   Main: undefined;
   Settings: undefined;
+  RouteHistory: undefined;
+  RouteDetail: { routeId: string };
+  GeofenceManager: undefined;
+  DogProfile: { dogId: string };
+  WeightHistory: { dogId: string };
+  VaccinationRecords: { dogId: string };
+  SymptomChecker: undefined;
+  DietFeeding: undefined;
 };
 
 // Screen props types
@@ -47,6 +55,14 @@ export type ChatbotTabScreenProps<T extends keyof MainTabParamList> =
   BottomTabScreenProps<MainTabParamList, T>;
 
 export type SettingsScreenProps = NativeStackScreenProps<RootStackParamList, 'Settings'>;
+export type RouteHistoryScreenProps = NativeStackScreenProps<RootStackParamList, 'RouteHistory'>;
+export type RouteDetailScreenProps = NativeStackScreenProps<RootStackParamList, 'RouteDetail'>;
+export type GeofenceManagerScreenProps = NativeStackScreenProps<RootStackParamList, 'GeofenceManager'>;
+export type DogProfileScreenProps = NativeStackScreenProps<RootStackParamList, 'DogProfile'>;
+export type WeightHistoryScreenProps = NativeStackScreenProps<RootStackParamList, 'WeightHistory'>;
+export type VaccinationRecordsScreenProps = NativeStackScreenProps<RootStackParamList, 'VaccinationRecords'>;
+export type SymptomCheckerScreenProps = NativeStackScreenProps<RootStackParamList, 'SymptomChecker'>;
+export type DietFeedingScreenProps = NativeStackScreenProps<RootStackParamList, 'DietFeeding'>;
 
 declare global {
   namespace ReactNavigation {

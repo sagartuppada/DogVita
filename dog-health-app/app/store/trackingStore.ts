@@ -1,11 +1,11 @@
 /**
- * Tracking store - manages GPS tracking and geofencing
+ * Tracking store - manages GPS tracking, geofencing, and route history
  */
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LocationData, Geofence, GeofenceAlert } from '../types';
+import { LocationData, Geofence, GeofenceAlert, Route } from '../types';
 import { trackingService } from '../services/api/tracking';
 import { isSupabaseConfigured } from '../services/api/supabase';
 import { useDogStore } from './dogStore';
@@ -19,13 +19,16 @@ interface TrackingState {
   trackingInterval: number;
   totalDistance: number;
   lastLocationUpdate: string | null;
+  // Route tracking
+  routes: Route[];
+  activeRoute: Route | null;
 }
 
 interface TrackingActions {
   setCurrentLocation: (location: LocationData) => void;
   addLocationToHistory: (location: LocationData) => void;
   clearLocationHistory: () => void;
-  addGeofence: (geofence: Geofence) => void;
+  addGeofence: (geofence: Geofence) => Promise<Geofence>;
   updateGeofence: (geofence: Geofence) => void;
   removeGeofence: (geofenceId: string) => void;
   addGeofenceAlert: (alert: GeofenceAlert) => void;
@@ -37,6 +40,13 @@ interface TrackingActions {
   checkGeofences: (location: LocationData) => Geofence[];
   fetchLocations: (dogId: string) => Promise<void>;
   fetchGeofences: (dogId: string) => Promise<void>;
+  // Route tracking
+  startRoute: (dogId: string, name?: string) => Route;
+  endRoute: () => Route | null;
+  addLocationToRoute: (location: LocationData) => void;
+  deleteRoute: (routeId: string) => void;
+  clearRoutes: () => void;
+  fetchRoutes: (dogId: string) => Promise<void>;
   loadDemoData: () => void;
 }
 
@@ -53,6 +63,8 @@ const initialState: TrackingState = {
   trackingInterval: 5000,
   totalDistance: 0,
   lastLocationUpdate: null,
+  routes: [],
+  activeRoute: null,
 };
 
 export const useTrackingStore = create<TrackingStore>()(
@@ -85,22 +97,49 @@ export const useTrackingStore = create<TrackingStore>()(
 
       clearLocationHistory: () => set({ locationHistory: [], totalDistance: 0 }),
 
-      addGeofence: (geofence) =>
+      addGeofence: async (geofence) => {
+        if (isSupabaseConfigured()) {
+          try {
+            const created = await trackingService.createGeofence(geofence);
+            if (created) {
+              set((state) => ({
+                geofences: [...state.geofences, created],
+              }));
+              return created;
+            }
+          } catch (err) {
+            console.warn('[trackingStore] Failed to persist geofence:', err);
+          }
+        }
         set((state) => ({
           geofences: [...state.geofences, geofence],
-        })),
+        }));
+        return geofence;
+      },
 
-      updateGeofence: (geofence) =>
+      updateGeofence: (geofence) => {
         set((state) => ({
           geofences: state.geofences.map((g) =>
             g.id === geofence.id ? geofence : g
           ),
-        })),
+        }));
+        if (isSupabaseConfigured()) {
+          trackingService.updateGeofence(geofence).catch((err) =>
+            console.warn('[trackingStore] Failed to update geofence:', err)
+          );
+        }
+      },
 
-      removeGeofence: (geofenceId) =>
+      removeGeofence: (geofenceId) => {
         set((state) => ({
           geofences: state.geofences.filter((g) => g.id !== geofenceId),
-        })),
+        }));
+        if (isSupabaseConfigured()) {
+          trackingService.deleteGeofence(geofenceId).catch((err) =>
+            console.warn('[trackingStore] Failed to delete geofence:', err)
+          );
+        }
+      },
 
       addGeofenceAlert: (alert) =>
         set((state) => ({
@@ -179,19 +218,154 @@ export const useTrackingStore = create<TrackingStore>()(
         }
       },
 
+      // Route tracking
+      startRoute: (dogId, name) => {
+        const now = new Date().toISOString();
+        const route: Route = {
+          id: `route_${Date.now()}`,
+          dogId,
+          name: name || `Walk ${new Date().toLocaleDateString()}`,
+          startTime: now,
+          endTime: undefined,
+          locations: [],
+          totalDistance: 0,
+          duration: 0,
+        };
+        set({ activeRoute: route, isTracking: true });
+        return route;
+      },
+
+      endRoute: () => {
+        const { activeRoute, routes } = get();
+        if (!activeRoute) return null;
+
+        const endTime = new Date().toISOString();
+        const duration = Math.floor(
+          (new Date(endTime).getTime() - new Date(activeRoute.startTime).getTime()) / 1000
+        );
+
+        const completedRoute: Route = {
+          ...activeRoute,
+          endTime,
+          duration,
+        };
+
+        set({
+          activeRoute: null,
+          routes: [completedRoute, ...routes].slice(0, 200),
+          isTracking: false,
+        });
+
+        if (isSupabaseConfigured()) {
+          trackingService.createRoute(completedRoute).catch((err) =>
+            console.warn('[trackingStore] Failed to persist route:', err)
+          );
+        }
+
+        return completedRoute;
+      },
+
+      addLocationToRoute: (location) => {
+        set((state) => {
+          if (!state.activeRoute) return state;
+
+          const prevLocation = state.activeRoute.locations[state.activeRoute.locations.length - 1];
+          let addedDistance = 0;
+          if (prevLocation) {
+            const R = 6371e3;
+            const lat1 = (prevLocation.latitude * Math.PI) / 180;
+            const lat2 = (location.latitude * Math.PI) / 180;
+            const dLat = ((location.latitude - prevLocation.latitude) * Math.PI) / 180;
+            const dLon = ((location.longitude - prevLocation.longitude) * Math.PI) / 180;
+            const a =
+              Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            addedDistance = R * c;
+          }
+
+          const updatedRoute: Route = {
+            ...state.activeRoute,
+            locations: [...state.activeRoute.locations, location],
+            totalDistance: state.activeRoute.totalDistance + addedDistance,
+          };
+
+          return { activeRoute: updatedRoute };
+        });
+      },
+
+      deleteRoute: (routeId) => {
+        set((state) => ({
+          routes: state.routes.filter((r) => r.id !== routeId),
+        }));
+        if (isSupabaseConfigured()) {
+          trackingService.deleteRoute(routeId).catch((err) =>
+            console.warn('[trackingStore] Failed to delete route:', err)
+          );
+        }
+      },
+
+      clearRoutes: () => set({ routes: [], activeRoute: null }),
+
+      fetchRoutes: async (dogId) => {
+        if (!isSupabaseConfigured()) return;
+        try {
+          const routes = await trackingService.getRoutes(dogId);
+          if (routes.length > 0) {
+            set((state) => ({
+              routes: [...routes, ...state.routes.filter((r) =>
+                !routes.some((sr) => sr.id === r.id)
+              )],
+            }));
+          }
+        } catch (error) {
+          console.warn('[trackingStore.fetchRoutes] Supabase fetch failed:', (error as Error).message);
+        }
+      },
+
       loadDemoData: () => {
         const timestamp = new Date().toISOString();
+        const baseLat = 37.7749;
+        const baseLng = -122.4194;
+        const demoLocations: LocationData[] = [];
+        for (let i = 0; i < 50; i++) {
+          const angle = (i / 50) * Math.PI * 2;
+          const radius = 0.002 + (i / 50) * 0.003;
+          demoLocations.push({
+            latitude: baseLat + Math.cos(angle) * radius,
+            longitude: baseLng + Math.sin(angle) * radius,
+            accuracy: 5,
+            speed: 1.5 + Math.random() * 2,
+            heading: (angle * 180) / Math.PI,
+            timestamp: new Date(Date.now() - (50 - i) * 30000).toISOString(),
+          });
+        }
+
+        const demoRoute: Route = {
+          id: 'demo_route_1',
+          dogId: 'demo_dog_1',
+          name: 'Morning Walk',
+          startTime: new Date(Date.now() - 50 * 30000).toISOString(),
+          endTime: timestamp,
+          locations: demoLocations,
+          totalDistance: 2450,
+          duration: 1500,
+        };
+
         set({
           currentLocation: {
-            latitude: 37.7749,
-            longitude: -122.4194,
+            latitude: baseLat,
+            longitude: baseLng,
             accuracy: 5,
             speed: 0.5,
             heading: 180,
             timestamp,
           },
+          locationHistory: demoLocations,
           isTracking: true,
           lastLocationUpdate: timestamp,
+          routes: [demoRoute],
+          activeRoute: null,
         });
       },
     }),
@@ -201,6 +375,7 @@ export const useTrackingStore = create<TrackingStore>()(
       partialize: (state) => ({
         geofences: state.geofences,
         trackingInterval: state.trackingInterval,
+        routes: state.routes,
       }),
     }
   )
@@ -209,3 +384,5 @@ export const useTrackingStore = create<TrackingStore>()(
 export const selectCurrentLocation = (state: TrackingStore) => state.currentLocation;
 export const selectIsTracking = (state: TrackingStore) => state.isTracking;
 export const selectGeofences = (state: TrackingStore) => state.geofences;
+export const selectRoutes = (state: TrackingStore) => state.routes;
+export const selectActiveRoute = (state: TrackingStore) => state.activeRoute;
