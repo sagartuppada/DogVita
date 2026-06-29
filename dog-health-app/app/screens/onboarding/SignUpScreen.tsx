@@ -14,9 +14,47 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Input, Header } from '../../components/common';
-import { colors, spacing, typography } from '../../theme';
+import { spacing, typography } from '../../theme';
 import { authService } from '../../services/auth/service';
 import type { OnboardingScreenProps } from '../../navigation/types';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5E9CD',
+  },
+  content: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 24,
+    paddingBottom: 20,
+  },
+  headerSection: {
+    marginBottom: 28,
+  },
+  title: {
+    ...typography.styles.headingLG,
+    color: '#1F1A17',
+    marginBottom: 8,
+  },
+  subtitle: {
+    ...typography.styles.bodyMD,
+    color: '#6B625A',
+  },
+  form: {
+    marginBottom: 16,
+  },
+  errorText: {
+    ...typography.styles.caption,
+    color: '#F44336',
+    marginTop: -8,
+    marginBottom: 12,
+  },
+  footer: {
+    paddingHorizontal: 24,
+  },
+});
 
 export default function SignUpScreen({
   navigation,
@@ -102,7 +140,7 @@ export default function SignUpScreen({
         </ScrollView>
       </KeyboardAvoidingView>
 
-      <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.lg }]}>
+      <View style={[styles.footer, { paddingBottom: insets.bottom + 16 }]}>
         <Button
           title="Sign Up"
           onPress={handleSignUp}
@@ -115,41 +153,3 @@ export default function SignUpScreen({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  content: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: spacing.xxl,
-    paddingBottom: spacing.xl,
-  },
-  headerSection: {
-    marginBottom: spacing.xxxl,
-  },
-  title: {
-    ...typography.styles.headingLG,
-    color: colors.text.primary,
-    marginBottom: spacing.sm,
-  },
-  subtitle: {
-    ...typography.styles.bodyMD,
-    color: colors.text.secondary,
-  },
-  form: {
-    marginBottom: spacing.lg,
-  },
-  errorText: {
-    ...typography.styles.caption,
-    color: colors.status.error,
-    marginTop: -spacing.sm,
-    marginBottom: spacing.md,
-  },
-  footer: {
-    paddingHorizontal: spacing.xxl,
-  },
-});

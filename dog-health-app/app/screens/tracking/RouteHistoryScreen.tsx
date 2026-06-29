@@ -15,9 +15,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDogStore } from '../../store/dogStore';
 import { useTrackingStore } from '../../store/trackingStore';
 import { Card, EmptyState } from '../../components/common';
-import { colors, spacing, typography, borderRadius } from '../../theme';
+import { spacing, typography, borderRadius } from '../../theme';
 import type { Route } from '../../types';
 import type { RouteHistoryScreenProps } from '../../navigation/types';
+
 const formatDuration = (seconds: number) => {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
@@ -29,6 +30,101 @@ const formatDistance = (meters: number) => {
   if (meters >= 1000) return `${(meters / 1000).toFixed(2)} km`;
   return `${Math.round(meters)} m`;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5E9CD',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.xl,
+  },
+  backButton: {
+    padding: 4,
+    width: 40,
+  },
+  title: {
+    ...typography.styles.headingXL,
+    color: '#1F1A17',
+  },
+  recordingBanner: {
+    marginHorizontal: spacing.page,
+    marginBottom: spacing.md,
+    backgroundColor: '#4CAF5012',
+  },
+  recordingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  recordingDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#4CAF50',
+    marginRight: spacing.sm,
+  },
+  recordingText: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+    fontWeight: '600',
+    flex: 1,
+  },
+  recordingStat: {
+    ...typography.styles.caption,
+    color: '#6B625A',
+  },
+  list: {
+    paddingHorizontal: spacing.page,
+  },
+  routeCard: {
+    marginBottom: spacing.md,
+  },
+  routeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  routeIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F3A93B18',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.md,
+  },
+  routeInfo: {
+    flex: 1,
+  },
+  routeName: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+    fontWeight: '600',
+  },
+  routeDate: {
+    ...typography.styles.caption,
+    color: '#A39888',
+    marginTop: 2,
+  },
+  routeStats: {
+    alignItems: 'flex-end',
+    marginRight: spacing.sm,
+  },
+  routeStatValue: {
+    ...typography.styles.bodySM,
+    color: '#1F1A17',
+    fontWeight: '600',
+  },
+  routeStatLabel: {
+    ...typography.styles.caption,
+    color: '#A39888',
+    marginTop: 2,
+  },
+});
 
 const RouteItem: React.FC<{
   route: Route;
@@ -43,7 +139,7 @@ const RouteItem: React.FC<{
       <Card variant="default" padding="md" style={styles.routeCard}>
         <View style={styles.routeRow}>
           <View style={styles.routeIcon}>
-            <Ionicons name="walk" size={22} color={colors.primary.DEFAULT} />
+            <Ionicons name="walk" size={22} color="#F3A93B" />
           </View>
           <View style={styles.routeInfo}>
             <Text style={styles.routeName}>{route.name}</Text>
@@ -53,12 +149,14 @@ const RouteItem: React.FC<{
             <Text style={styles.routeStatValue}>{formatDistance(route.totalDistance)}</Text>
             <Text style={styles.routeStatLabel}>{formatDuration(route.duration)}</Text>
           </View>
-          <Ionicons name="chevron-forward" size={18} color={colors.text.tertiary} />
+          <Ionicons name="chevron-forward" size={18} color="#A39888" />
         </View>
       </Card>
     </TouchableOpacity>
   );
 };
+
+
 
 export default function RouteHistoryScreen({ navigation }: RouteHistoryScreenProps) {
   const insets = useSafeAreaInsets();
@@ -91,7 +189,7 @@ export default function RouteHistoryScreen({ navigation }: RouteHistoryScreenPro
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.text.primary} />
+          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
         </TouchableOpacity>
         <Text style={styles.title}>Route History</Text>
         <View style={styles.backButton} />
@@ -102,8 +200,8 @@ export default function RouteHistoryScreen({ navigation }: RouteHistoryScreenPro
           <View style={styles.recordingRow}>
             <View style={styles.recordingDot} />
             <Text style={styles.recordingText}>Recording: {activeRoute.name}</Text>
-              <Text style={styles.recordingStat}>
-                {formatDistance(activeRoute.totalDistance)} · {formatDuration(Math.floor((Date.now() - new Date(activeRoute.startTime).getTime()) / 1000))}
+            <Text style={styles.recordingStat}>
+              {formatDistance(activeRoute.totalDistance)} · {formatDuration(Math.floor((Date.now() - new Date(activeRoute.startTime).getTime()) / 1000))}
             </Text>
           </View>
         </Card>
@@ -128,98 +226,3 @@ export default function RouteHistoryScreen({ navigation }: RouteHistoryScreenPro
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.xl,
-  },
-  backButton: {
-    padding: 4,
-    width: 40,
-  },
-  title: {
-    ...typography.styles.headingXL,
-    color: colors.text.primary,
-  },
-  recordingBanner: {
-    marginHorizontal: spacing.page,
-    marginBottom: spacing.md,
-    backgroundColor: colors.status.success + '12',
-  },
-  recordingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  recordingDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: colors.status.success,
-    marginRight: spacing.sm,
-  },
-  recordingText: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-    fontWeight: '600',
-    flex: 1,
-  },
-  recordingStat: {
-    ...typography.styles.caption,
-    color: colors.text.secondary,
-  },
-  list: {
-    paddingHorizontal: spacing.page,
-  },
-  routeCard: {
-    marginBottom: spacing.md,
-  },
-  routeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  routeIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.primary.DEFAULT + '18',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: spacing.md,
-  },
-  routeInfo: {
-    flex: 1,
-  },
-  routeName: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-    fontWeight: '600',
-  },
-  routeDate: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginTop: 2,
-  },
-  routeStats: {
-    alignItems: 'flex-end',
-    marginRight: spacing.sm,
-  },
-  routeStatValue: {
-    ...typography.styles.bodySM,
-    color: colors.text.primary,
-    fontWeight: '600',
-  },
-  routeStatLabel: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginTop: 2,
-  },
-});

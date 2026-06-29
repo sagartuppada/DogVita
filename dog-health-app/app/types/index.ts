@@ -74,7 +74,6 @@ export interface Units {
 export interface UserSettings {
   units: Units;
   notifications: boolean;
-  darkMode: boolean;
   autoSync: boolean;
   gpsInterval: number;
   heartRateThreshold: number;

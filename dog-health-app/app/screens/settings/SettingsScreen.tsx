@@ -7,11 +7,63 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'rea
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDogStore } from '../../store/dogStore';
-import { useSettingsStore } from '../../store/settingsStore';
 import { authService } from '../../services/auth/service';
 import { Card } from '../../components/common';
-import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import { spacing, typography, borderRadius } from '../../theme';
 import type { SettingsScreenProps } from '../../navigation/types';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.lg,
+  },
+  backButton: {
+    paddingRight: spacing.md,
+  },
+  header: {
+    marginBottom: spacing.xxl,
+  },
+  title: {
+    ...typography.styles.headingXL,
+    color: '#1F1A17',
+  },
+  section: {
+    marginBottom: spacing.xl,
+  },
+  settingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.xl,
+  },
+  settingIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.md,
+  },
+  settingLabel: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+    flex: 1,
+  },
+  settingValue: {
+    ...typography.styles.bodySM,
+    color: '#A39888',
+    marginRight: spacing.sm,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#F0E8D8',
+    marginLeft: spacing.xl + 32 + spacing.md,
+  },
+
+});
 
 const SettingRow: React.FC<{
   icon: string;
@@ -20,7 +72,8 @@ const SettingRow: React.FC<{
   value?: string;
   onPress?: () => void;
   showChevron?: boolean;
-}> = ({ icon, iconColor, label, value, onPress, showChevron = true }) => (
+  chevronColor?: string;
+}> = ({ icon, iconColor, label, value, onPress, showChevron = true, chevronColor }) => (
   <TouchableOpacity
     onPress={onPress}
     activeOpacity={0.6}
@@ -32,7 +85,7 @@ const SettingRow: React.FC<{
     <Text style={styles.settingLabel}>{label}</Text>
     {value && <Text style={styles.settingValue}>{value}</Text>}
     {showChevron && (
-      <Ionicons name="chevron-forward" size={16} color={colors.text.tertiary} />
+      <Ionicons name="chevron-forward" size={16} color={chevronColor ?? iconColor} />
     )}
   </TouchableOpacity>
 );
@@ -40,8 +93,7 @@ const SettingRow: React.FC<{
 export default function SettingsScreen({ navigation }: SettingsScreenProps) {
   const insets = useSafeAreaInsets();
   const activeDog = useDogStore((s) => s.dogs.find((d) => d.id === s.activeDogId));
-  const theme = useSettingsStore((s) => s.theme);
-  const setTheme = useSettingsStore((s) => s.setTheme);
+
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -49,13 +101,13 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
       headerTitle: 'Settings',
       headerLeft: () => (
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.text.primary} />
+          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
         </TouchableOpacity>
       ),
-      headerStyle: { backgroundColor: colors.background.primary },
+      headerStyle: { backgroundColor: '#F5E9CD' },
       headerShadowVisible: false,
     });
-  }, [navigation, colors]);
+  }, [navigation]);
 
   const handleLogout = () => {
     Alert.alert(
@@ -128,7 +180,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
         <Card variant="default" padding="none" style={styles.section}>
           <SettingRow
             icon="paw"
-            iconColor={colors.primary.DEFAULT}
+            iconColor="#F3A93B"
             label="Dog Profile"
             value={activeDog?.name ?? 'Add dog'}
             onPress={handleDogProfile}
@@ -136,7 +188,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           <View style={styles.separator} />
           <SettingRow
             icon="watch"
-            iconColor={colors.status.info}
+            iconColor="#5B9BD5"
             label="Device"
             value="Connected"
             onPress={handleDeviceSettings}
@@ -147,44 +199,26 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
         <Card variant="default" padding="none" style={styles.section}>
           <SettingRow
             icon="location"
-            iconColor={colors.status.success}
+            iconColor="#4CAF50"
             label="Location & Geofences"
             onPress={handleLocationSettings}
           />
           <View style={styles.separator} />
-          <SettingRow
-            icon="moon"
-            iconColor={colors.health.sleep}
-            label="Appearance"
-            value={theme === 'light' ? 'Light' : theme === 'dark' ? 'Dark' : 'System'}
-            onPress={() => {
-              Alert.alert(
-                'Appearance',
-                'Choose your theme',
-                [
-                  { text: 'Light', onPress: () => setTheme('light') },
-                  { text: 'Dark', onPress: () => setTheme('dark') },
-                  { text: 'System', onPress: () => setTheme('system') },
-                  { text: 'Cancel', style: 'cancel' },
-                ],
-                { cancelable: true }
-              );
-            }}
-          />
+
         </Card>
 
         {/* Health Records */}
         <Card variant="default" padding="none" style={styles.section}>
           <SettingRow
             icon="fitness"
-            iconColor={colors.primary.DEFAULT}
+            iconColor="#F3A93B"
             label="Weight"
             onPress={handleWeight}
           />
           <View style={styles.separator} />
           <SettingRow
             icon="medical"
-            iconColor={colors.status.success}
+            iconColor="#4CAF50"
             label="Vaccinations"
             onPress={handleVaccinations}
           />
@@ -194,21 +228,21 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
         <Card variant="default" padding="none" style={styles.section}>
           <SettingRow
             icon="person"
-            iconColor={colors.text.secondary}
+            iconColor="#6B625A"
             label="Account"
             onPress={handleAccount}
           />
           <View style={styles.separator} />
           <SettingRow
             icon="help-circle"
-            iconColor={colors.status.info}
+            iconColor="#5B9BD5"
             label="Help & Support"
             onPress={handleHelp}
           />
           <View style={styles.separator} />
           <SettingRow
             icon="information-circle"
-            iconColor={colors.text.tertiary}
+            iconColor="#A39888"
             label="About"
             value="v1.0.0"
             onPress={() => Alert.alert('About', 'DogVita v1.0.0\nSmart health monitoring for your best friend')}
@@ -219,7 +253,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
         <Card variant="default" padding="none" style={styles.section}>
           <SettingRow
             icon="log-out"
-            iconColor={colors.status.error}
+            iconColor="#F44336"
             label="Log Out"
             showChevron={false}
             onPress={handleLogout}
@@ -229,56 +263,3 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  scrollContent: {
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.lg,
-  },
-  backButton: {
-    paddingRight: spacing.md,
-  },
-  header: {
-    marginBottom: spacing.xxl,
-  },
-  title: {
-    ...typography.styles.headingXL,
-    color: colors.text.primary,
-  },
-  section: {
-    marginBottom: spacing.xl,
-  },
-  settingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: spacing.lg,
-    paddingHorizontal: spacing.xl,
-  },
-  settingIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: spacing.md,
-  },
-  settingLabel: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-    flex: 1,
-  },
-  settingValue: {
-    ...typography.styles.bodySM,
-    color: colors.text.tertiary,
-    marginRight: spacing.sm,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: colors.border.light,
-    marginLeft: spacing.xl + 32 + spacing.md,
-  },
-});

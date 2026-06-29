@@ -22,7 +22,7 @@ interface DogState {
 interface DogActions {
   setDogs: (dogs: Dog[]) => void;
   addDog: (dog: CreateDogInput) => Promise<Dog>;
-  updateDog: (input: UpdateDogInput) => Promise<Dog>;
+  updateDog: (input: UpdateDogInput) => Promise<Dog | null>;
   deleteDog: (dogId: string) => Promise<void>;
   setActiveDog: (dogId: string) => void;
   getActiveDog: () => Dog | null;
@@ -130,7 +130,10 @@ export const useDogStore = create<DogStore>()(
           }
           const { dogs } = get();
           const index = dogs.findIndex((d) => d.id === input.id);
-          if (index === -1) throw new Error('Dog not found');
+          if (index === -1) {
+            set({ isLoading: false, error: 'Dog not found' });
+            return null;
+          }
           const updatedDog: Dog = {
             ...dogs[index],
             ...input,
@@ -142,7 +145,7 @@ export const useDogStore = create<DogStore>()(
           return updatedDog;
         } catch (error) {
           set({ isLoading: false, error: (error as Error).message });
-          throw error;
+          return null;
         }
       },
 
@@ -157,9 +160,10 @@ export const useDogStore = create<DogStore>()(
             activeDogId: state.activeDogId === dogId ? null : state.activeDogId,
             isLoading: false,
           }));
+          return;
         } catch (error) {
           set({ isLoading: false, error: (error as Error).message });
-          throw error;
+          return;
         }
       },
 
@@ -177,26 +181,26 @@ export const useDogStore = create<DogStore>()(
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
               const dogs = await dogsService.getDogs(user.id);
-              if (dogs.length > 0) {
-                set({
-                  dogs,
-                  isLoading: false,
-                  activeDogId: dogs.length > 0 ? (get().activeDogId || dogs[0].id) : null,
-                });
-                return;
-              }
-              // Supabase returned empty — keep existing local dogs if any
-              const currentDogs = get().dogs;
-              if (currentDogs.length > 0) {
-                set({ isLoading: false });
-                return;
-              }
+              // Success from server = source of truth. Replace local data.
+              // Validate activeDogId still exists; reset if it was deleted server-side.
+              const currentActiveId = get().activeDogId;
+              const stillExists = currentActiveId
+                ? dogs.some((d) => d.id === currentActiveId)
+                : false;
+              set({
+                dogs,
+                isLoading: false,
+                error: null,
+                activeDogId: stillExists ? currentActiveId : (dogs[0]?.id ?? null),
+              });
+              return;
             }
           }
+          // Supabase not configured or no session: clear local dog data.
           set({ dogs: [], activeDogId: null, isLoading: false });
         } catch (error) {
           console.warn('[dogStore.fetchDogs] Supabase fetch failed, keeping local data:', (error as Error).message);
-          // Keep existing local dogs on error instead of wiping them
+          // Keep existing local dogs on network error instead of wiping them
           set({ isLoading: false, error: (error as Error).message });
         }
       },
@@ -292,6 +296,21 @@ export const useDogStore = create<DogStore>()(
         set((state) => ({
           vaccinationRecords: [...state.vaccinationRecords, newRecord],
         }));
+        // Schedule vaccination reminder if enabled and has a due date
+        if (newRecord.reminderEnabled && newRecord.nextDueDate) {
+          try {
+            const { notificationsService } = require('../services/notifications');
+            notificationsService.initialize().then(() => {
+              const dog = get().dogs.find((d) => d.id === newRecord.dogId);
+              const dogName = dog?.name ?? 'Your dog';
+              const dueDate = new Date(newRecord.nextDueDate!);
+              const daysUntil = Math.ceil((dueDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+              notificationsService.scheduleVaccinationReminder(
+                newRecord.dogId, dogName, newRecord.name, newRecord.nextDueDate!, daysUntil
+              );
+            }).catch((err: unknown) => console.warn('[dogStore] Vaccination reminder failed:', err));
+          } catch (err) { console.warn('[dogStore] Vaccination reminder failed:', err); }
+        }
         return newRecord;
       },
 
@@ -301,6 +320,23 @@ export const useDogStore = create<DogStore>()(
             r.id === record.id ? { ...record, status: determineVaccinationStatus(record) } : r
           ),
         }));
+        // Re-schedule vaccination reminder if enabled
+        if (record.reminderEnabled && record.nextDueDate) {
+          try {
+            const { notificationsService } = require('../services/notifications');
+            notificationsService.initialize().then(() => {
+              const dog = get().dogs.find((d) => d.id === record.dogId);
+              const dogName = dog?.name ?? 'Your dog';
+              const dueDate = new Date(record.nextDueDate!);
+              const daysUntil = Math.ceil((dueDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+              // Cancel old reminder and schedule new one
+              notificationsService.cancelNotificationsByPrefix(`vacc_${record.dogId}_${record.name}`);
+              notificationsService.scheduleVaccinationReminder(
+                record.dogId, dogName, record.name, record.nextDueDate!, daysUntil
+              );
+            }).catch((err: unknown) => console.warn('[dogStore] Vaccination reminder failed:', err));
+          } catch (err) { console.warn('[dogStore] Vaccination reminder failed:', err); }
+        }
       },
 
       deleteVaccinationRecord: (recordId) =>

@@ -20,11 +20,9 @@ import { useTrackingStore } from '../../store/trackingStore';
 import { Card } from '../../components/common';
 import type { GeofenceManagerScreenProps } from '../../navigation/types';
 import { DogMap } from '../../components/maps';
-import { colors, spacing, typography, borderRadius } from '../../theme';
+import { spacing, typography, borderRadius } from '../../theme';
 import type { Geofence } from '../../types';
 import { supabase } from '../../services/api/supabase';
-
-
 
 interface GeofenceForm {
   name: string;
@@ -34,6 +32,179 @@ interface GeofenceForm {
 }
 
 const DEFAULT_RADIUS = 100;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5E9CD',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.md,
+  },
+  backButton: {
+    padding: 4,
+    width: 40,
+  },
+  title: {
+    ...typography.styles.headingXL,
+    color: '#1F1A17',
+  },
+  instruction: {
+    ...typography.styles.caption,
+    color: '#A39888',
+    textAlign: 'center',
+    marginBottom: spacing.sm,
+  },
+  mapContainer: {
+    height: 280,
+    marginHorizontal: spacing.page,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  list: {
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.lg,
+  },
+  sectionTitle: {
+    ...typography.styles.label,
+    color: '#6B625A',
+    marginBottom: spacing.md,
+  },
+  geofenceCard: {
+    marginBottom: spacing.md,
+  },
+  geofenceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  geofenceDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: spacing.md,
+  },
+  geofenceInfo: {
+    flex: 1,
+  },
+  geofenceName: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+    fontWeight: '600',
+  },
+  geofenceDetail: {
+    ...typography.styles.caption,
+    color: '#A39888',
+    marginTop: 2,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: spacing.xxl,
+  },
+  emptyText: {
+    ...typography.styles.bodyMD,
+    color: '#A39888',
+    marginTop: spacing.md,
+  },
+  emptySub: {
+    ...typography.styles.caption,
+    color: '#A39888',
+    marginTop: spacing.xs,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#F5E9CD',
+    borderTopLeftRadius: borderRadius.xxl,
+    borderTopRightRadius: borderRadius.xxl,
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.xl,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+  },
+  modalTitle: {
+    ...typography.styles.headingLG,
+    color: '#1F1A17',
+  },
+  modalLabel: {
+    ...typography.styles.caption,
+    color: '#6B625A',
+    marginBottom: spacing.xs,
+    marginTop: spacing.md,
+  },
+  input: {
+    backgroundColor: '#FBF4E4',
+    borderRadius: borderRadius.lg,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    color: '#1F1A17',
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#E9DDC9',
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: spacing.lg,
+  },
+  toggleLabel: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+  },
+  toggle: {
+    width: 48,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    paddingHorizontal: 2,
+  },
+  toggleKnob: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    alignSelf: 'flex-start',
+  },
+  toggleKnobActive: {
+    alignSelf: 'flex-end',
+  },
+  saveButton: {
+    backgroundColor: '#F3A93B',
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+    marginTop: spacing.xl,
+  },
+  saveButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  deleteButton: {
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+    marginTop: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  deleteButtonText: {
+    color: '#F44336',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
 
 export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScreenProps) {
   const insets = useSafeAreaInsets();
@@ -156,7 +327,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.text.primary} />
+          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
         </TouchableOpacity>
         <Text style={styles.title}>Geofences</Text>
         <View style={styles.backButton} />
@@ -193,7 +364,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
               <View style={styles.geofenceRow}>
                 <View style={[
                   styles.geofenceDot,
-                  { backgroundColor: geofence.isActive ? colors.primary.DEFAULT : colors.text.tertiary }
+                  { backgroundColor: geofence.isActive ? '#F3A93B' : '#A39888' }
                 ]} />
                 <View style={styles.geofenceInfo}>
                   <Text style={styles.geofenceName}>{geofence.name}</Text>
@@ -201,7 +372,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
                     {Math.round(geofence.radius)}m radius · {geofence.isActive ? 'Active' : 'Inactive'}
                   </Text>
                 </View>
-                <Ionicons name="chevron-forward" size={18} color={colors.text.tertiary} />
+                <Ionicons name="chevron-forward" size={18} color="#A39888" />
               </View>
             </Card>
           </TouchableOpacity>
@@ -209,7 +380,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
 
         {dogGeofences.length === 0 && (
           <View style={styles.emptyState}>
-            <Ionicons name="location-outline" size={40} color={colors.text.tertiary} />
+            <Ionicons name="location-outline" size={40} color="#A39888" />
             <Text style={styles.emptyText}>No geofences set</Text>
             <Text style={styles.emptySub}>Tap on the map above to create one</Text>
           </View>
@@ -230,7 +401,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
                 {editingGeofence ? 'Edit Geofence' : 'New Geofence'}
               </Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Ionicons name="close" size={24} color={colors.text.secondary} />
+                <Ionicons name="close" size={24} color="#6B625A" />
               </TouchableOpacity>
             </View>
 
@@ -240,7 +411,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
               value={form.name}
               onChangeText={(text) => setForm((f) => ({ ...f, name: text }))}
               placeholder="Geofence name"
-              placeholderTextColor={colors.text.tertiary}
+              placeholderTextColor="#A39888"
             />
 
             <Text style={styles.modalLabel}>Radius (meters)</Text>
@@ -250,7 +421,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
               onChangeText={(text) => setForm((f) => ({ ...f, radius: text.replace(/[^0-9]/g, '') }))}
               keyboardType="number-pad"
               placeholder="100"
-              placeholderTextColor={colors.text.tertiary}
+              placeholderTextColor="#A39888"
             />
 
             <View style={styles.toggleRow}>
@@ -259,7 +430,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
                 onPress={() => setForm((f) => ({ ...f, isActive: !f.isActive }))}
                 style={[
                   styles.toggle,
-                  { backgroundColor: form.isActive ? colors.primary.DEFAULT : colors.border.DEFAULT }
+                  { backgroundColor: form.isActive ? '#F3A93B' : '#E9DDC9' }
                 ]}
               >
                 <View style={[
@@ -275,7 +446,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
                 onPress={() => setForm((f) => ({ ...f, alertsEnabled: !f.alertsEnabled }))}
                 style={[
                   styles.toggle,
-                  { backgroundColor: form.alertsEnabled ? colors.primary.DEFAULT : colors.border.DEFAULT }
+                  { backgroundColor: form.alertsEnabled ? '#F3A93B' : '#E9DDC9' }
                 ]}
               >
                 <View style={[
@@ -310,176 +481,3 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
-  },
-  backButton: {
-    padding: 4,
-    width: 40,
-  },
-  title: {
-    ...typography.styles.headingXL,
-    color: colors.text.primary,
-  },
-  instruction: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    textAlign: 'center',
-    marginBottom: spacing.sm,
-  },
-  mapContainer: {
-    height: 280,
-    marginHorizontal: spacing.page,
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  list: {
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.lg,
-  },
-  sectionTitle: {
-    ...typography.styles.label,
-    color: colors.text.secondary,
-    marginBottom: spacing.md,
-  },
-  geofenceCard: {
-    marginBottom: spacing.md,
-  },
-  geofenceRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  geofenceDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginRight: spacing.md,
-  },
-  geofenceInfo: {
-    flex: 1,
-  },
-  geofenceName: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-    fontWeight: '600',
-  },
-  geofenceDetail: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginTop: 2,
-  },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: spacing.xxl,
-  },
-  emptyText: {
-    ...typography.styles.bodyMD,
-    color: colors.text.tertiary,
-    marginTop: spacing.md,
-  },
-  emptySub: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginTop: spacing.xs,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: colors.background.primary,
-    borderTopLeftRadius: borderRadius.xxl,
-    borderTopRightRadius: borderRadius.xxl,
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.xl,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.xl,
-  },
-  modalTitle: {
-    ...typography.styles.headingLG,
-    color: colors.text.primary,
-  },
-  modalLabel: {
-    ...typography.styles.caption,
-    color: colors.text.secondary,
-    marginBottom: spacing.xs,
-    marginTop: spacing.md,
-  },
-  input: {
-    backgroundColor: colors.background.card,
-    borderRadius: borderRadius.lg,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    color: colors.text.primary,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: colors.border.DEFAULT,
-  },
-  toggleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: spacing.lg,
-  },
-  toggleLabel: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-  },
-  toggle: {
-    width: 48,
-    height: 28,
-    borderRadius: 14,
-    justifyContent: 'center',
-    paddingHorizontal: 2,
-  },
-  toggleKnob: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: colors.white,
-    alignSelf: 'flex-start',
-  },
-  toggleKnobActive: {
-    alignSelf: 'flex-end',
-  },
-  saveButton: {
-    backgroundColor: colors.primary.DEFAULT,
-    borderRadius: borderRadius.lg,
-    paddingVertical: spacing.md,
-    alignItems: 'center',
-    marginTop: spacing.xl,
-  },
-  saveButtonText: {
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  deleteButton: {
-    borderRadius: borderRadius.lg,
-    paddingVertical: spacing.md,
-    alignItems: 'center',
-    marginTop: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  deleteButtonText: {
-    color: colors.status.error,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});

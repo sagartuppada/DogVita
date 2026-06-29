@@ -17,7 +17,7 @@ import { useTrackingStore } from '../../store/trackingStore';
 import { Card, StatusBadge, EmptyState } from '../../components/common';
 import { DogMap } from '../../components/maps';
 import { useLocation } from '../../hooks/useLocation';
-import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import { spacing, typography, borderRadius, shadows } from '../../theme';
 import type { TrackingTabScreenProps } from '../../navigation/types';
 
 const formatDuration = (seconds: number) => {
@@ -31,6 +31,159 @@ const formatDistance = (meters: number) => {
   if (meters >= 1000) return `${(meters / 1000).toFixed(2)} km`;
   return `${Math.round(meters)} m`;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5E9CD',
+  },
+  mapContainer: {
+    flex: 1,
+    position: 'relative',
+  },
+  mapPlaceholder: {
+    flex: 1,
+    backgroundColor: '#EDE2C6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mapPlaceholderText: {
+    ...typography.styles.bodySM,
+    color: '#A39888',
+    marginTop: spacing.md,
+  },
+  fabContainer: {
+    position: 'absolute',
+    right: spacing.xl,
+    bottom: spacing.xl,
+    gap: spacing.md,
+  },
+  fab: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fabPrimary: {
+    backgroundColor: '#F3A93B',
+    ...shadows.fab,
+  },
+  fabRecording: {
+    backgroundColor: '#F44336',
+    ...shadows.fab,
+  },
+  fabSecondary: {
+    backgroundColor: '#FFFFFF',
+    ...shadows.md,
+  },
+  statusOverlay: {
+    position: 'absolute',
+    left: spacing.xl,
+  },
+  infoCard: {
+    marginHorizontal: spacing.page,
+    marginBottom: spacing.xl,
+    marginTop: -spacing.xl,
+    zIndex: 1,
+  },
+  infoHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: spacing.lg,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  headerActionBtn: {
+    padding: 2,
+  },
+  dogName: {
+    ...typography.styles.headingMD,
+    color: '#1F1A17',
+  },
+  breed: {
+    ...typography.styles.bodySM,
+    color: '#A39888',
+    marginTop: 2,
+  },
+  routeStatsBanner: {
+    flexDirection: 'row',
+    backgroundColor: '#F4433610',
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  routeStat: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  routeStatDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: '#F0E8D8',
+    alignSelf: 'center',
+  },
+  routeStatValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1F1A17',
+  },
+  routeStatLabel: {
+    ...typography.styles.caption,
+    color: '#A39888',
+    marginTop: 2,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    backgroundColor: '#EDE2C6',
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.md,
+  },
+  statItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  statValue: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#1F1A17',
+    marginTop: spacing.xs,
+  },
+  statLabel: {
+    ...typography.styles.caption,
+    color: '#A39888',
+    marginTop: 2,
+  },
+  statDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: '#F0E8D8',
+    alignSelf: 'center',
+  },
+  actionRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    marginTop: spacing.lg,
+  },
+  actionButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EDE2C6',
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.md,
+    gap: spacing.sm,
+  },
+  actionButtonText: {
+    ...typography.styles.bodySM,
+    color: '#1F1A17',
+    fontWeight: '600',
+  },
+});
 
 export default function TrackingOverviewScreen({ navigation }: TrackingTabScreenProps<'Tracking'>) {
   const insets = useSafeAreaInsets();
@@ -58,12 +211,6 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
     () => dogs.find((d) => d.id === activeDogId) ?? null,
     [dogs, activeDogId],
   );
-
-  useEffect(() => {
-    if (!currentLocation) {
-      useTrackingStore.getState().loadDemoData();
-    }
-  }, [currentLocation]);
 
   useEffect(() => {
     if (activeDogId) {
@@ -142,7 +289,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
           />
         ) : (
           <View style={styles.mapPlaceholder}>
-            <Ionicons name="map-outline" size={48} color={colors.text.tertiary} />
+            <Ionicons name="map-outline" size={48} color="#A39888" />
             <Text style={styles.mapPlaceholderText}>Waiting for GPS data...</Text>
           </View>
         )}
@@ -154,14 +301,14 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
             activeOpacity={0.7}
             onPress={handleNavigateToRoutes}
           >
-            <Ionicons name="list" size={20} color={colors.text.primary} />
+            <Ionicons name="list" size={20} color="#1F1A17" />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.fab, styles.fabSecondary]}
             activeOpacity={0.7}
             onPress={handleNavigateToGeofences}
           >
-            <Ionicons name="locate-outline" size={20} color={colors.text.primary} />
+            <Ionicons name="locate-outline" size={20} color="#1F1A17" />
           </TouchableOpacity>
           {activeRoute ? (
             <TouchableOpacity
@@ -169,7 +316,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
               activeOpacity={0.7}
               onPress={handleEndRoute}
             >
-              <Ionicons name="stop" size={22} color={colors.white} />
+              <Ionicons name="stop" size={22} color="#FFFFFF" />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -177,7 +324,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
               activeOpacity={0.7}
               onPress={handleStartRoute}
             >
-              <Ionicons name="play" size={22} color={colors.white} />
+              <Ionicons name="play" size={22} color="#FFFFFF" />
             </TouchableOpacity>
           )}
         </View>
@@ -209,7 +356,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
               <Ionicons
                 name={isTracking ? 'pause-circle' : 'play-circle'}
                 size={28}
-                color={isTracking ? colors.status.warning : colors.status.success}
+                color={isTracking ? '#FF9800' : '#4CAF50'}
               />
             </TouchableOpacity>
           </View>
@@ -239,13 +386,13 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
 
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <Ionicons name="speedometer" size={18} color={colors.primary.DEFAULT} />
+            <Ionicons name="speedometer" size={18} color="#F3A93B" />
             <Text style={styles.statValue}>{currentSpeed ? `${currentSpeed.toFixed(1)}` : '--'}</Text>
             <Text style={styles.statLabel}>km/h</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
-            <Ionicons name="trail-sign-outline" size={18} color={colors.status.success} />
+            <Ionicons name="trail-sign-outline" size={18} color="#4CAF50" />
             <Text style={styles.statValue}>
               {totalDistance > 0 ? formatDistance(totalDistance) : '--'}
             </Text>
@@ -253,7 +400,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
-            <Ionicons name="location" size={18} color={colors.status.info} />
+            <Ionicons name="location" size={18} color="#5B9BD5" />
             <Text style={styles.statValue}>
               {locationHistory.length}
             </Text>
@@ -268,7 +415,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
             onPress={handleNavigateToRoutes}
             activeOpacity={0.7}
           >
-            <Ionicons name="list-outline" size={18} color={colors.primary.DEFAULT} />
+            <Ionicons name="list-outline" size={18} color="#F3A93B" />
             <Text style={styles.actionButtonText}>Route History</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -276,7 +423,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
             onPress={handleNavigateToGeofences}
             activeOpacity={0.7}
           >
-            <Ionicons name="locate-outline" size={18} color={colors.status.info} />
+            <Ionicons name="locate-outline" size={18} color="#5B9BD5" />
             <Text style={styles.actionButtonText}>Geofences</Text>
           </TouchableOpacity>
         </View>
@@ -284,156 +431,3 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  mapContainer: {
-    flex: 1,
-    position: 'relative',
-  },
-  mapPlaceholder: {
-    flex: 1,
-    backgroundColor: colors.background.secondary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  mapPlaceholderText: {
-    ...typography.styles.bodySM,
-    color: colors.text.tertiary,
-    marginTop: spacing.md,
-  },
-  fabContainer: {
-    position: 'absolute',
-    right: spacing.xl,
-    bottom: spacing.xl,
-    gap: spacing.md,
-  },
-  fab: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  fabPrimary: {
-    backgroundColor: colors.primary.DEFAULT,
-    ...shadows.fab,
-  },
-  fabRecording: {
-    backgroundColor: colors.status.error,
-    ...shadows.fab,
-  },
-  fabSecondary: {
-    backgroundColor: colors.white,
-    ...shadows.md,
-  },
-  statusOverlay: {
-    position: 'absolute',
-    left: spacing.xl,
-  },
-  infoCard: {
-    marginHorizontal: spacing.page,
-    marginBottom: spacing.xl,
-    marginTop: -spacing.xl,
-    zIndex: 1,
-  },
-  infoHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: spacing.lg,
-  },
-  headerActions: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-  },
-  headerActionBtn: {
-    padding: 2,
-  },
-  dogName: {
-    ...typography.styles.headingMD,
-    color: colors.text.primary,
-  },
-  breed: {
-    ...typography.styles.bodySM,
-    color: colors.text.tertiary,
-    marginTop: 2,
-  },
-  routeStatsBanner: {
-    flexDirection: 'row',
-    backgroundColor: colors.status.error + '10',
-    borderRadius: borderRadius.lg,
-    paddingVertical: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  routeStat: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  routeStatDivider: {
-    width: 1,
-    height: 32,
-    backgroundColor: colors.border.light,
-    alignSelf: 'center',
-  },
-  routeStatValue: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.text.primary,
-  },
-  routeStatLabel: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginTop: 2,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    backgroundColor: colors.background.secondary,
-    borderRadius: borderRadius.lg,
-    paddingVertical: spacing.md,
-  },
-  statItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  statValue: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: colors.text.primary,
-    marginTop: spacing.xs,
-  },
-  statLabel: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginTop: 2,
-  },
-  statDivider: {
-    width: 1,
-    height: 32,
-    backgroundColor: colors.border.light,
-    alignSelf: 'center',
-  },
-  actionRow: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginTop: spacing.lg,
-  },
-  actionButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.background.secondary,
-    borderRadius: borderRadius.lg,
-    paddingVertical: spacing.md,
-    gap: spacing.sm,
-  },
-  actionButtonText: {
-    ...typography.styles.bodySM,
-    color: colors.text.primary,
-    fontWeight: '600',
-  },
-});

@@ -14,7 +14,7 @@ export const alertsService = {
 
     if (error) {
       console.error('[alertsService.getAlerts]', error);
-      return [];
+      throw new Error(`Failed to fetch alerts: ${error.message}`);
     }
 
     return (data ?? []).map(mapAlertRow);
@@ -38,7 +38,9 @@ export const alertsService = {
   },
 
   async createAlert(
-    alert: Omit<HealthAlert, 'id' | 'timestamp' | 'acknowledged' | 'resolvedAt'>
+    alert: Omit<HealthAlert, 'id' | 'timestamp' | 'acknowledged' | 'resolvedAt'> & {
+      ownerId: string;
+    }
   ): Promise<HealthAlert | null> {
     if (!isSupabaseConfigured()) return null;
 
@@ -47,7 +49,7 @@ export const alertsService = {
       .insert([
         {
           dog_id: alert.dogId,
-          owner_id: alert.dogId,
+          owner_id: alert.ownerId,
           alert_type: alert.type,
           severity: alert.severity,
           message: alert.message,
@@ -103,6 +105,7 @@ function mapAlertRow(row: Record<string, unknown>): HealthAlert {
   return {
     id: row.id as string,
     dogId: row.dog_id as string,
+    ownerId: row.owner_id as string | undefined,
     type: row.alert_type as HealthAlert['type'],
     severity: row.severity as HealthAlert['severity'],
     message: (row.message as string) || '',

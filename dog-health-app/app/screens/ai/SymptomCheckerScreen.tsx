@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDogStore } from '../../store/dogStore';
 import { Card } from '../../components/common';
-import { colors, spacing, typography, borderRadius } from '../../theme';
+import { spacing, typography, borderRadius } from '../../theme';
 import type { SymptomCheckerScreenProps } from '../../navigation/types';
 
 interface Symptom {
@@ -139,10 +139,219 @@ const CONDITIONS: Condition[] = [
   },
 ];
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.md,
+  },
+  backButton: {
+    padding: 4,
+    width: 40,
+  },
+  title: {
+    ...typography.styles.headingXL,
+    color: '#1F1A17',
+  },
+  disclaimerCard: {
+    marginHorizontal: spacing.page,
+    marginBottom: spacing.md,
+    backgroundColor: '#5B9BD510',
+  },
+  disclaimerRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  disclaimerText: {
+    ...typography.styles.caption,
+    color: '#6B625A',
+    flex: 1,
+    lineHeight: 18,
+  },
+  selectedBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: spacing.page,
+    marginBottom: spacing.md,
+  },
+  selectedText: {
+    ...typography.styles.bodySM,
+    color: '#6B625A',
+  },
+  analyzeText: {
+    ...typography.styles.bodySM,
+    color: '#F3A93B',
+    fontWeight: '700',
+  },
+  categorySection: {
+    marginBottom: spacing.lg,
+    paddingHorizontal: spacing.page,
+  },
+  categoryTitle: {
+    ...typography.styles.label,
+    color: '#6B625A',
+    marginBottom: spacing.sm,
+  },
+  symptomGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  symptomChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    backgroundColor: '#FBF4E4',
+    borderRadius: borderRadius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderWidth: 1,
+    borderColor: '#F0E8D8',
+  },
+  symptomChipSelected: {
+    backgroundColor: '#F3A93B',
+    borderColor: '#F3A93B',
+  },
+  severityDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  symptomLabel: {
+    ...typography.styles.caption,
+    color: '#1F1A17',
+  },
+  symptomLabelSelected: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  checkIcon: {
+    marginLeft: spacing.xs,
+  },
+  resultsSection: {
+    paddingHorizontal: spacing.page,
+    marginTop: spacing.lg,
+  },
+  resultsTitle: {
+    ...typography.styles.headingMD,
+    color: '#1F1A17',
+    marginBottom: spacing.md,
+  },
+  urgentCard: {
+    marginBottom: spacing.md,
+    backgroundColor: '#F4433610',
+    borderColor: '#F4433630',
+    borderWidth: 1,
+  },
+  urgentRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
+  urgentText: {
+    flex: 1,
+  },
+  urgentTitle: {
+    ...typography.styles.bodyMD,
+    color: '#F44336',
+    fontWeight: '700',
+  },
+  urgentDesc: {
+    ...typography.styles.caption,
+    color: '#6B625A',
+    marginTop: spacing.xs,
+  },
+  resultCard: {
+    marginBottom: spacing.md,
+  },
+  resultHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginBottom: spacing.sm,
+  },
+  resultRank: {
+    ...typography.styles.caption,
+    color: '#A39888',
+    fontWeight: '700',
+    width: 24,
+  },
+  resultNameRow: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  resultName: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+    fontWeight: '600',
+    flex: 1,
+  },
+  riskBadge: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: borderRadius.pill,
+  },
+  riskText: {
+    ...typography.styles.caption,
+    fontWeight: '600',
+  },
+  resultDesc: {
+    ...typography.styles.caption,
+    color: '#6B625A',
+    marginLeft: 32,
+    marginBottom: spacing.sm,
+    lineHeight: 18,
+  },
+  matchRow: {
+    marginLeft: 32,
+    marginBottom: spacing.sm,
+  },
+  matchText: {
+    ...typography.styles.caption,
+    color: '#A39888',
+  },
+  actionBox: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginLeft: 32,
+    backgroundColor: '#F3A93B10',
+    borderRadius: borderRadius.lg,
+    padding: spacing.sm,
+  },
+  actionText: {
+    ...typography.styles.caption,
+    color: '#1F1A17',
+    flex: 1,
+    lineHeight: 18,
+  },
+  noResults: {
+    alignItems: 'center',
+    paddingVertical: spacing.xxl,
+  },
+  noResultsText: {
+    ...typography.styles.bodyMD,
+    color: '#A39888',
+    marginTop: spacing.md,
+  },
+  noResultsSub: {
+    ...typography.styles.caption,
+    color: '#A39888',
+    marginTop: spacing.xs,
+  },
+});
+
 const RISK_COLORS = {
-  low: colors.status.success,
-  moderate: colors.status.warning,
-  high: colors.status.error,
+  low: '#4CAF50',
+  moderate: '#FF9800',
+  high: '#F44336',
   critical: '#8B0000',
 };
 
@@ -204,11 +413,11 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.text.primary} />
+          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
         </TouchableOpacity>
         <Text style={styles.title}>Symptom Checker</Text>
         <TouchableOpacity onPress={clearAll} style={styles.backButton}>
-          <Ionicons name="refresh" size={20} color={colors.text.tertiary} />
+          <Ionicons name="refresh" size={20} color="#A39888" />
         </TouchableOpacity>
       </View>
 
@@ -219,7 +428,7 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
         {/* Disclaimer */}
         <Card variant="default" padding="md" style={styles.disclaimerCard}>
           <View style={styles.disclaimerRow}>
-            <Ionicons name="information-circle" size={20} color={colors.status.info} />
+            <Ionicons name="information-circle" size={20} color="#5B9BD5" />
             <Text style={styles.disclaimerText}>
               This is not a substitute for professional veterinary care. If your dog is in distress, contact a vet immediately.
             </Text>
@@ -247,10 +456,10 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
                 const isSelected = selectedSymptoms.has(symptom.id);
                 const severityColor =
                   symptom.severity === 'high'
-                    ? colors.status.error
+                    ? '#F44336'
                     : symptom.severity === 'medium'
-                    ? colors.status.warning
-                    : colors.status.success;
+                    ? '#FF9800'
+                    : '#4CAF50';
                 return (
                   <TouchableOpacity
                     key={symptom.id}
@@ -266,7 +475,7 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
                       {symptom.label}
                     </Text>
                     {isSelected && (
-                      <Ionicons name="checkmark" size={14} color={colors.white} style={styles.checkIcon} />
+                      <Ionicons name="checkmark" size={14} color="#FFFFFF" style={styles.checkIcon} />
                     )}
                   </TouchableOpacity>
                 );
@@ -283,7 +492,7 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
             {maxRisk && (maxRisk.risk === 'critical' || maxRisk.risk === 'high') && (
               <Card variant="elevated" padding="md" style={styles.urgentCard}>
                 <View style={styles.urgentRow}>
-                  <Ionicons name="warning" size={24} color={colors.status.error} />
+                  <Ionicons name="warning" size={24} color="#F44336" />
                   <View style={styles.urgentText}>
                     <Text style={styles.urgentTitle}>Potential Emergency Detected</Text>
                     <Text style={styles.urgentDesc}>
@@ -314,7 +523,7 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
                   </Text>
                 </View>
                 <View style={styles.actionBox}>
-                  <Ionicons name="medical" size={16} color={colors.primary.DEFAULT} />
+                  <Ionicons name="medical" size={16} color="#F3A93B" />
                   <Text style={styles.actionText}>{result.action}</Text>
                 </View>
               </Card>
@@ -324,7 +533,7 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
 
         {showResults && results.length === 0 && selectedSymptoms.size > 0 && (
           <View style={styles.noResults}>
-            <Ionicons name="search-outline" size={40} color={colors.text.tertiary} />
+            <Ionicons name="search-outline" size={40} color="#A39888" />
             <Text style={styles.noResultsText}>No matching conditions found</Text>
             <Text style={styles.noResultsSub}>
               Try selecting different symptoms or consult your vet directly.
@@ -335,213 +544,3 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
-  },
-  backButton: {
-    padding: 4,
-    width: 40,
-  },
-  title: {
-    ...typography.styles.headingXL,
-    color: colors.text.primary,
-  },
-  disclaimerCard: {
-    marginHorizontal: spacing.page,
-    marginBottom: spacing.md,
-    backgroundColor: colors.status.info + '10',
-  },
-  disclaimerRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-  },
-  disclaimerText: {
-    ...typography.styles.caption,
-    color: colors.text.secondary,
-    flex: 1,
-    lineHeight: 18,
-  },
-  selectedBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: spacing.page,
-    marginBottom: spacing.md,
-  },
-  selectedText: {
-    ...typography.styles.bodySM,
-    color: colors.text.secondary,
-  },
-  analyzeText: {
-    ...typography.styles.bodySM,
-    color: colors.primary.DEFAULT,
-    fontWeight: '700',
-  },
-  categorySection: {
-    marginBottom: spacing.lg,
-    paddingHorizontal: spacing.page,
-  },
-  categoryTitle: {
-    ...typography.styles.label,
-    color: colors.text.secondary,
-    marginBottom: spacing.sm,
-  },
-  symptomGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
-  symptomChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    backgroundColor: colors.background.card,
-    borderRadius: borderRadius.pill,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.border.light,
-  },
-  symptomChipSelected: {
-    backgroundColor: colors.primary.DEFAULT,
-    borderColor: colors.primary.DEFAULT,
-  },
-  severityDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  symptomLabel: {
-    ...typography.styles.caption,
-    color: colors.text.primary,
-  },
-  symptomLabelSelected: {
-    color: colors.white,
-    fontWeight: '600',
-  },
-  checkIcon: {
-    marginLeft: spacing.xs,
-  },
-  resultsSection: {
-    paddingHorizontal: spacing.page,
-    marginTop: spacing.lg,
-  },
-  resultsTitle: {
-    ...typography.styles.headingMD,
-    color: colors.text.primary,
-    marginBottom: spacing.md,
-  },
-  urgentCard: {
-    marginBottom: spacing.md,
-    backgroundColor: colors.status.error + '10',
-    borderColor: colors.status.error + '30',
-    borderWidth: 1,
-  },
-  urgentRow: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-  urgentText: {
-    flex: 1,
-  },
-  urgentTitle: {
-    ...typography.styles.bodyMD,
-    color: colors.status.error,
-    fontWeight: '700',
-  },
-  urgentDesc: {
-    ...typography.styles.caption,
-    color: colors.text.secondary,
-    marginTop: spacing.xs,
-  },
-  resultCard: {
-    marginBottom: spacing.md,
-  },
-  resultHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    marginBottom: spacing.sm,
-  },
-  resultRank: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    fontWeight: '700',
-    width: 24,
-  },
-  resultNameRow: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  resultName: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-    fontWeight: '600',
-    flex: 1,
-  },
-  riskBadge: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
-    borderRadius: borderRadius.pill,
-  },
-  riskText: {
-    ...typography.styles.caption,
-    fontWeight: '600',
-  },
-  resultDesc: {
-    ...typography.styles.caption,
-    color: colors.text.secondary,
-    marginLeft: 32,
-    marginBottom: spacing.sm,
-    lineHeight: 18,
-  },
-  matchRow: {
-    marginLeft: 32,
-    marginBottom: spacing.sm,
-  },
-  matchText: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-  },
-  actionBox: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    marginLeft: 32,
-    backgroundColor: colors.primary.DEFAULT + '10',
-    borderRadius: borderRadius.lg,
-    padding: spacing.sm,
-  },
-  actionText: {
-    ...typography.styles.caption,
-    color: colors.text.primary,
-    flex: 1,
-    lineHeight: 18,
-  },
-  noResults: {
-    alignItems: 'center',
-    paddingVertical: spacing.xxl,
-  },
-  noResultsText: {
-    ...typography.styles.bodyMD,
-    color: colors.text.tertiary,
-    marginTop: spacing.md,
-  },
-  noResultsSub: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginTop: spacing.xs,
-  },
-});

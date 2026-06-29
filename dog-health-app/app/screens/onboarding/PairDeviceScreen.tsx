@@ -7,9 +7,89 @@ import { View, Text, StyleSheet, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button, Header, StatusBadge } from '../../components/common';
-import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import { spacing, typography, borderRadius, shadows } from '../../theme';
 import type { OnboardingScreenProps } from '../../navigation/types';
 import { useSettingsStore } from '../../store/settingsStore';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5E9CD',
+  },
+  content: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+  pulseArea: {
+    width: 160,
+    height: 160,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
+  pulseRing: {
+    position: 'absolute',
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    borderWidth: 2,
+  },
+  pulseRingInner: {
+    position: 'absolute',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 1.5,
+  },
+  pulseIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statusText: {
+    ...typography.styles.headingSM,
+    color: '#1F1A17',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  devicePreview: {
+    width: '100%',
+    backgroundColor: '#FBF4E4',
+    borderRadius: 20,
+    padding: 20,
+    ...shadows.card,
+  },
+  deviceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  deviceInfo: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  deviceName: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+    fontWeight: '600',
+  },
+  deviceId: {
+    ...typography.styles.caption,
+    color: '#A39888',
+  },
+  errorHint: {
+    ...typography.styles.bodySM,
+    color: '#6B625A',
+    textAlign: 'center',
+    marginTop: 16,
+  },
+  footer: {
+    paddingHorizontal: 24,
+  },
+});
 
 export default function PairDeviceScreen({
   navigation,
@@ -36,19 +116,19 @@ export default function PairDeviceScreen({
   const getStatusConfig = () => {
     switch (status) {
       case 'scanning':
-        return { icon: 'bluetooth', color: colors.primary.DEFAULT, text: 'Scanning for devices...' };
+        return { icon: 'bluetooth', color: '#F3A93B', text: 'Scanning for devices...' };
       case 'found':
-        return { icon: 'watch', color: colors.status.info, text: 'DogVita Collar found!' };
+        return { icon: 'watch', color: '#5B9BD5', text: 'DogVita Collar found!' };
       case 'pairing':
-        return { icon: 'sync', color: colors.primary.DEFAULT, text: 'Pairing...' };
+        return { icon: 'sync', color: '#F3A93B', text: 'Pairing...' };
       case 'connected':
-        return { icon: 'checkmark-circle', color: colors.status.success, text: 'Connected!' };
+        return { icon: 'checkmark-circle', color: '#4CAF50', text: 'Connected!' };
       case 'error':
-        return { icon: 'alert-circle', color: colors.status.error, text: 'Pairing failed' };
+        return { icon: 'alert-circle', color: '#F44336', text: 'Pairing failed' };
     }
   };
 
-  const config = getStatusConfig();
+  const config = getStatusConfig()!;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -79,7 +159,7 @@ export default function PairDeviceScreen({
         {status === 'found' && (
           <View style={styles.devicePreview}>
             <View style={styles.deviceRow}>
-              <Ionicons name="watch" size={24} color={colors.text.secondary} />
+              <Ionicons name="watch" size={24} color="#6B625A" />
               <View style={styles.deviceInfo}>
                 <Text style={styles.deviceName}>DogVita Collar</Text>
                 <Text style={styles.deviceId}>Signal: Strong</Text>
@@ -96,7 +176,7 @@ export default function PairDeviceScreen({
         )}
       </View>
 
-      <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.lg }]}>
+      <View style={[styles.footer, { paddingBottom: insets.bottom + 16 }]}>
         {status === 'scanning' && (
           <Button
             title="Cancel"
@@ -143,84 +223,3 @@ export default function PairDeviceScreen({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: spacing.xxl,
-  },
-  pulseArea: {
-    width: 160,
-    height: 160,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: spacing.xxl,
-  },
-  pulseRing: {
-    position: 'absolute',
-    width: 160,
-    height: 160,
-    borderRadius: 80,
-    borderWidth: 2,
-  },
-  pulseRingInner: {
-    position: 'absolute',
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 1.5,
-  },
-  pulseIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  statusText: {
-    ...typography.styles.headingSM,
-    color: colors.text.primary,
-    textAlign: 'center',
-    marginBottom: spacing.xxl,
-  },
-  devicePreview: {
-    width: '100%',
-    backgroundColor: colors.background.card,
-    borderRadius: borderRadius.xl,
-    padding: spacing.xl,
-    ...shadows.card,
-  },
-  deviceRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  deviceInfo: {
-    flex: 1,
-    marginLeft: spacing.md,
-  },
-  deviceName: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-    fontWeight: '600',
-  },
-  deviceId: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-  },
-  errorHint: {
-    ...typography.styles.bodySM,
-    color: colors.text.secondary,
-    textAlign: 'center',
-    marginTop: spacing.lg,
-  },
-  footer: {
-    paddingHorizontal: spacing.xxl,
-  },
-
-});

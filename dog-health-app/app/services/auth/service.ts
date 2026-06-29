@@ -14,6 +14,7 @@ const STORE_KEYS = [
   'tracking-storage',
   'ble-storage',
   'settings-storage',
+  'chat-storage',
 ];
 
 class AuthService {
@@ -142,6 +143,13 @@ class AuthService {
       }
       await AsyncStorage.multiRemove(STORE_KEYS);
 
+      // Cancel all pending notifications
+      try {
+        const { notificationsService } = require('../notifications');
+        await notificationsService.cancelAllNotifications();
+        await notificationsService.setBadgeCount(0);
+      } catch {}
+
       // Reset Zustand stores to initial state in memory
       // AsyncStorage is cleared but Zustand keeps old state in memory
       const { useSettingsStore } = require('../../store/settingsStore');
@@ -149,20 +157,48 @@ class AuthService {
       const { useAlertStore } = require('../../store/alertStore');
       const { useTrackingStore } = require('../../store/trackingStore');
       const { useHealthStore } = require('../../store/healthStore');
+      const { useChatStore } = require('../../store/chatStore');
 
       useSettingsStore.setState({
         hasCompletedOnboarding: false,
         isFirstLaunch: true,
       });
-      useDogStore.setState({ dogs: [], activeDogId: null });
-      useAlertStore.setState({ alerts: [] });
+      useDogStore.setState({
+        dogs: [],
+        activeDogId: null,
+        weightHistory: [],
+        vaccinationRecords: [],
+        error: null,
+      });
+      useAlertStore.setState({
+        alerts: [],
+        unacknowledgedCount: 0,
+        criticalAlerts: [],
+      });
       useHealthStore.setState({
         heartRateHistory: [],
         temperatureHistory: [],
         activityHistory: [],
+        sleepHistory: [],
         currentMetrics: {},
       });
-      useTrackingStore.setState({ locations: [], geofences: [] });
+      useTrackingStore.setState({
+        currentLocation: null,
+        locationHistory: [],
+        geofences: [],
+        activeGeofenceAlerts: [],
+        isTracking: false,
+        totalDistance: 0,
+        lastLocationUpdate: null,
+        routes: [],
+        activeRoute: null,
+      });
+      useChatStore.setState({ messages: [], isTyping: false });
+      // Reset AI conversation context
+      try {
+        const { aiService } = require('../ai');
+        aiService.resetContext();
+      } catch {}
 
       return { success: true };
     } catch (err) {

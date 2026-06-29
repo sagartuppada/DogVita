@@ -1,0 +1,6375 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "e33f1658c69fd60599643ae24d9354ac4b84e514",
+  "generatedAt": "2026-06-25T11:31:13.419Z",
+  "files": {
+    "dog-health-app/index.js": {
+      "filePath": "dog-health-app/index.js",
+      "contentHash": "fbc43eea0ab20bb18eb6dc09d7a4d3eb347532162948e899a53cbf7f43422f86",
+      "functions": [
+        {
+          "name": "_safeGetHostname",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "_safeGetHost",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "_safeGetOrigin",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-native",
+          "specifiers": [
+            "AppRegistry"
+          ]
+        },
+        {
+          "source": "./app/App",
+          "specifiers": [
+            "App"
+          ]
+        },
+        {
+          "source": "./app.json",
+          "specifiers": [
+            "appName"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 127,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/App.tsx": {
+      "filePath": "dog-health-app/App.tsx",
+      "contentHash": "20ee3f293ce6fa95e2b0aabdff7c47d36c6926500bd261d785bd294870c8a705",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "App",
+        "default"
+      ],
+      "totalLines": 7,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/@env.d.ts": {
+      "filePath": "dog-health-app/@env.d.ts",
+      "contentHash": "6c4acc7bbc73ce7bff8343c13e0e6e3a8c28e676f0a8f06ee2ca8d9c8050616e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 20,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/index.ts": {
+      "filePath": "dog-health-app/app/index.ts",
+      "contentHash": "201b64069a209f530af3acebcf412320953738933f3c2b394ee902e796b992a1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "App",
+        "default"
+      ],
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/App.tsx": {
+      "filePath": "dog-health-app/app/App.tsx",
+      "contentHash": "cbb68c60d70f2353d9c682e3ceca0a910a59cb4df526a686abf932d4fb912707",
+      "functions": [
+        {
+          "name": "AppContent",
+          "params": [],
+          "exported": false,
+          "lineCount": 55
+        },
+        {
+          "name": "App",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "StatusBar"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "StyleSheet"
+          ]
+        },
+        {
+          "source": "react-native-gesture-handler",
+          "specifiers": [
+            "GestureHandlerRootView"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "SafeAreaProvider"
+          ]
+        },
+        {
+          "source": "react-native-splash-screen",
+          "specifiers": [
+            "SplashScreen"
+          ]
+        },
+        {
+          "source": "./navigation/RootNavigator",
+          "specifiers": [
+            "RootNavigator"
+          ]
+        },
+        {
+          "source": "./components/common",
+          "specifiers": [
+            "Loader"
+          ]
+        },
+        {
+          "source": "./theme/ThemeContext",
+          "specifiers": [
+            "ThemeProvider",
+            "useTheme"
+          ]
+        },
+        {
+          "source": "./services/notifications",
+          "specifiers": [
+            "notificationsService"
+          ]
+        },
+        {
+          "source": "./services/auth",
+          "specifiers": [
+            "authService"
+          ]
+        }
+      ],
+      "exports": [
+        "App"
+      ],
+      "totalLines": 93,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/config/index.ts": {
+      "filePath": "dog-health-app/app/config/index.ts",
+      "contentHash": "792051768b4e1659c8f2c6fcf7ed1ee29da710230517446f099c6b7ba1495988",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@env",
+          "specifiers": [
+            "EXPO_PUBLIC_BLE_SERVICE_UUID",
+            "EXPO_PUBLIC_BLE_HEART_RATE_UUID",
+            "EXPO_PUBLIC_BLE_GPS_UUID",
+            "EXPO_PUBLIC_BLE_TEMPERATURE_UUID",
+            "EXPO_PUBLIC_BLE_BATTERY_UUID",
+            "EXPO_PUBLIC_BLE_ACTIVITY_UUID",
+            "EXPO_PUBLIC_HEART_RATE_ALERT_THRESHOLD",
+            "EXPO_PUBLIC_LOW_BATTERY_THRESHOLD",
+            "EXPO_PUBLIC_GPS_UPDATE_INTERVAL_MS",
+            "EXPO_PUBLIC_GEOFENCE_RADIUS_METERS"
+          ]
+        }
+      ],
+      "exports": [
+        "supabase",
+        "isConfigured",
+        "config"
+      ],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/config/constants.ts": {
+      "filePath": "dog-health-app/app/config/constants.ts",
+      "contentHash": "73cd71107649e79b52d08f4d9d970c19a0c22f784cd6d6e37761e74467cc8f1c",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@env",
+          "specifiers": [
+            "EXPO_PUBLIC_SUPABASE_URL",
+            "EXPO_PUBLIC_SUPABASE_ANON_KEY",
+            "EXPO_PUBLIC_API_URL",
+            "EXPO_PUBLIC_BLE_SERVICE_UUID",
+            "EXPO_PUBLIC_BLE_HEART_RATE_UUID",
+            "EXPO_PUBLIC_BLE_GPS_UUID",
+            "EXPO_PUBLIC_BLE_TEMPERATURE_UUID",
+            "EXPO_PUBLIC_BLE_BATTERY_UUID",
+            "EXPO_PUBLIC_BLE_ACTIVITY_UUID"
+          ]
+        }
+      ],
+      "exports": [
+        "Constants"
+      ],
+      "totalLines": 35,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/config/supabase.ts": {
+      "filePath": "dog-health-app/app/config/supabase.ts",
+      "contentHash": "1b4f45c7965725fa65f271b794fef6976e09fedc31f3b0f54b1eb5bbfd8d356b",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../services/api/supabase",
+          "specifiers": [
+            "_supabase",
+            "isSupabaseConfigured"
+          ]
+        }
+      ],
+      "exports": [
+        "supabase",
+        "isConfigured"
+      ],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/theme/index.ts": {
+      "filePath": "dog-health-app/app/theme/index.ts",
+      "contentHash": "26e8b1580c9cb7d21aec01ac232d8bf6a164633d39bf04e444023e44409bcc31",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./colors",
+          "specifiers": [
+            "colors"
+          ]
+        },
+        {
+          "source": "./spacing",
+          "specifiers": [
+            "spacing"
+          ]
+        },
+        {
+          "source": "./typography",
+          "specifiers": [
+            "typography"
+          ]
+        },
+        {
+          "source": "./shadows",
+          "specifiers": [
+            "shadows"
+          ]
+        }
+      ],
+      "exports": [
+        "colors",
+        "spacing",
+        "typography",
+        "shadows",
+        "Colors",
+        "Spacing",
+        "Typography",
+        "Shadows",
+        "borderRadius",
+        "theme"
+      ],
+      "totalLines": 44,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/theme/colors.ts": {
+      "filePath": "dog-health-app/app/theme/colors.ts",
+      "contentHash": "65308012c988be0d166d06d24fefef124b28128aacafbb72fb640be916e7660e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "lightColors",
+        "darkColors",
+        "colors"
+      ],
+      "totalLines": 168,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/theme/spacing.ts": {
+      "filePath": "dog-health-app/app/theme/spacing.ts",
+      "contentHash": "0416400ed8a4274dd3d5099269440ba8e094139435633c834f7f484dca681d00",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "spacing"
+      ],
+      "totalLines": 55,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/theme/typography.ts": {
+      "filePath": "dog-health-app/app/theme/typography.ts",
+      "contentHash": "a8da1922c13016ee8cb261f23ece44ccc397049fffd8317ec7ffbd35fa3de97e",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-native",
+          "specifiers": [
+            "TextStyle",
+            "Platform"
+          ]
+        },
+        {
+          "source": "./colors",
+          "specifiers": [
+            "colors"
+          ]
+        }
+      ],
+      "exports": [
+        "typography"
+      ],
+      "totalLines": 174,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/theme/shadows.ts": {
+      "filePath": "dog-health-app/app/theme/shadows.ts",
+      "contentHash": "2104e4d111acb0c6de355a372664c6c8ec3237df2afe785feb28613aa2673217",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-native",
+          "specifiers": [
+            "ViewStyle"
+          ]
+        }
+      ],
+      "exports": [
+        "shadows"
+      ],
+      "totalLines": 96,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/theme/ThemeContext.tsx": {
+      "filePath": "dog-health-app/app/theme/ThemeContext.tsx",
+      "contentHash": "d682c1b8778b0f2e52102df4e770baa42da22c2a0f77f3e4d666aeb3e6605140",
+      "functions": [
+        {
+          "name": "useTheme",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "ThemeProvider",
+          "params": [
+            "{ children }"
+          ],
+          "exported": true,
+          "lineCount": 26
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "createContext",
+            "useContext",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "useColorScheme"
+          ]
+        },
+        {
+          "source": "./colors",
+          "specifiers": [
+            "lightColors",
+            "darkColors"
+          ]
+        },
+        {
+          "source": "./colors",
+          "specifiers": [
+            "Colors"
+          ]
+        },
+        {
+          "source": "../store/settingsStore",
+          "specifiers": [
+            "useSettingsStore"
+          ]
+        }
+      ],
+      "exports": [
+        "useTheme",
+        "ThemeProvider"
+      ],
+      "totalLines": 56,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/types/index.ts": {
+      "filePath": "dog-health-app/app/types/index.ts",
+      "contentHash": "c31be00e6ff6aa1c336f890c4742967a02ca257ffebd9d6e09730bee9855a788",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "HealthMetrics",
+        "HeartRateData",
+        "HeartRateZone",
+        "TemperatureData",
+        "ActivityData",
+        "SleepData",
+        "BatteryData",
+        "LocationData",
+        "Geofence",
+        "GeofenceAlert",
+        "HealthAlert",
+        "AlertType",
+        "AlertSeverity",
+        "HealthTrend",
+        "Route"
+      ],
+      "totalLines": 88,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/types/dog.ts": {
+      "filePath": "dog-health-app/app/types/dog.ts",
+      "contentHash": "6a2490ac6d527070d1b4cebd3de50796bb989d91a2ebed234024fd57a124a0c8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 135,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/types/health.ts": {
+      "filePath": "dog-health-app/app/types/health.ts",
+      "contentHash": "58d6607ab2321a18b6e964c947b31efbf96ed7c275b0339c5c9e5674502da3b4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 145,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/types/ble.ts": {
+      "filePath": "dog-health-app/app/types/ble.ts",
+      "contentHash": "21b642a35c53c895925965f4bb7804ea860c0912e3bfeb7fe92d3f3315ed80ff",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "DEFAULT_BLE_SERVICE_UUID",
+        "DEFAULT_BLE_HEART_RATE_SERVICE",
+        "DEFAULT_BLE_GPS_SERVICE",
+        "DEFAULT_BLE_TEMPERATURE_SERVICE",
+        "DEFAULT_BLE_BATTERY_SERVICE",
+        "DEFAULT_BLE_ACTIVITY_SERVICE"
+      ],
+      "totalLines": 160,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/types/navigation.ts": {
+      "filePath": "dog-health-app/app/types/navigation.ts",
+      "contentHash": "7ae6ed9b3aad9db936e3adc9480a087c3fb654a9b5778438dcf7c9d6ab25013a",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@react-navigation/native-stack",
+          "specifiers": [
+            "NativeStackScreenProps"
+          ]
+        },
+        {
+          "source": "@react-navigation/bottom-tabs",
+          "specifiers": [
+            "BottomTabScreenProps"
+          ]
+        },
+        {
+          "source": "@react-navigation/native",
+          "specifiers": [
+            "CompositeScreenProps",
+            "NavigatorScreenParams"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 122,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/types/api.ts": {
+      "filePath": "dog-health-app/app/types/api.ts",
+      "contentHash": "5e7c1454bb6b01aaace2eacac2fff4c96b7abd561b89c559c5724780de3bb0b8",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@supabase/supabase-js",
+          "specifiers": [
+            "SupabaseClient",
+            "RealtimeChannel"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 174,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/types/react-native-vector-icons.d.ts": {
+      "filePath": "dog-health-app/app/types/react-native-vector-icons.d.ts",
+      "contentHash": "82bc1fe922e38e4d9d65f74ab3a66ba00c4d2129d4c949a8a2b5a4d1a2146cfb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/navigation/index.ts": {
+      "filePath": "dog-health-app/app/navigation/index.ts",
+      "contentHash": "2f68c7951d350cc8d14f4bdfaf508fb13d8b3344de25617771f01c9c98406f18",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "RootNavigator",
+        "MainTabNavigator"
+      ],
+      "totalLines": 3,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/navigation/types.ts": {
+      "filePath": "dog-health-app/app/navigation/types.ts",
+      "contentHash": "c9423011912acd4eceaf15b46738d2d176713f8c9cbb129645236d3846c8afa5",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@react-navigation/native",
+          "specifiers": [
+            "NavigatorScreenParams"
+          ]
+        },
+        {
+          "source": "@react-navigation/native-stack",
+          "specifiers": [
+            "NativeStackScreenProps"
+          ]
+        },
+        {
+          "source": "@react-navigation/bottom-tabs",
+          "specifiers": [
+            "BottomTabScreenProps"
+          ]
+        },
+        {
+          "source": "@react-navigation/native",
+          "specifiers": [
+            "CompositeScreenProps"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 72,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/navigation/RootNavigator.tsx": {
+      "filePath": "dog-health-app/app/navigation/RootNavigator.tsx",
+      "contentHash": "3426104c4d07c7796faacf2b2f716be6d7ced17a133559687aa89dc044bb6a2f",
+      "functions": [
+        {
+          "name": "OnboardingNavigator",
+          "params": [],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "RootNavigator",
+          "params": [],
+          "exported": true,
+          "lineCount": 66
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useState",
+            "useEffect"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "ActivityIndicator",
+            "View"
+          ]
+        },
+        {
+          "source": "@react-navigation/native",
+          "specifiers": [
+            "NavigationContainer"
+          ]
+        },
+        {
+          "source": "@react-navigation/native-stack",
+          "specifiers": [
+            "createNativeStackNavigator"
+          ]
+        },
+        {
+          "source": "../store",
+          "specifiers": [
+            "useSettingsStore"
+          ]
+        },
+        {
+          "source": "../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../services/api/supabase",
+          "specifiers": [
+            "supabase"
+          ]
+        },
+        {
+          "source": "./types",
+          "specifiers": [
+            "RootStackParamList",
+            "OnboardingStackParamList"
+          ]
+        },
+        {
+          "source": "./MainTabNavigator",
+          "specifiers": [
+            "MainTabNavigator"
+          ]
+        },
+        {
+          "source": "../screens/onboarding/WelcomeScreen",
+          "specifiers": [
+            "WelcomeScreen"
+          ]
+        },
+        {
+          "source": "../screens/onboarding/SignUpScreen",
+          "specifiers": [
+            "SignUpScreen"
+          ]
+        },
+        {
+          "source": "../screens/onboarding/LoginScreen",
+          "specifiers": [
+            "LoginScreen"
+          ]
+        },
+        {
+          "source": "../screens/onboarding/AddPhoneNumberScreen",
+          "specifiers": [
+            "AddPhoneNumberScreen"
+          ]
+        },
+        {
+          "source": "../screens/onboarding/OTPVerificationScreen",
+          "specifiers": [
+            "OTPVerificationScreen"
+          ]
+        },
+        {
+          "source": "../screens/onboarding/SetupDogProfileScreen",
+          "specifiers": [
+            "SetupDogProfileScreen"
+          ]
+        },
+        {
+          "source": "../screens/onboarding/PairDeviceScreen",
+          "specifiers": [
+            "PairDeviceScreen"
+          ]
+        },
+        {
+          "source": "../screens/settings/SettingsScreen",
+          "specifiers": [
+            "SettingsScreen"
+          ]
+        },
+        {
+          "source": "../screens/tracking/RouteHistoryScreen",
+          "specifiers": [
+            "RouteHistoryScreen"
+          ]
+        },
+        {
+          "source": "../screens/tracking/RouteDetailScreen",
+          "specifiers": [
+            "RouteDetailScreen"
+          ]
+        },
+        {
+          "source": "../screens/tracking/GeofenceManagerScreen",
+          "specifiers": [
+            "GeofenceManagerScreen"
+          ]
+        },
+        {
+          "source": "../screens/dog/DogProfileScreen",
+          "specifiers": [
+            "DogProfileScreen"
+          ]
+        },
+        {
+          "source": "../screens/dog/WeightHistoryScreen",
+          "specifiers": [
+            "WeightHistoryScreen"
+          ]
+        },
+        {
+          "source": "../screens/dog/VaccinationRecordsScreen",
+          "specifiers": [
+            "VaccinationRecordsScreen"
+          ]
+        },
+        {
+          "source": "../screens/ai/SymptomCheckerScreen",
+          "specifiers": [
+            "SymptomCheckerScreen"
+          ]
+        },
+        {
+          "source": "../screens/ai/DietFeedingScreen",
+          "specifiers": [
+            "DietFeedingScreen"
+          ]
+        }
+      ],
+      "exports": [
+        "RootNavigator"
+      ],
+      "totalLines": 114,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/navigation/MainTabNavigator.tsx": {
+      "filePath": "dog-health-app/app/navigation/MainTabNavigator.tsx",
+      "contentHash": "267dbadf96f72b1df23ad883423543e69bf68fcd15f5dfa9b12a39b9329ab5c7",
+      "functions": [
+        {
+          "name": "MainTabNavigator",
+          "params": [],
+          "exported": true,
+          "lineCount": 45
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "@react-navigation/bottom-tabs",
+          "specifiers": [
+            "createBottomTabNavigator"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "StyleSheet",
+            "Platform"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../theme/ThemeContext",
+          "specifiers": [
+            "useTheme"
+          ]
+        },
+        {
+          "source": "../theme",
+          "specifiers": [
+            "spacing",
+            "borderRadius",
+            "shadows"
+          ]
+        },
+        {
+          "source": "../screens/dashboard/DashboardScreen",
+          "specifiers": [
+            "DashboardScreen"
+          ]
+        },
+        {
+          "source": "../screens/health/HealthOverviewScreen",
+          "specifiers": [
+            "HealthOverviewScreen"
+          ]
+        },
+        {
+          "source": "../screens/tracking/TrackingOverviewScreen",
+          "specifiers": [
+            "TrackingOverviewScreen"
+          ]
+        },
+        {
+          "source": "../screens/chatbot/ChatbotScreen",
+          "specifiers": [
+            "ChatbotScreen"
+          ]
+        },
+        {
+          "source": "./types",
+          "specifiers": [
+            "MainTabParamList"
+          ]
+        }
+      ],
+      "exports": [
+        "MainTabNavigator"
+      ],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/onboarding/WelcomeScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/onboarding/WelcomeScreen.tsx",
+      "contentHash": "997c30853cc1ecb69191504a9f9a59c507af53235552004347359f9af4a103d5",
+      "functions": [
+        {
+          "name": "WelcomeScreen",
+          "params": [
+            "{ navigation }"
+          ],
+          "exported": true,
+          "lineCount": 66
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet",
+            "TouchableOpacity"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Button"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius",
+            "shadows"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "OnboardingScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "WelcomeScreen"
+      ],
+      "totalLines": 154,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/onboarding/SignUpScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/onboarding/SignUpScreen.tsx",
+      "contentHash": "e9c579a223843a106eddccb4f690ca33af2f2853f36a8dd0eb545fc821294628",
+      "functions": [
+        {
+          "name": "SignUpScreen",
+          "params": [
+            "{\n  navigation,\n}"
+          ],
+          "exported": true,
+          "lineCount": 97
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "ScrollView",
+            "StyleSheet",
+            "Alert",
+            "KeyboardAvoidingView",
+            "Platform"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Button",
+            "Input",
+            "Header"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography"
+          ]
+        },
+        {
+          "source": "../../services/auth/service",
+          "specifiers": [
+            "authService"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "OnboardingScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "SignUpScreen"
+      ],
+      "totalLines": 156,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/onboarding/LoginScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/onboarding/LoginScreen.tsx",
+      "contentHash": "62618145829a6ae313c9d2c8482b60658adb3569b7b128a1ed2b99a63de74cdc",
+      "functions": [
+        {
+          "name": "LoginScreen",
+          "params": [
+            "{\n  navigation,\n}"
+          ],
+          "exported": true,
+          "lineCount": 81
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "ScrollView",
+            "StyleSheet",
+            "Alert",
+            "KeyboardAvoidingView",
+            "Platform"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Button",
+            "Input",
+            "Header"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography"
+          ]
+        },
+        {
+          "source": "../../services/auth/service",
+          "specifiers": [
+            "authService"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "OnboardingScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "LoginScreen"
+      ],
+      "totalLines": 134,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/onboarding/AddPhoneNumberScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/onboarding/AddPhoneNumberScreen.tsx",
+      "contentHash": "8577a6917fb73b9617ee31b3b039c6c7d31dffb566024ecfea95bb4c142dfac6",
+      "functions": [
+        {
+          "name": "AddPhoneNumberScreen",
+          "params": [
+            "{\n  navigation,\n}"
+          ],
+          "exported": true,
+          "lineCount": 61
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet",
+            "KeyboardAvoidingView",
+            "Platform",
+            "Alert"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Button",
+            "Input",
+            "Header"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography"
+          ]
+        },
+        {
+          "source": "../../services/auth/service",
+          "specifiers": [
+            "authService"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "OnboardingScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "AddPhoneNumberScreen"
+      ],
+      "totalLines": 103,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/onboarding/OTPVerificationScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/onboarding/OTPVerificationScreen.tsx",
+      "contentHash": "cdf4ff60fc4bfc9e28457d28d8562b537494c83dcf1066deb1d90a4625e83fb0",
+      "functions": [
+        {
+          "name": "OTPVerificationScreen",
+          "params": [
+            "{\n  route,\n  navigation,\n}"
+          ],
+          "exported": true,
+          "lineCount": 115
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useState",
+            "useRef",
+            "useCallback",
+            "useEffect"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "TextInput",
+            "StyleSheet",
+            "KeyboardAvoidingView",
+            "Platform",
+            "Alert"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Button",
+            "Header"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius",
+            "shadows"
+          ]
+        },
+        {
+          "source": "../../services/auth/service",
+          "specifiers": [
+            "authService"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "OnboardingScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "OTPVerificationScreen"
+      ],
+      "totalLines": 187,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/onboarding/SetupDogProfileScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/onboarding/SetupDogProfileScreen.tsx",
+      "contentHash": "0ef2bd1e515454646bc37fc104b8f817fe4859c4bf35d5a4f7fab79451ef8257",
+      "functions": [
+        {
+          "name": "SetupDogProfileScreen",
+          "params": [
+            "{\n  navigation,\n}"
+          ],
+          "exported": true,
+          "lineCount": 151
+        },
+        {
+          "name": "calculateBirthDate",
+          "params": [
+            "ageYears"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "ScrollView",
+            "StyleSheet",
+            "TouchableOpacity",
+            "Alert"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Button",
+            "Input",
+            "Header"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius",
+            "shadows"
+          ]
+        },
+        {
+          "source": "../../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "OnboardingScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "SetupDogProfileScreen"
+      ],
+      "totalLines": 290,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/onboarding/PairDeviceScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/onboarding/PairDeviceScreen.tsx",
+      "contentHash": "c9397343913f2c37200d7f42b7d0b94e859b5a6c2d90aaaff66f79df7c86197b",
+      "functions": [
+        {
+          "name": "PairDeviceScreen",
+          "params": [
+            "{\n  navigation,\n}"
+          ],
+          "exported": true,
+          "lineCount": 132
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useState",
+            "useEffect"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet",
+            "Animated"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Button",
+            "Header",
+            "StatusBadge"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius",
+            "shadows"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "OnboardingScreenProps"
+          ]
+        },
+        {
+          "source": "../../store/settingsStore",
+          "specifiers": [
+            "useSettingsStore"
+          ]
+        }
+      ],
+      "exports": [
+        "PairDeviceScreen"
+      ],
+      "totalLines": 227,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/dashboard/DashboardScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/dashboard/DashboardScreen.tsx",
+      "contentHash": "df8d9590cc5ea04473f7c9557e6c91c3733c039e70b89687ef51bddf5f29475c",
+      "functions": [
+        {
+          "name": "MetricCard",
+          "params": [
+            "{ icon, iconColor, iconBg, label, value, unit, status = 'normal' }"
+          ],
+          "exported": false,
+          "lineCount": 30
+        },
+        {
+          "name": "QuickStat",
+          "params": [
+            "{ icon, label, value, color }"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "DashboardScreen",
+          "params": [
+            "{ navigation }"
+          ],
+          "exported": true,
+          "lineCount": 224
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useMemo",
+            "useEffect",
+            "useCallback"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "ScrollView",
+            "StyleSheet",
+            "RefreshControl",
+            "TouchableOpacity"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../../store/healthStore",
+          "specifiers": [
+            "useHealthStore"
+          ]
+        },
+        {
+          "source": "../../store/bleStore",
+          "specifiers": [
+            "useBLEStore"
+          ]
+        },
+        {
+          "source": "../../store/alertStore",
+          "specifiers": [
+            "useAlertStore"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card",
+            "StatusBadge",
+            "EmptyState"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius",
+            "shadows"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "DashboardScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "DashboardScreen"
+      ],
+      "totalLines": 469,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/health/HealthOverviewScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/health/HealthOverviewScreen.tsx",
+      "contentHash": "06033d74736e875f665e36c8a05dfa44f66c2dd5086cddf08e7ced8b38dd9bc7",
+      "functions": [
+        {
+          "name": "MetricChip",
+          "params": [
+            "{ icon, label, value, unit, color }"
+          ],
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "HealthOverviewScreen",
+          "params": [
+            "{}"
+          ],
+          "exported": true,
+          "lineCount": 160
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useMemo",
+            "useEffect",
+            "useCallback"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "ScrollView",
+            "StyleSheet",
+            "RefreshControl"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../../store/healthStore",
+          "specifiers": [
+            "useHealthStore"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card",
+            "EmptyState"
+          ]
+        },
+        {
+          "source": "../../components/charts/HeartRateChart",
+          "specifiers": [
+            "HeartRateChart"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius",
+            "shadows"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "HealthTabScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "HealthOverviewScreen"
+      ],
+      "totalLines": 298,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/tracking/TrackingOverviewScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/tracking/TrackingOverviewScreen.tsx",
+      "contentHash": "32c0ae56e162ee79b350574b1c3369d41dce3889ec18e1ee0b16ff334c287448",
+      "functions": [
+        {
+          "name": "formatDuration",
+          "params": [
+            "seconds"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "formatDistance",
+          "params": [
+            "meters"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "TrackingOverviewScreen",
+          "params": [
+            "{ navigation }"
+          ],
+          "exported": true,
+          "lineCount": 252
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useMemo",
+            "useEffect",
+            "useCallback"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet",
+            "TouchableOpacity",
+            "Alert"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../../store/trackingStore",
+          "specifiers": [
+            "useTrackingStore"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card",
+            "StatusBadge",
+            "EmptyState"
+          ]
+        },
+        {
+          "source": "../../components/maps",
+          "specifiers": [
+            "DogMap"
+          ]
+        },
+        {
+          "source": "../../hooks/useLocation",
+          "specifiers": [
+            "useLocation"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius",
+            "shadows"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "TrackingTabScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "TrackingOverviewScreen"
+      ],
+      "totalLines": 440,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/tracking/RouteHistoryScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/tracking/RouteHistoryScreen.tsx",
+      "contentHash": "daa89bf3935c73c3fe390ebbb0b1dcd939f16fd6fe2f603bb1ca25622c827203",
+      "functions": [
+        {
+          "name": "formatDuration",
+          "params": [
+            "seconds"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "formatDistance",
+          "params": [
+            "meters"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "RouteItem",
+          "params": [
+            "{ route, onPress }"
+          ],
+          "exported": false,
+          "lineCount": 29
+        },
+        {
+          "name": "RouteHistoryScreen",
+          "params": [
+            "{ navigation }"
+          ],
+          "exported": true,
+          "lineCount": 68
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useMemo",
+            "useEffect"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "FlatList",
+            "StyleSheet",
+            "TouchableOpacity"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../../store/trackingStore",
+          "specifiers": [
+            "useTrackingStore"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card",
+            "EmptyState"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "Route"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "RouteHistoryScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "RouteHistoryScreen"
+      ],
+      "totalLines": 226,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/tracking/RouteDetailScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/tracking/RouteDetailScreen.tsx",
+      "contentHash": "f6a64500293057cab8d5986b3011708e5ebcaa23624c821722d3709679764c0e",
+      "functions": [
+        {
+          "name": "formatDuration",
+          "params": [
+            "seconds"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "formatDistance",
+          "params": [
+            "meters"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "formatSpeed",
+          "params": [
+            "meters",
+            "seconds"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "RouteDetailScreen",
+          "params": [
+            "{ navigation, route: navRoute }"
+          ],
+          "exported": true,
+          "lineCount": 138
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet",
+            "TouchableOpacity",
+            "ScrollView"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/trackingStore",
+          "specifiers": [
+            "useTrackingStore"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card"
+          ]
+        },
+        {
+          "source": "../../components/maps",
+          "specifiers": [
+            "DogMap"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "RouteDetailScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "RouteDetailScreen"
+      ],
+      "totalLines": 284,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/tracking/GeofenceManagerScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/tracking/GeofenceManagerScreen.tsx",
+      "contentHash": "1a81dda921f146ff5cc7bc32df27dd1b54e923c1f1fed38c431f5a34dd7bfe8f",
+      "functions": [
+        {
+          "name": "GeofenceManagerScreen",
+          "params": [
+            "{ navigation }"
+          ],
+          "exported": true,
+          "lineCount": 275
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useState",
+            "useCallback",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet",
+            "TouchableOpacity",
+            "Modal",
+            "TextInput",
+            "Alert",
+            "ScrollView"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../../store/trackingStore",
+          "specifiers": [
+            "useTrackingStore"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "GeofenceManagerScreenProps"
+          ]
+        },
+        {
+          "source": "../../components/maps",
+          "specifiers": [
+            "DogMap"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "Geofence"
+          ]
+        },
+        {
+          "source": "../../services/api/supabase",
+          "specifiers": [
+            "supabase"
+          ]
+        }
+      ],
+      "exports": [
+        "GeofenceManagerScreen"
+      ],
+      "totalLines": 486,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/chatbot/ChatbotScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/chatbot/ChatbotScreen.tsx",
+      "contentHash": "ed12d47bb57d54304a5c1cc5f634cb92baf1a96b650939c946f39ab3755f0755",
+      "functions": [
+        {
+          "name": "MessageBubble",
+          "params": [
+            "{ message }"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "ChatbotScreen",
+          "params": [
+            "{ navigation }"
+          ],
+          "exported": true,
+          "lineCount": 177
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useCallback",
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet",
+            "FlatList",
+            "TextInput",
+            "TouchableOpacity",
+            "Platform",
+            "ActivityIndicator"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../../store/chatStore",
+          "specifiers": [
+            "useChatStore"
+          ]
+        },
+        {
+          "source": "../../store/trackingStore",
+          "specifiers": [
+            "useTrackingStore"
+          ]
+        },
+        {
+          "source": "../../store/healthStore",
+          "specifiers": [
+            "useHealthStore"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "borderRadius"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "ChatbotTabScreenProps"
+          ]
+        },
+        {
+          "source": "../../services/ai",
+          "specifiers": [
+            "ChatMessage"
+          ]
+        }
+      ],
+      "exports": [
+        "ChatbotScreen"
+      ],
+      "totalLines": 422,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/alerts/AlertsListScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/alerts/AlertsListScreen.tsx",
+      "contentHash": "d15ec106a459dda16245a19c16df921a21979ebc99b136b33e35b0ece7e30374",
+      "functions": [
+        {
+          "name": "getAlertIcon",
+          "params": [
+            "type"
+          ],
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "getAlertTitle",
+          "params": [
+            "type"
+          ],
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "getAlertColor",
+          "params": [
+            "severity"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "AlertsListScreen",
+          "params": [
+            "{}"
+          ],
+          "exported": true,
+          "lineCount": 68
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useMemo",
+            "useEffect",
+            "useCallback"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "FlatList",
+            "StyleSheet",
+            "RefreshControl"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/alertStore",
+          "specifiers": [
+            "useAlertStore"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card",
+            "EmptyState"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius",
+            "shadows"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "ChatbotTabScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "AlertsListScreen"
+      ],
+      "totalLines": 198,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/settings/SettingsScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/settings/SettingsScreen.tsx",
+      "contentHash": "93c96981d2b5ae03641a66e5ff7b87d056eb880ff040557a7c9a55a0f47d40d3",
+      "functions": [
+        {
+          "name": "SettingRow",
+          "params": [
+            "{ icon, iconColor, label, value, onPress, showChevron = true }"
+          ],
+          "exported": false,
+          "lineCount": 23
+        },
+        {
+          "name": "SettingsScreen",
+          "params": [
+            "{ navigation }"
+          ],
+          "exported": true,
+          "lineCount": 192
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "ScrollView",
+            "StyleSheet",
+            "TouchableOpacity",
+            "Alert"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../../store/settingsStore",
+          "specifiers": [
+            "useSettingsStore"
+          ]
+        },
+        {
+          "source": "../../services/auth/service",
+          "specifiers": [
+            "authService"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius",
+            "shadows"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "SettingsScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "SettingsScreen"
+      ],
+      "totalLines": 285,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/dog/DogProfileScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/dog/DogProfileScreen.tsx",
+      "contentHash": "8440aafa2b5d3ab4c443c05ab0aaf0f4a68ac47792e2f356b9baa1a79edeb08c",
+      "functions": [
+        {
+          "name": "DogProfileScreen",
+          "params": [
+            "{ navigation, route }"
+          ],
+          "exported": true,
+          "lineCount": 245
+        },
+        {
+          "name": "InfoRow",
+          "params": [
+            "{ label, value }"
+          ],
+          "exported": false,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useState",
+            "useCallback",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet",
+            "ScrollView",
+            "TouchableOpacity",
+            "Alert"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card",
+            "Input",
+            "Button"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "DogProfileScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "DogProfileScreen"
+      ],
+      "totalLines": 469,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/dog/WeightHistoryScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/dog/WeightHistoryScreen.tsx",
+      "contentHash": "2232b286e0ffaf29f9a415e232e14f6f880843c20aa048630a09c30e36550c6f",
+      "functions": [
+        {
+          "name": "formatWeight",
+          "params": [
+            "weight",
+            "unit"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "formatDate",
+          "params": [
+            "dateStr"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "getTrendIcon",
+          "params": [
+            "trend"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "WeightHistoryScreen",
+          "params": [
+            "{ navigation, route }"
+          ],
+          "exported": true,
+          "lineCount": 279
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useMemo",
+            "useCallback"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet",
+            "TouchableOpacity",
+            "ScrollView",
+            "Alert",
+            "Modal",
+            "TextInput"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card",
+            "Button",
+            "EmptyState"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "WeightHistoryScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "WeightHistoryScreen"
+      ],
+      "totalLines": 533,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/dog/VaccinationRecordsScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/dog/VaccinationRecordsScreen.tsx",
+      "contentHash": "a156c9337bc0d5ba9ce009571fa51d7c9104e1316070f9d21d5873f7dd8f6dca",
+      "functions": [
+        {
+          "name": "formatDate",
+          "params": [
+            "dateStr"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "daysUntil",
+          "params": [
+            "dateStr"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "VaccinationRecordsScreen",
+          "params": [
+            "{ navigation, route }"
+          ],
+          "exported": true,
+          "lineCount": 344
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useMemo",
+            "useCallback"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet",
+            "TouchableOpacity",
+            "ScrollView",
+            "Alert",
+            "Modal",
+            "TextInput"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card",
+            "EmptyState"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "VaccinationRecordsScreenProps"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "VaccinationStatus",
+            "VaccinationRecord"
+          ]
+        }
+      ],
+      "exports": [
+        "VaccinationRecordsScreen"
+      ],
+      "totalLines": 637,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/ai/SymptomCheckerScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/ai/SymptomCheckerScreen.tsx",
+      "contentHash": "ccd12e5bae880ed63e1de3d8bf2506a3c672860f4747e20f312bd895f5df91f2",
+      "functions": [
+        {
+          "name": "SymptomCheckerScreen",
+          "params": [
+            "{ navigation }"
+          ],
+          "exported": true,
+          "lineCount": 189
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useState",
+            "useCallback",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet",
+            "TouchableOpacity",
+            "ScrollView"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "SymptomCheckerScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "SymptomCheckerScreen"
+      ],
+      "totalLines": 548,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/screens/ai/DietFeedingScreen.tsx": {
+      "filePath": "dog-health-app/app/screens/ai/DietFeedingScreen.tsx",
+      "contentHash": "6ba9700b7808483333c93cc746ba4a7acec9511c09136446ec9aaba6c6e05661",
+      "functions": [
+        {
+          "name": "calculateAgeStage",
+          "params": [
+            "birthDate"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "calculateDietProfile",
+          "params": [
+            "weightKg",
+            "birthDate",
+            "activityLevel",
+            "bodyConditionScore"
+          ],
+          "returnType": "DietProfile",
+          "exported": false,
+          "lineCount": 52
+        },
+        {
+          "name": "DietFeedingScreen",
+          "params": [
+            "{ navigation }"
+          ],
+          "exported": true,
+          "lineCount": 382
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useState",
+            "useMemo",
+            "useCallback"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet",
+            "TouchableOpacity",
+            "ScrollView",
+            "Alert",
+            "Modal",
+            "TextInput"
+          ]
+        },
+        {
+          "source": "react-native-safe-area-context",
+          "specifiers": [
+            "useSafeAreaInsets"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../store/dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card",
+            "Button"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius"
+          ]
+        },
+        {
+          "source": "../../navigation/types",
+          "specifiers": [
+            "DietFeedingScreenProps"
+          ]
+        }
+      ],
+      "exports": [
+        "DietFeedingScreen"
+      ],
+      "totalLines": 850,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/store/index.ts": {
+      "filePath": "dog-health-app/app/store/index.ts",
+      "contentHash": "83336da4fde70db3b144a6b4e9dc91a6cb42ea48c6feb37156377e29e3a67517",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "useChatStore",
+        "selectMessages",
+        "useDogStore",
+        "selectActiveDog",
+        "selectAllDogs",
+        "useHealthStore",
+        "selectCurrentHeartRate",
+        "selectIsMonitoring",
+        "useBLEStore",
+        "selectIsConnected",
+        "selectConnectionStatus",
+        "selectDiscoveredDevices",
+        "useTrackingStore",
+        "selectCurrentLocation",
+        "selectIsTracking",
+        "selectGeofences",
+        "selectRoutes",
+        "selectActiveRoute",
+        "useAlertStore",
+        "selectUnacknowledgedCount",
+        "selectCriticalAlerts",
+        "useSettingsStore",
+        "selectUnits",
+        "selectIsDarkMode",
+        "selectHasCompletedOnboarding"
+      ],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/store/dogStore.ts": {
+      "filePath": "dog-health-app/app/store/dogStore.ts",
+      "contentHash": "580f833ee84f5ba3d558c31bd3a22efcccb7fe54975ae81b709a69d0c31be433",
+      "functions": [
+        {
+          "name": "calculateWeightTrend",
+          "params": [
+            "currentWeight",
+            "dogId",
+            "history"
+          ],
+          "returnType": "'up' | 'down' | 'stable'",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "determineVaccinationStatus",
+          "params": [
+            "record"
+          ],
+          "returnType": "import('../types').VaccinationStatus",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "selectActiveDog",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "selectAllDogs",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "zustand",
+          "specifiers": [
+            "create"
+          ]
+        },
+        {
+          "source": "zustand/middleware",
+          "specifiers": [
+            "persist",
+            "createJSONStorage"
+          ]
+        },
+        {
+          "source": "@react-native-async-storage/async-storage",
+          "specifiers": [
+            "AsyncStorage"
+          ]
+        },
+        {
+          "source": "../types",
+          "specifiers": [
+            "Dog",
+            "CreateDogInput",
+            "UpdateDogInput",
+            "WeightRecord",
+            "VaccinationRecord"
+          ]
+        },
+        {
+          "source": "../services/api/dogs",
+          "specifiers": [
+            "dogsService"
+          ]
+        },
+        {
+          "source": "../services/api/supabase",
+          "specifiers": [
+            "supabase",
+            "isSupabaseConfigured"
+          ]
+        }
+      ],
+      "exports": [
+        "useDogStore",
+        "selectActiveDog",
+        "selectAllDogs"
+      ],
+      "totalLines": 358,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/store/healthStore.ts": {
+      "filePath": "dog-health-app/app/store/healthStore.ts",
+      "contentHash": "c6a4caac86398af6aba50c97e64211380a028e86d09ac964236e55b256b2ec6c",
+      "functions": [
+        {
+          "name": "selectCurrentHeartRate",
+          "params": [
+            "dogId"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "selectIsMonitoring",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "zustand",
+          "specifiers": [
+            "create"
+          ]
+        },
+        {
+          "source": "zustand/middleware",
+          "specifiers": [
+            "persist",
+            "createJSONStorage"
+          ]
+        },
+        {
+          "source": "@react-native-async-storage/async-storage",
+          "specifiers": [
+            "AsyncStorage"
+          ]
+        },
+        {
+          "source": "../types",
+          "specifiers": [
+            "HealthMetrics",
+            "HeartRateData",
+            "TemperatureData",
+            "ActivityData",
+            "SleepData",
+            "BatteryData",
+            "LocationData"
+          ]
+        },
+        {
+          "source": "../services/api/health",
+          "specifiers": [
+            "healthService"
+          ]
+        },
+        {
+          "source": "../services/api/supabase",
+          "specifiers": [
+            "isSupabaseConfigured"
+          ]
+        }
+      ],
+      "exports": [
+        "useHealthStore",
+        "selectCurrentHeartRate",
+        "selectIsMonitoring"
+      ],
+      "totalLines": 283,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/store/bleStore.ts": {
+      "filePath": "dog-health-app/app/store/bleStore.ts",
+      "contentHash": "0c9ec92650a89b49d07d44777c74134426337b7a225c841107ac463a6d68bd83",
+      "functions": [
+        {
+          "name": "selectIsConnected",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "selectConnectionStatus",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "selectDiscoveredDevices",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "zustand",
+          "specifiers": [
+            "create"
+          ]
+        },
+        {
+          "source": "zustand/middleware",
+          "specifiers": [
+            "persist",
+            "createJSONStorage"
+          ]
+        },
+        {
+          "source": "@react-native-async-storage/async-storage",
+          "specifiers": [
+            "AsyncStorage"
+          ]
+        },
+        {
+          "source": "../types",
+          "specifiers": [
+            "BLEDevice",
+            "BLEConnectionStatus",
+            "BLEParsedData"
+          ]
+        }
+      ],
+      "exports": [
+        "useBLEStore",
+        "selectIsConnected",
+        "selectConnectionStatus",
+        "selectDiscoveredDevices"
+      ],
+      "totalLines": 134,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/store/trackingStore.ts": {
+      "filePath": "dog-health-app/app/store/trackingStore.ts",
+      "contentHash": "0d3d39195e3c63689b547b309da506c7ef5c3db1d8926a2001a753fda198bb5f",
+      "functions": [
+        {
+          "name": "selectCurrentLocation",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "selectIsTracking",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "selectGeofences",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "selectRoutes",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "selectActiveRoute",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "zustand",
+          "specifiers": [
+            "create"
+          ]
+        },
+        {
+          "source": "zustand/middleware",
+          "specifiers": [
+            "persist",
+            "createJSONStorage"
+          ]
+        },
+        {
+          "source": "@react-native-async-storage/async-storage",
+          "specifiers": [
+            "AsyncStorage"
+          ]
+        },
+        {
+          "source": "../types",
+          "specifiers": [
+            "LocationData",
+            "Geofence",
+            "GeofenceAlert",
+            "Route"
+          ]
+        },
+        {
+          "source": "../services/api/tracking",
+          "specifiers": [
+            "trackingService"
+          ]
+        },
+        {
+          "source": "../services/api/supabase",
+          "specifiers": [
+            "isSupabaseConfigured"
+          ]
+        },
+        {
+          "source": "./dogStore",
+          "specifiers": [
+            "useDogStore"
+          ]
+        }
+      ],
+      "exports": [
+        "useTrackingStore",
+        "selectCurrentLocation",
+        "selectIsTracking",
+        "selectGeofences",
+        "selectRoutes",
+        "selectActiveRoute"
+      ],
+      "totalLines": 389,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/store/alertStore.ts": {
+      "filePath": "dog-health-app/app/store/alertStore.ts",
+      "contentHash": "cfd780f2f7a64add0ce2c1260ebc7caed827b33cb92eb25d2d2e1ccc0d219b39",
+      "functions": [
+        {
+          "name": "selectUnacknowledgedCount",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "selectCriticalAlerts",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "zustand",
+          "specifiers": [
+            "create"
+          ]
+        },
+        {
+          "source": "zustand/middleware",
+          "specifiers": [
+            "persist",
+            "createJSONStorage"
+          ]
+        },
+        {
+          "source": "@react-native-async-storage/async-storage",
+          "specifiers": [
+            "AsyncStorage"
+          ]
+        },
+        {
+          "source": "../types",
+          "specifiers": [
+            "HealthAlert",
+            "AlertType",
+            "AlertSeverity"
+          ]
+        },
+        {
+          "source": "../services/api/alerts",
+          "specifiers": [
+            "alertsService"
+          ]
+        },
+        {
+          "source": "../services/api/supabase",
+          "specifiers": [
+            "supabase",
+            "isSupabaseConfigured"
+          ]
+        }
+      ],
+      "exports": [
+        "useAlertStore",
+        "selectUnacknowledgedCount",
+        "selectCriticalAlerts"
+      ],
+      "totalLines": 229,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/store/settingsStore.ts": {
+      "filePath": "dog-health-app/app/store/settingsStore.ts",
+      "contentHash": "3260cb1d19abea9067ff16c6a57f7bdebb7a4c293f9b55d92a8591d737169a86",
+      "functions": [
+        {
+          "name": "selectUnits",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "selectIsDarkMode",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "selectHasCompletedOnboarding",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "zustand",
+          "specifiers": [
+            "create"
+          ]
+        },
+        {
+          "source": "zustand/middleware",
+          "specifiers": [
+            "persist",
+            "createJSONStorage"
+          ]
+        },
+        {
+          "source": "@react-native-async-storage/async-storage",
+          "specifiers": [
+            "AsyncStorage"
+          ]
+        },
+        {
+          "source": "../types",
+          "specifiers": [
+            "UserSettings",
+            "Units",
+            "TemperatureUnit",
+            "DistanceUnit",
+            "WeightUnit",
+            "TimeFormat",
+            "DateFormat"
+          ]
+        }
+      ],
+      "exports": [
+        "useSettingsStore",
+        "selectUnits",
+        "selectIsDarkMode",
+        "selectHasCompletedOnboarding"
+      ],
+      "totalLines": 167,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/store/chatStore.ts": {
+      "filePath": "dog-health-app/app/store/chatStore.ts",
+      "contentHash": "87f3a23064fe9d03eda30b1474cf7314da8faea6fdc847e4eac5cfe410cd1d58",
+      "functions": [
+        {
+          "name": "selectMessages",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "zustand",
+          "specifiers": [
+            "create"
+          ]
+        },
+        {
+          "source": "zustand/middleware",
+          "specifiers": [
+            "persist",
+            "createJSONStorage"
+          ]
+        },
+        {
+          "source": "@react-native-async-storage/async-storage",
+          "specifiers": [
+            "AsyncStorage"
+          ]
+        },
+        {
+          "source": "../services/ai",
+          "specifiers": [
+            "aiService",
+            "ChatMessage"
+          ]
+        }
+      ],
+      "exports": [
+        "useChatStore",
+        "selectMessages"
+      ],
+      "totalLines": 74,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/hooks/index.ts": {
+      "filePath": "dog-health-app/app/hooks/index.ts",
+      "contentHash": "f3243da302562e00b8cd2ffa8224ef8ee53dc0e57a1a1d7b4685a5afc372ee20",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "useBLE",
+        "useHealthMetrics",
+        "useLocation",
+        "useAlerts",
+        "useTheme"
+      ],
+      "totalLines": 5,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/hooks/useBLE.ts": {
+      "filePath": "dog-health-app/app/hooks/useBLE.ts",
+      "contentHash": "09567a48aaaf08d8a0941d3a9942cf9bf6381e72c75492f3fab7e5e7ef159268",
+      "functions": [
+        {
+          "name": "useBLE",
+          "params": [],
+          "exported": true,
+          "lineCount": 69
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState",
+            "useEffect",
+            "useCallback"
+          ]
+        },
+        {
+          "source": "../store",
+          "specifiers": [
+            "useBLEStore"
+          ]
+        },
+        {
+          "source": "../services/ble",
+          "specifiers": [
+            "bleService"
+          ]
+        },
+        {
+          "source": "../types",
+          "specifiers": [
+            "BLEDevice",
+            "BLEConnectionState"
+          ]
+        }
+      ],
+      "exports": [
+        "useBLE"
+      ],
+      "totalLines": 80,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/hooks/useHealthMetrics.ts": {
+      "filePath": "dog-health-app/app/hooks/useHealthMetrics.ts",
+      "contentHash": "10c85ff13405a22bd693b08fa7537f8bed2ebbf427457137f4f3528df2a5b56a",
+      "functions": [
+        {
+          "name": "useHealthMetrics",
+          "params": [
+            "dogId"
+          ],
+          "exported": true,
+          "lineCount": 48
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState",
+            "useCallback"
+          ]
+        },
+        {
+          "source": "../store",
+          "specifiers": [
+            "useHealthStore"
+          ]
+        },
+        {
+          "source": "../types",
+          "specifiers": [
+            "HealthMetrics",
+            "HeartRateData",
+            "TemperatureData"
+          ]
+        }
+      ],
+      "exports": [
+        "useHealthMetrics"
+      ],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/hooks/useLocation.ts": {
+      "filePath": "dog-health-app/app/hooks/useLocation.ts",
+      "contentHash": "43c5104b2a7f8bba02d7b01075fa7065b056d75f79c550d421e834719a3e3fc0",
+      "functions": [
+        {
+          "name": "useLocation",
+          "params": [],
+          "exported": true,
+          "lineCount": 89
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState",
+            "useEffect",
+            "useCallback"
+          ]
+        },
+        {
+          "source": "../store",
+          "specifiers": [
+            "useTrackingStore"
+          ]
+        },
+        {
+          "source": "../services/gps",
+          "specifiers": [
+            "gpsService"
+          ]
+        },
+        {
+          "source": "../types",
+          "specifiers": [
+            "LocationData"
+          ]
+        }
+      ],
+      "exports": [
+        "useLocation"
+      ],
+      "totalLines": 101,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/hooks/useAlerts.ts": {
+      "filePath": "dog-health-app/app/hooks/useAlerts.ts",
+      "contentHash": "2e3d1ea4db8742b19895663f06e2cdd996ebb3f57d89d00bb8b9e12b95ef0fd0",
+      "functions": [
+        {
+          "name": "useAlerts",
+          "params": [],
+          "exported": true,
+          "lineCount": 47
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useCallback"
+          ]
+        },
+        {
+          "source": "../store",
+          "specifiers": [
+            "useAlertStore"
+          ]
+        },
+        {
+          "source": "../types",
+          "specifiers": [
+            "HealthAlert",
+            "AlertType",
+            "AlertSeverity"
+          ]
+        }
+      ],
+      "exports": [
+        "useAlerts"
+      ],
+      "totalLines": 57,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/hooks/useTheme.ts": {
+      "filePath": "dog-health-app/app/hooks/useTheme.ts",
+      "contentHash": "b9a551280eff1243c4e8c82e7fc38c4b9c529b427db6ff02f428c82372eff72b",
+      "functions": [
+        {
+          "name": "useTheme",
+          "params": [],
+          "exported": true,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo"
+          ]
+        },
+        {
+          "source": "../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "shadows",
+            "borderRadius"
+          ]
+        }
+      ],
+      "exports": [
+        "useTheme"
+      ],
+      "totalLines": 21,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/api/index.ts": {
+      "filePath": "dog-health-app/app/services/api/index.ts",
+      "contentHash": "7b9dcc3a87255bae3c8d9bd87bd1dc20e10123df7f691c73f6a7e71c6466ce7b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "apiClient",
+        "supabase",
+        "isSupabaseConfigured",
+        "subscribeToTable",
+        "unsubscribeFromTable",
+        "dogsService",
+        "healthService",
+        "alertsService",
+        "trackingService",
+        "devicesService"
+      ],
+      "totalLines": 13,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/api/supabase.ts": {
+      "filePath": "dog-health-app/app/services/api/supabase.ts",
+      "contentHash": "07dd1e18032f0bea49409228c67747908eb695ff355f3ca625fc547433b55091",
+      "functions": [
+        {
+          "name": "getSupabaseUrl",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getSupabaseAnonKey",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "isSupabaseConfigured",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "subscribeToTable",
+          "params": [
+            "table",
+            "callback",
+            "filter"
+          ],
+          "returnType": "string | null",
+          "exported": true,
+          "lineCount": 46
+        },
+        {
+          "name": "unsubscribeFromTable",
+          "params": [
+            "subscriptionId"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "unsubscribeAll",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@supabase/supabase-js",
+          "specifiers": [
+            "createClient",
+            "SupabaseClient",
+            "RealtimeChannel"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "Database"
+          ]
+        },
+        {
+          "source": "@env",
+          "specifiers": [
+            "SUPABASE_URL",
+            "SUPABASE_ANON_KEY",
+            "EXPO_PUBLIC_SUPABASE_URL",
+            "EXPO_PUBLIC_SUPABASE_ANON_KEY"
+          ]
+        }
+      ],
+      "exports": [
+        "supabase",
+        "getSupabaseUrl",
+        "getSupabaseAnonKey",
+        "isSupabaseConfigured",
+        "subscribeToTable",
+        "unsubscribeFromTable",
+        "unsubscribeAll"
+      ],
+      "totalLines": 129,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/api/client.ts": {
+      "filePath": "dog-health-app/app/services/api/client.ts",
+      "contentHash": "4dbeb0cee5704f199133b92f3c02d2618fded149a22e6c1d4774c8df2bc299c3",
+      "functions": [],
+      "classes": [
+        {
+          "name": "APIClient",
+          "methods": [
+            "constructor",
+            "getInstance",
+            "get",
+            "post",
+            "put",
+            "patch",
+            "delete",
+            "normalizeError",
+            "setAuthToken",
+            "clearAuthToken"
+          ],
+          "properties": [
+            "client",
+            "instance",
+            "handleRequest",
+            "handleResponse",
+            "handleError"
+          ],
+          "exported": false,
+          "lineCount": 150
+        }
+      ],
+      "imports": [
+        {
+          "source": "axios",
+          "specifiers": [
+            "axios",
+            "AxiosInstance",
+            "AxiosError",
+            "InternalAxiosRequestConfig",
+            "AxiosResponse"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "ApiResponse",
+            "ApiError"
+          ]
+        },
+        {
+          "source": "@env",
+          "specifiers": [
+            "EXPO_PUBLIC_API_URL"
+          ]
+        }
+      ],
+      "exports": [
+        "apiClient"
+      ],
+      "totalLines": 164,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/api/dogs.ts": {
+      "filePath": "dog-health-app/app/services/api/dogs.ts",
+      "contentHash": "1dddf2e83484586f953461fc98a19275d3ee416c97ca2a6f4c7eedcabbb710b5",
+      "functions": [
+        {
+          "name": "ensureProfileExists",
+          "params": [
+            "userId"
+          ],
+          "returnType": "Promise<boolean>",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "mapDogRow",
+          "params": [
+            "row"
+          ],
+          "returnType": "Dog",
+          "exported": false,
+          "lineCount": 15
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./supabase",
+          "specifiers": [
+            "supabase",
+            "isSupabaseConfigured"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "Dog"
+          ]
+        }
+      ],
+      "exports": [
+        "dogsService"
+      ],
+      "totalLines": 169,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/api/health.ts": {
+      "filePath": "dog-health-app/app/services/api/health.ts",
+      "contentHash": "f1cc51e5778b94a0149d288f4776edaab921920d5108afa0081c5a7d6fabcada",
+      "functions": [
+        {
+          "name": "getHeartRateZone",
+          "params": [
+            "bpm"
+          ],
+          "returnType": "HeartRateZone",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "celsiusToFahrenheit",
+          "params": [
+            "c"
+          ],
+          "returnType": "number",
+          "exported": false,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./supabase",
+          "specifiers": [
+            "supabase",
+            "isSupabaseConfigured"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "HeartRateData",
+            "HeartRateZone",
+            "TemperatureData",
+            "ActivityData",
+            "HealthMetrics",
+            "BatteryData"
+          ]
+        },
+        {
+          "source": "../../types/health",
+          "specifiers": [
+            "ActivityType"
+          ]
+        }
+      ],
+      "exports": [
+        "healthService"
+      ],
+      "totalLines": 202,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/api/alerts.ts": {
+      "filePath": "dog-health-app/app/services/api/alerts.ts",
+      "contentHash": "bb2c3225311a3734d21baf0c4e39aea14b57771ed0f4771c63d72b55ec2f24a1",
+      "functions": [
+        {
+          "name": "mapAlertRow",
+          "params": [
+            "row"
+          ],
+          "returnType": "HealthAlert",
+          "exported": false,
+          "lineCount": 14
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./supabase",
+          "specifiers": [
+            "supabase",
+            "isSupabaseConfigured"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "HealthAlert"
+          ]
+        }
+      ],
+      "exports": [
+        "alertsService"
+      ],
+      "totalLines": 117,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/api/tracking.ts": {
+      "filePath": "dog-health-app/app/services/api/tracking.ts",
+      "contentHash": "adab791671342081bf4fe70a510bd622a5d575543a54090027b2dc14638a0210",
+      "functions": [
+        {
+          "name": "mapGeofenceRow",
+          "params": [
+            "row"
+          ],
+          "returnType": "Geofence",
+          "exported": false,
+          "lineCount": 16
+        },
+        {
+          "name": "mapRouteRow",
+          "params": [
+            "row"
+          ],
+          "returnType": "Route",
+          "exported": false,
+          "lineCount": 20
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./supabase",
+          "specifiers": [
+            "supabase",
+            "isSupabaseConfigured"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "LocationData",
+            "Geofence",
+            "Route"
+          ]
+        }
+      ],
+      "exports": [
+        "trackingService"
+      ],
+      "totalLines": 280,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/api/devices.ts": {
+      "filePath": "dog-health-app/app/services/api/devices.ts",
+      "contentHash": "d10c593dbfb589d5bf56cc669912cf260d39c057c3141a446ff0b6713d1b9977",
+      "functions": [
+        {
+          "name": "mapDeviceRow",
+          "params": [
+            "row"
+          ],
+          "returnType": "Device",
+          "exported": false,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./supabase",
+          "specifiers": [
+            "supabase",
+            "isSupabaseConfigured"
+          ]
+        }
+      ],
+      "exports": [
+        "devicesService"
+      ],
+      "totalLines": 104,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/auth/index.ts": {
+      "filePath": "dog-health-app/app/services/auth/index.ts",
+      "contentHash": "df930c28248c8db420d01137817ec783d307e7ca403607c55fea62e3f2cbb39a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "authService"
+      ],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/auth/service.ts": {
+      "filePath": "dog-health-app/app/services/auth/service.ts",
+      "contentHash": "59cf338f052a5a6e3fa0392836831ced10b7f8441bba55601bdd6cf80d3d356f",
+      "functions": [],
+      "classes": [
+        {
+          "name": "AuthService",
+          "methods": [
+            "constructor",
+            "getInstance",
+            "signUpWithEmail",
+            "signInWithEmail",
+            "sendOTP",
+            "verifyOTP",
+            "resendOTP",
+            "signOut",
+            "getCurrentUser",
+            "getSession",
+            "onAuthStateChange",
+            "mapUser",
+            "refreshSession"
+          ],
+          "properties": [
+            "instance"
+          ],
+          "exported": false,
+          "lineCount": 222
+        }
+      ],
+      "imports": [
+        {
+          "source": "@react-native-async-storage/async-storage",
+          "specifiers": [
+            "AsyncStorage"
+          ]
+        },
+        {
+          "source": "../api/supabase",
+          "specifiers": [
+            "supabase"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "AuthUser",
+            "AuthSession"
+          ]
+        }
+      ],
+      "exports": [
+        "authService"
+      ],
+      "totalLines": 244,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/ble/index.ts": {
+      "filePath": "dog-health-app/app/services/ble/index.ts",
+      "contentHash": "011d69fe3697967c20973703018672cbd58de34e0f8b0df08d11d1113712c786",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./scanner",
+          "specifiers": [
+            "bleScanner"
+          ]
+        },
+        {
+          "source": "./connection",
+          "specifiers": [
+            "bleConnectionManager"
+          ]
+        },
+        {
+          "source": "./packetParser",
+          "specifiers": [
+            "blePacketParser"
+          ]
+        },
+        {
+          "source": "./service",
+          "specifiers": [
+            "BLEService"
+          ]
+        }
+      ],
+      "exports": [
+        "bleScanner",
+        "bleConnectionManager",
+        "blePacketParser",
+        "BLEService",
+        "bleService"
+      ],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/ble/scanner.ts": {
+      "filePath": "dog-health-app/app/services/ble/scanner.ts",
+      "contentHash": "291f7be1355ab97e469f7681a75bd60a6846841853e53564792ecdffc11ef5a2",
+      "functions": [],
+      "classes": [
+        {
+          "name": "BLEScanner",
+          "methods": [
+            "constructor",
+            "getInstance",
+            "startScan",
+            "stopScan",
+            "getDiscoveredDevices",
+            "onDevicesDiscovered",
+            "notifyListeners",
+            "convertToBLEDevice",
+            "requestPermissions",
+            "checkBluetoothState",
+            "destroy"
+          ],
+          "properties": [
+            "instance",
+            "manager",
+            "isScanning",
+            "listeners",
+            "discoveredDevices"
+          ],
+          "exported": false,
+          "lineCount": 118
+        }
+      ],
+      "imports": [
+        {
+          "source": "react-native-ble-plx",
+          "specifiers": [
+            "BleManager",
+            "Device"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "Platform",
+            "PermissionsAndroid"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "BLEDevice"
+          ]
+        },
+        {
+          "source": "@env",
+          "specifiers": [
+            "EXPO_PUBLIC_BLE_SERVICE_UUID"
+          ]
+        }
+      ],
+      "exports": [
+        "bleScanner"
+      ],
+      "totalLines": 137,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/ble/connection.ts": {
+      "filePath": "dog-health-app/app/services/ble/connection.ts",
+      "contentHash": "92b7b3826e19699d4b1e88e8fd19ba8aa7682d3742b5d4d4bcb8741d2925cd18",
+      "functions": [],
+      "classes": [
+        {
+          "name": "BLEConnectionManager",
+          "methods": [
+            "constructor",
+            "getInstance",
+            "connect",
+            "disconnect",
+            "handleDisconnection",
+            "readCharacteristic",
+            "writeCharacteristic",
+            "enableNotifications",
+            "disableNotifications",
+            "onConnectionStateChange",
+            "updateState",
+            "getConnectionState",
+            "getConnectedDevice",
+            "isDeviceConnected",
+            "reconnect",
+            "destroy"
+          ],
+          "properties": [
+            "instance",
+            "manager",
+            "connectedDevice",
+            "connectionListeners",
+            "currentState"
+          ],
+          "exported": false,
+          "lineCount": 200
+        }
+      ],
+      "imports": [
+        {
+          "source": "react-native-ble-plx",
+          "specifiers": [
+            "BleManager",
+            "Device",
+            "Characteristic",
+            "ConnectionOptions"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "BLEConnectionState",
+            "BLEConnectionStatus"
+          ]
+        }
+      ],
+      "exports": [
+        "bleConnectionManager"
+      ],
+      "totalLines": 215,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/ble/packetParser.ts": {
+      "filePath": "dog-health-app/app/services/ble/packetParser.ts",
+      "contentHash": "f021fe5e71333f1bf2918cee5b01fcc3776a69f31067b708a41047d19e436b10",
+      "functions": [],
+      "classes": [
+        {
+          "name": "BLEPacketParser",
+          "methods": [
+            "constructor",
+            "getInstance",
+            "parse",
+            "parseHeartRatePacket",
+            "parseGPSPacket",
+            "parseTemperaturePacket",
+            "parseBatteryPacket",
+            "parseActivityPacket",
+            "base64ToBytes",
+            "bytesToFloat"
+          ],
+          "properties": [
+            "instance"
+          ],
+          "exported": false,
+          "lineCount": 162
+        }
+      ],
+      "imports": [
+        {
+          "source": "../../types",
+          "specifiers": [
+            "BLEParsedData",
+            "BLEDataPacket",
+            "HeartRatePacket",
+            "GPSPacket",
+            "TemperaturePacket",
+            "BatteryPacket",
+            "ActivityPacket"
+          ]
+        }
+      ],
+      "exports": [
+        "blePacketParser"
+      ],
+      "totalLines": 171,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/ble/service.ts": {
+      "filePath": "dog-health-app/app/services/ble/service.ts",
+      "contentHash": "b06df29915dcf876aa413a7fc175bc4c6f86be6b221667df1185f6dffb2d4d6f",
+      "functions": [],
+      "classes": [
+        {
+          "name": "BLEService",
+          "methods": [
+            "getInstance",
+            "constructor",
+            "startScanning",
+            "stopScanning",
+            "getDiscoveredDevices",
+            "connect",
+            "disconnect",
+            "isConnected",
+            "parsePacket",
+            "onConnectionChange",
+            "onDevicesDiscovered",
+            "getConnectionState"
+          ],
+          "properties": [
+            "instance"
+          ],
+          "exported": true,
+          "lineCount": 56
+        }
+      ],
+      "imports": [
+        {
+          "source": "react-native-ble-plx",
+          "specifiers": [
+            "Device"
+          ]
+        },
+        {
+          "source": "./scanner",
+          "specifiers": [
+            "bleScanner"
+          ]
+        },
+        {
+          "source": "./connection",
+          "specifiers": [
+            "bleConnectionManager"
+          ]
+        },
+        {
+          "source": "./packetParser",
+          "specifiers": [
+            "blePacketParser"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "BLEDevice",
+            "BLEParsedData",
+            "BLEConnectionState"
+          ]
+        }
+      ],
+      "exports": [
+        "BLEService"
+      ],
+      "totalLines": 66,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/gps/index.ts": {
+      "filePath": "dog-health-app/app/services/gps/index.ts",
+      "contentHash": "bf82ff36774c4356f57661b9c90e1489eba00ca53c50c180c16b66721465b81f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "gpsService"
+      ],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/gps/service.ts": {
+      "filePath": "dog-health-app/app/services/gps/service.ts",
+      "contentHash": "3c3c1874fa7b29ccbfe78d80701530beb654a7228d9b6cd5adff2637faa6360a",
+      "functions": [],
+      "classes": [
+        {
+          "name": "GPSService",
+          "methods": [
+            "constructor",
+            "getInstance",
+            "requestPermissions",
+            "requestBackgroundPermissions",
+            "getCurrentLocation",
+            "startTracking",
+            "stopTracking",
+            "reverseGeocode",
+            "calculateDistance",
+            "onLocationUpdate",
+            "notifyListeners",
+            "convertToLocationData",
+            "isTracking"
+          ],
+          "properties": [
+            "instance",
+            "watchId",
+            "listeners"
+          ],
+          "exported": false,
+          "lineCount": 140
+        }
+      ],
+      "imports": [
+        {
+          "source": "react-native",
+          "specifiers": [
+            "Platform",
+            "PermissionsAndroid"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "LocationData"
+          ]
+        }
+      ],
+      "exports": [
+        "gpsService"
+      ],
+      "totalLines": 157,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/ai/index.ts": {
+      "filePath": "dog-health-app/app/services/ai/index.ts",
+      "contentHash": "ec1d708eef6505ef268e1e4853ca9fb554058a9645e1b42a32f7fbfec765393a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "aiService",
+        "ChatMessage",
+        "DogHealthContext"
+      ],
+      "totalLines": 3,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/ai/service.ts": {
+      "filePath": "dog-health-app/app/services/ai/service.ts",
+      "contentHash": "a4f3d4b822266b46d655a9c7d5f51acc7ebbdf69dba2b105acc4157d4eee0d79",
+      "functions": [
+        {
+          "name": "matchIntent",
+          "params": [
+            "message"
+          ],
+          "returnType": "string | null",
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "generatePersonalizedResponse",
+          "params": [
+            "intent",
+            "context"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 53
+        },
+        {
+          "name": "calculateAgeMonths",
+          "params": [
+            "birthDate"
+          ],
+          "returnType": "number",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "generateGreeting",
+          "params": [
+            "context"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "getQuickReplies",
+          "params": [
+            "intent"
+          ],
+          "returnType": "string[] | undefined",
+          "exported": false,
+          "lineCount": 18
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../../types",
+          "specifiers": [
+            "Dog",
+            "WeightRecord",
+            "VaccinationRecord"
+          ]
+        }
+      ],
+      "exports": [
+        "aiService"
+      ],
+      "totalLines": 298,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/storage/index.ts": {
+      "filePath": "dog-health-app/app/services/storage/index.ts",
+      "contentHash": "c6a92f5c043241ad4e4c89a288a0534af7ccf65d16b16938619dca3715987aac",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "storageService",
+        "apiClient",
+        "supabase",
+        "authService",
+        "bleService",
+        "gpsService",
+        "notificationsService",
+        "analyticsService"
+      ],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/storage/service.ts": {
+      "filePath": "dog-health-app/app/services/storage/service.ts",
+      "contentHash": "7a23f7a21d67906ca682f260124955abfbd3c13afe5e33e42756f513db19bad2",
+      "functions": [],
+      "classes": [
+        {
+          "name": "StorageService",
+          "methods": [
+            "constructor",
+            "getInstance",
+            "setItem",
+            "getItem",
+            "setObject",
+            "getObject",
+            "deleteItem",
+            "contains",
+            "getAllKeys",
+            "clearAll",
+            "setAsync",
+            "getAsync",
+            "setObjectAsync",
+            "getObjectAsync",
+            "deleteAsync",
+            "getAllKeysAsync"
+          ],
+          "properties": [
+            "instance"
+          ],
+          "exported": false,
+          "lineCount": 85
+        }
+      ],
+      "imports": [
+        {
+          "source": "react-native-mmkv",
+          "specifiers": [
+            "MMKV"
+          ]
+        },
+        {
+          "source": "@react-native-async-storage/async-storage",
+          "specifiers": [
+            "AsyncStorage"
+          ]
+        }
+      ],
+      "exports": [
+        "storageService"
+      ],
+      "totalLines": 97,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/notifications/index.ts": {
+      "filePath": "dog-health-app/app/services/notifications/index.ts",
+      "contentHash": "9d9f18049328e7e0bc08e56d1721359c515a9a7e476f668d47abee7791e68017",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "notificationsService"
+      ],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/notifications/service.ts": {
+      "filePath": "dog-health-app/app/services/notifications/service.ts",
+      "contentHash": "5052329145b4fc1cb359f40d9519af7c2f2b65132c993e5a9466d1e741742503",
+      "functions": [],
+      "classes": [
+        {
+          "name": "NotificationsService",
+          "methods": [
+            "constructor",
+            "getInstance",
+            "requestPermissions",
+            "scheduleHealthAlert",
+            "scheduleGeofenceAlert",
+            "cancelNotification",
+            "cancelAllNotifications",
+            "getBadgeCount",
+            "setBadgeCount",
+            "addNotificationReceivedListener",
+            "addNotificationResponseListener"
+          ],
+          "properties": [
+            "instance",
+            "receivedListeners",
+            "responseListeners"
+          ],
+          "exported": false,
+          "lineCount": 68
+        }
+      ],
+      "imports": [
+        {
+          "source": "react-native",
+          "specifiers": [
+            "Platform"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "HealthAlert",
+            "GeofenceAlert"
+          ]
+        }
+      ],
+      "exports": [
+        "notificationsService"
+      ],
+      "totalLines": 80,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/analytics/index.ts": {
+      "filePath": "dog-health-app/app/services/analytics/index.ts",
+      "contentHash": "690650b459ffc54e580f39d4e079fd6cbc44d68aff6b0407a2348fd71a13f8dc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "analyticsService"
+      ],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/services/analytics/service.ts": {
+      "filePath": "dog-health-app/app/services/analytics/service.ts",
+      "contentHash": "b9b67dfcc69101cc128a46404c384b7ec66accfaf0e554768f702e3502b53725",
+      "functions": [],
+      "classes": [
+        {
+          "name": "AnalyticsService",
+          "methods": [
+            "constructor",
+            "getInstance",
+            "calculateHeartRateZone",
+            "calculateAverage",
+            "calculateTrend",
+            "getHeartRateTrend",
+            "getTemperatureTrend",
+            "calculateActivitySummary",
+            "calculateSleepQuality",
+            "isHeartRateAbnormal",
+            "isTemperatureAbnormal",
+            "generateHealthScore"
+          ],
+          "properties": [
+            "instance"
+          ],
+          "exported": false,
+          "lineCount": 126
+        }
+      ],
+      "imports": [
+        {
+          "source": "../../types",
+          "specifiers": [
+            "HeartRateData",
+            "TemperatureData",
+            "ActivityData",
+            "SleepData",
+            "HealthTrend"
+          ]
+        }
+      ],
+      "exports": [
+        "analyticsService"
+      ],
+      "totalLines": 135,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/utils/animations.ts": {
+      "filePath": "dog-health-app/app/utils/animations.ts",
+      "contentHash": "5937995189aa4e9e7a1cefdb1601637a0a0d3d2a86826e2ba7d4694be5de8a73",
+      "functions": [
+        {
+          "name": "fadeIn",
+          "params": [
+            "anim",
+            "duration",
+            "toValue"
+          ],
+          "returnType": "Animated.CompositeAnimation",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "fadeOut",
+          "params": [
+            "anim",
+            "duration"
+          ],
+          "returnType": "Animated.CompositeAnimation",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "slideUp",
+          "params": [
+            "anim",
+            "distance",
+            "duration"
+          ],
+          "returnType": "Animated.CompositeAnimation",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "slideDown",
+          "params": [
+            "anim",
+            "distance",
+            "duration"
+          ],
+          "returnType": "Animated.CompositeAnimation",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "scaleIn",
+          "params": [
+            "anim",
+            "duration"
+          ],
+          "returnType": "Animated.CompositeAnimation",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "scaleOut",
+          "params": [
+            "anim",
+            "duration"
+          ],
+          "returnType": "Animated.CompositeAnimation",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "stagger",
+          "params": [
+            "animations",
+            "staggerMs"
+          ],
+          "returnType": "Animated.CompositeAnimation[]",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "pressAnim",
+          "params": [
+            "anim"
+          ],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-native",
+          "specifiers": [
+            "Animated",
+            "Easing"
+          ]
+        }
+      ],
+      "exports": [
+        "fadeIn",
+        "fadeOut",
+        "slideUp",
+        "slideDown",
+        "scaleIn",
+        "scaleOut",
+        "stagger",
+        "parallel",
+        "sequence",
+        "pressAnim"
+      ],
+      "totalLines": 90,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/common/index.ts": {
+      "filePath": "dog-health-app/app/components/common/index.ts",
+      "contentHash": "c3d8270c45140f96b57963c687d4e0b351e0e762c543721329ab4a278de4c34f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "Button",
+        "Card",
+        "Input",
+        "StatusBadge",
+        "Header",
+        "Loader",
+        "EmptyState",
+        "ErrorView"
+      ],
+      "totalLines": 9,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/common/Button.tsx": {
+      "filePath": "dog-health-app/app/components/common/Button.tsx",
+      "contentHash": "76d0546d127407fe239bccf47ea6cdfdad5b520fbb4ce7abcb043efb25e8ab51",
+      "functions": [
+        {
+          "name": "Button",
+          "params": [
+            "{\n  title,\n  onPress,\n  variant = 'primary',\n  size = 'md',\n  disabled = false,\n  loading = false,\n  icon,\n  style,\n  textStyle,\n  fullWidth = true,\n}"
+          ],
+          "exported": true,
+          "lineCount": 102
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "TouchableOpacity",
+            "Text",
+            "StyleSheet",
+            "ActivityIndicator",
+            "ViewStyle",
+            "TextStyle",
+            "View"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius",
+            "shadows"
+          ]
+        }
+      ],
+      "exports": [
+        "Button"
+      ],
+      "totalLines": 157,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/common/Card.tsx": {
+      "filePath": "dog-health-app/app/components/common/Card.tsx",
+      "contentHash": "e484b216bc42aaa39a8ae3155f156b211ba568ee102e32bde3edd9da0d52ab7a",
+      "functions": [
+        {
+          "name": "Card",
+          "params": [
+            "{\n  children,\n  style,\n  variant = 'default',\n  padding = 'md',\n  onPress,\n}"
+          ],
+          "exported": true,
+          "lineCount": 49
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "StyleSheet",
+            "ViewStyle",
+            "TouchableOpacity"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "borderRadius",
+            "shadows"
+          ]
+        }
+      ],
+      "exports": [
+        "Card"
+      ],
+      "totalLines": 89,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/common/Input.tsx": {
+      "filePath": "dog-health-app/app/components/common/Input.tsx",
+      "contentHash": "5d5a0b375e7878e15f8187a8eb19614903b4a88b940ceb5dd6a5b5121d754c61",
+      "functions": [
+        {
+          "name": "Input",
+          "params": [
+            "{\n  label,\n  error,\n  containerStyle,\n  leftIcon,\n  rightIcon,\n  style,\n  ...props\n}"
+          ],
+          "exported": true,
+          "lineCount": 50
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "TextInput",
+            "Text",
+            "StyleSheet",
+            "TextInputProps",
+            "ViewStyle"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius",
+            "shadows"
+          ]
+        }
+      ],
+      "exports": [
+        "Input"
+      ],
+      "totalLines": 118,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/common/StatusBadge.tsx": {
+      "filePath": "dog-health-app/app/components/common/StatusBadge.tsx",
+      "contentHash": "2381c0751e9bfd23d9593fa6500f07bff05dda05911b1caabdd7eebf9a09ca4a",
+      "functions": [
+        {
+          "name": "StatusBadge",
+          "params": [
+            "{\n  label,\n  variant = 'default',\n  size = 'md',\n  dot = false,\n}"
+          ],
+          "exported": true,
+          "lineCount": 44
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius"
+          ]
+        }
+      ],
+      "exports": [
+        "StatusBadge"
+      ],
+      "totalLines": 88,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/common/Header.tsx": {
+      "filePath": "dog-health-app/app/components/common/Header.tsx",
+      "contentHash": "5f3c04e22f7d1d3bf5839c7869947861b0fdeb5c688d13cc8bcbc823f97852f8",
+      "functions": [
+        {
+          "name": "Header",
+          "params": [
+            "{\n  title,\n  subtitle,\n  showBack = false,\n  onBack,\n  rightAction,\n}"
+          ],
+          "exported": true,
+          "lineCount": 24
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "TouchableOpacity",
+            "StyleSheet"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius"
+          ]
+        }
+      ],
+      "exports": [
+        "Header"
+      ],
+      "totalLines": 84,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/common/Loader.tsx": {
+      "filePath": "dog-health-app/app/components/common/Loader.tsx",
+      "contentHash": "4c6154588906b8985f0218a1334d8064425326de6d555b47591c6e768dfe2cde",
+      "functions": [
+        {
+          "name": "Loader",
+          "params": [
+            "{\n  text,\n  fullScreen = true,\n  size = 'large',\n}"
+          ],
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "ActivityIndicator",
+            "Text",
+            "StyleSheet"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography"
+          ]
+        }
+      ],
+      "exports": [
+        "Loader"
+      ],
+      "totalLines": 63,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/common/EmptyState.tsx": {
+      "filePath": "dog-health-app/app/components/common/EmptyState.tsx",
+      "contentHash": "e7d8ae44a3073e9ba71209f8ce8b0793a51135ea562396c9b86fe5c3625e021c",
+      "functions": [
+        {
+          "name": "EmptyState",
+          "params": [
+            "{\n  icon,\n  title,\n  message,\n  actionLabel,\n  onAction,\n}"
+          ],
+          "exported": true,
+          "lineCount": 27
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius"
+          ]
+        },
+        {
+          "source": "./Button",
+          "specifiers": [
+            "Button"
+          ]
+        }
+      ],
+      "exports": [
+        "EmptyState"
+      ],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/common/ErrorView.tsx": {
+      "filePath": "dog-health-app/app/components/common/ErrorView.tsx",
+      "contentHash": "5acac8e05edb8ae065a3078a33bc77723a5ffd0f635f9a43e59dcbe7aaae0061",
+      "functions": [
+        {
+          "name": "ErrorView",
+          "params": [
+            "{\n  message = 'Something went wrong',\n  onRetry,\n}"
+          ],
+          "exported": true,
+          "lineCount": 24
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography"
+          ]
+        },
+        {
+          "source": "./Button",
+          "specifiers": [
+            "Button"
+          ]
+        }
+      ],
+      "exports": [
+        "ErrorView"
+      ],
+      "totalLines": 77,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/charts/index.ts": {
+      "filePath": "dog-health-app/app/components/charts/index.ts",
+      "contentHash": "8597b0c7b2fb46cc18f415c20e468a97bdfaa2fdf241fafe86021dae0967e3d1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "HeartRateChart"
+      ],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/charts/HeartRateChart.tsx": {
+      "filePath": "dog-health-app/app/components/charts/HeartRateChart.tsx",
+      "contentHash": "4da414e3f03d9b16e7258b2dd02f2bbc516049d14715888ab067d27c8f228a4f",
+      "functions": [
+        {
+          "name": "HeartRateChart",
+          "params": [
+            "{\n  data,\n  current,\n  min,\n  max,\n}"
+          ],
+          "exported": true,
+          "lineCount": 89
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet"
+          ]
+        },
+        {
+          "source": "react-native-gifted-charts",
+          "specifiers": [
+            "LineChart"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius",
+            "shadows"
+          ]
+        }
+      ],
+      "exports": [
+        "HeartRateChart"
+      ],
+      "totalLines": 209,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/maps/index.ts": {
+      "filePath": "dog-health-app/app/components/maps/index.ts",
+      "contentHash": "65ee9f9273b78d9dce63d58fc7d249188d571308f308a881abae67147d15b5f2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "DogMap",
+        "OpenStreetMapView",
+        "OfflineMapView"
+      ],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/maps/DogMap.tsx": {
+      "filePath": "dog-health-app/app/components/maps/DogMap.tsx",
+      "contentHash": "389a552dee926d2919cfb1aa181ca6c1b2e1c9b820118e06c433a51481cb49e8",
+      "functions": [
+        {
+          "name": "DogMap",
+          "params": [
+            "{\n  location,\n  geofences = [],\n  route,\n  showUserLocation = true,\n  region,\n  onPress,\n  followLocation = false,\n  style,\n}"
+          ],
+          "exported": true,
+          "lineCount": 96
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useRef",
+            "useEffect"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "StyleSheet"
+          ]
+        },
+        {
+          "source": "react-native-maps",
+          "specifiers": [
+            "MapView",
+            "Marker",
+            "Circle",
+            "Polyline",
+            "Region"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "LocationData",
+            "Geofence",
+            "Route"
+          ]
+        }
+      ],
+      "exports": [
+        "DogMap"
+      ],
+      "totalLines": 147,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/maps/OfflineMapView.tsx": {
+      "filePath": "dog-health-app/app/components/maps/OfflineMapView.tsx",
+      "contentHash": "47f0b7b1abf554d4fd67f95edb3ccea9aa9875fdfb5fb32ac81f1228f5bfdebc",
+      "functions": [
+        {
+          "name": "OfflineMapView",
+          "params": [
+            "{\n  latitude,\n  longitude,\n}"
+          ],
+          "exported": true,
+          "lineCount": 44
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet"
+          ]
+        }
+      ],
+      "exports": [
+        "OfflineMapView"
+      ],
+      "totalLines": 126,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/maps/OpenStreetMapView.tsx": {
+      "filePath": "dog-health-app/app/components/maps/OpenStreetMapView.tsx",
+      "contentHash": "06a59c10de44f065a73693edb63201e34c6c5c87a7136e6868cb179d00b97b0e",
+      "functions": [
+        {
+          "name": "OpenStreetMapView",
+          "params": [
+            "{\n  latitude,\n  longitude,\n  latitudeDelta = 0.01,\n  longitudeDelta = 0.01,\n}"
+          ],
+          "exported": true,
+          "lineCount": 57
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "StyleSheet"
+          ]
+        },
+        {
+          "source": "react-native-webview",
+          "specifiers": [
+            "WebView"
+          ]
+        }
+      ],
+      "exports": [
+        "OpenStreetMapView"
+      ],
+      "totalLines": 78,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/dog/index.ts": {
+      "filePath": "dog-health-app/app/components/dog/index.ts",
+      "contentHash": "95ec9b0e8e581d93366197bfad9b03d4a7dc50fe350033ff11498d30c4a6adbb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "DogCard"
+      ],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/dog/DogCard.tsx": {
+      "filePath": "dog-health-app/app/components/dog/DogCard.tsx",
+      "contentHash": "ac993dcec142c9d95c29c7bde40aea160b63b9cae4cc3d6355c3207e421c7cbd",
+      "functions": [
+        {
+          "name": "DogCard",
+          "params": [
+            "{ dog, onPress, isActive = false }"
+          ],
+          "exported": true,
+          "lineCount": 42
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet",
+            "TouchableOpacity"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../components/common",
+          "specifiers": [
+            "Card",
+            "StatusBadge"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography"
+          ]
+        },
+        {
+          "source": "../../types",
+          "specifiers": [
+            "Dog"
+          ]
+        }
+      ],
+      "exports": [
+        "DogCard"
+      ],
+      "totalLines": 111,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/device/index.ts": {
+      "filePath": "dog-health-app/app/components/device/index.ts",
+      "contentHash": "f874997683bd261eb99aa7a467abb08ccdf73303eaec5dd069834af7a4f383a2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "DeviceCard"
+      ],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app/components/device/DeviceCard.tsx": {
+      "filePath": "dog-health-app/app/components/device/DeviceCard.tsx",
+      "contentHash": "9533259925033eec1d44ce979670e2335b5bb0f5380177cf665e62d65073d5b1",
+      "functions": [
+        {
+          "name": "DeviceCard",
+          "params": [
+            "{\n  isConnected,\n  deviceName,\n  batteryLevel,\n  signalStrength,\n}"
+          ],
+          "exported": true,
+          "lineCount": 62
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-native",
+          "specifiers": [
+            "View",
+            "Text",
+            "StyleSheet"
+          ]
+        },
+        {
+          "source": "react-native-vector-icons/Ionicons",
+          "specifiers": [
+            "Ionicons"
+          ]
+        },
+        {
+          "source": "../../theme",
+          "specifiers": [
+            "colors",
+            "spacing",
+            "typography",
+            "borderRadius",
+            "shadows"
+          ]
+        },
+        {
+          "source": "../common/StatusBadge",
+          "specifiers": [
+            "StatusBadge"
+          ]
+        }
+      ],
+      "exports": [
+        "DeviceCard"
+      ],
+      "totalLines": 140,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/android/app/src/main/java/com/doghealth/app/MainActivity.kt": {
+      "filePath": "dog-health-app/android/app/src/main/java/com/doghealth/app/MainActivity.kt",
+      "contentHash": "38ab0bdd27027064909289588dbed4caaefaac3016f78ca4e549e7d659e7ad3a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 37,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/src/main/java/com/doghealth/app/MainApplication.kt": {
+      "filePath": "dog-health-app/android/app/src/main/java/com/doghealth/app/MainApplication.kt",
+      "contentHash": "0d5dc1ebff7ae14dbab2f5919d7e113ba78c37c31d9b7b0b1a2951f0e7516986",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 37,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/ios/DogHealthApp/AppDelegate.mm": {
+      "filePath": "dog-health-app/ios/DogHealthApp/AppDelegate.mm",
+      "contentHash": "ffd06355d7491c737da9d4e4925927c500b027809ccb500b3bfa88070ddef072",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 32,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/ios/DogHealthApp/AppDelegate.h": {
+      "filePath": "dog-health-app/ios/DogHealthApp/AppDelegate.h",
+      "contentHash": "edaf898f5c460c19fdf620539434695e72069a8efd4109092c0a57f2b1f2dbef",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 7,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/ios/DogHealthApp/main.m": {
+      "filePath": "dog-health-app/ios/DogHealthApp/main.m",
+      "contentHash": "75228f2b985839852d2c934250f3cfcfb5acb776c279dbfb4e551491509a9813",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/ios/DogHealthAppTests/DogHealthAppTests.m": {
+      "filePath": "dog-health-app/ios/DogHealthAppTests/DogHealthAppTests.m",
+      "contentHash": "ac99a92b2b5c9c7750050e4731488d6b138b092ac85cf63240fc41ff49af18a8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 67,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/babel.config.js": {
+      "filePath": "dog-health-app/babel.config.js",
+      "contentHash": "756fbbe23513652e1b16fd6acf5ef5a17b89bb6ca1a374643947537ee239deaa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/metro.config.js": {
+      "filePath": "dog-health-app/metro.config.js",
+      "contentHash": "893a878a4a2ea0df133ff47a638459b7f66e4bc757f4f673960e2f9efcd92985",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/react-native.config.js": {
+      "filePath": "dog-health-app/react-native.config.js",
+      "contentHash": "3e8e505b2d95f3800332d8d8698ff0ba6e4fac9891de852608ad648658334b7a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/tsconfig.json": {
+      "filePath": "dog-health-app/tsconfig.json",
+      "contentHash": "3c6f0237cfd516848fc1b9c3381fb24552c262ffeb0c76eccbf021f46790a36f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 31,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/package.json": {
+      "filePath": "dog-health-app/package.json",
+      "contentHash": "3fb876246378d30fc8253027f6efbb3c6abadfc4dc65b65a7f2c51b8cf0ec46f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 59,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/app.json": {
+      "filePath": "dog-health-app/app.json",
+      "contentHash": "e21f9402f68834dc5ca727deb5a00a60de62a3cfb1790160044b803d7e57d867",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/.env": {
+      "filePath": "dog-health-app/.env",
+      "contentHash": "4a9eb0fc0c7eb96cd1e5a004445ed500cf83c69580ce721e874b55d8316adb86",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 25,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/.gitignore": {
+      "filePath": "dog-health-app/.gitignore",
+      "contentHash": "e86795f132c470e7ff85cc5808b65034b7769769c7a76c22ffd846f3f2562721",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 56,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/build.gradle": {
+      "filePath": "dog-health-app/android/build.gradle",
+      "contentHash": "94906d26c9c234009a05009ad284657fd88124ac111a92aea5502b8689a0bac8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 42,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/build.gradle": {
+      "filePath": "dog-health-app/android/app/build.gradle",
+      "contentHash": "9cba59c449c25175c442de5dd0e8e811ec4afef17e31c33e2ae28b37538dd912",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 99,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/settings.gradle": {
+      "filePath": "dog-health-app/android/settings.gradle",
+      "contentHash": "49cce9dc2a83f623b2eb41c40e00519afb391c351bad697fab22851650e94acd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 22,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/gradle.properties": {
+      "filePath": "dog-health-app/android/gradle.properties",
+      "contentHash": "5a6d3ae30546981f504a7305b4b9242646adab9590b2a897c133af7b9638e46d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 46,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/gradle/wrapper/gradle-wrapper.properties": {
+      "filePath": "dog-health-app/android/gradle/wrapper/gradle-wrapper.properties",
+      "contentHash": "128a178633969baede56a29f61f3a3cd66d10df868a8d87d86ddb4ced236ebe3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/local.properties": {
+      "filePath": "dog-health-app/android/local.properties",
+      "contentHash": "f54a7fff3796fcfbf3b3403405af9f2ce886a19295d46fa4885a75748b16b233",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/proguard-rules.pro": {
+      "filePath": "dog-health-app/android/app/proguard-rules.pro",
+      "contentHash": "8bd4d7b69a1d78e8322b459b5e8d48234adce7481df04da34c0140d52ffb367a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/src/main/AndroidManifest.xml": {
+      "filePath": "dog-health-app/android/app/src/main/AndroidManifest.xml",
+      "contentHash": "8ac2e48f095d4d09627b19e148aea3b15646d7f1c373814b59472f826dd7f173",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 33,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/src/debug/AndroidManifest.xml": {
+      "filePath": "dog-health-app/android/app/src/debug/AndroidManifest.xml",
+      "contentHash": "fb1795032c764d975376e1612ab7022058eca2268a45efbe731a47a5d3ac0f60",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/src/main/res/values/colors.xml": {
+      "filePath": "dog-health-app/android/app/src/main/res/values/colors.xml",
+      "contentHash": "24f769627920aba49ddda4921dc1b8730ed87690e74d9fd1cc25f194f6ae80e2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 7,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/src/main/res/values/strings.xml": {
+      "filePath": "dog-health-app/android/app/src/main/res/values/strings.xml",
+      "contentHash": "87c546933f21609d62c166ff80f7b9e78810d28f42b12a4c619cb3e4b0fb9aa1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/src/main/res/values/styles.xml": {
+      "filePath": "dog-health-app/android/app/src/main/res/values/styles.xml",
+      "contentHash": "5ed01e6ecee56470ca16e8a8286680509e200b920df214ad149d50a6d168a1c3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 20,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/src/main/res/values/splash_colors.xml": {
+      "filePath": "dog-health-app/android/app/src/main/res/values/splash_colors.xml",
+      "contentHash": "b145354c76e6aea4bbdd53e873b9e1ffd51460b4087c810f32770bffb8c77e59",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/src/main/res/values-night/colors.xml": {
+      "filePath": "dog-health-app/android/app/src/main/res/values-night/colors.xml",
+      "contentHash": "c30a9f37e6b34372e1db8c812d64a18719acf7c52c11ff2f7e5e5ed5e05c2072",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/src/main/res/drawable/splash_bg.xml": {
+      "filePath": "dog-health-app/android/app/src/main/res/drawable/splash_bg.xml",
+      "contentHash": "8f04b07492c4262a6188ae2fa9232119e78f73830092d499b61eaa120b25b09b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/src/main/res/drawable/ic_launcher_background.xml": {
+      "filePath": "dog-health-app/android/app/src/main/res/drawable/ic_launcher_background.xml",
+      "contentHash": "a5bea66453b1ba801a8b11f7d8d02e116233342d87daf6ac8239061764e59f01",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/src/main/res/drawable/rn_edit_text_material.xml": {
+      "filePath": "dog-health-app/android/app/src/main/res/drawable/rn_edit_text_material.xml",
+      "contentHash": "738e3aaad53180caba1419a6d5db8465a0742662fe59a4bbaf05f1061cbc3390",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml": {
+      "filePath": "dog-health-app/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "contentHash": "03d70962a0beea2bb6ab1a838b015d90da6c33adb045ff85f7b198aca70df08d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml": {
+      "filePath": "dog-health-app/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+      "contentHash": "03d70962a0beea2bb6ab1a838b015d90da6c33adb045ff85f7b198aca70df08d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/ios/DogHealthApp/Info.plist": {
+      "filePath": "dog-health-app/ios/DogHealthApp/Info.plist",
+      "contentHash": "ba5c146fdfafaac2e6880b02781e7cb7b7e66c500e9cc62bf0cf006a44fdae91",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 53,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/ios/DogHealthAppTests/Info.plist": {
+      "filePath": "dog-health-app/ios/DogHealthAppTests/Info.plist",
+      "contentHash": "1dcb5aa88dabb5f19b671f7066204bd58220ded8654dc91f5f79e09690d81365",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 25,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/ios/DogHealthApp/LaunchScreen.storyboard": {
+      "filePath": "dog-health-app/ios/DogHealthApp/LaunchScreen.storyboard",
+      "contentHash": "aa02ded7d4d6a71e54e0cac4927986281f4afcb1e01fd4f7a02269ebf8c0e456",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 48,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/ios/DogHealthApp.xcodeproj/project.pbxproj": {
+      "filePath": "dog-health-app/ios/DogHealthApp.xcodeproj/project.pbxproj",
+      "contentHash": "4e4abc0bc455567bdb26bb76efda6ada248536d43ca0707e7d8e2ed678c638cc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 691,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/ios/DogHealthApp.xcodeproj/xcshareddata/xcschemes/DogHealthApp.xcscheme": {
+      "filePath": "dog-health-app/ios/DogHealthApp.xcodeproj/xcshareddata/xcschemes/DogHealthApp.xcscheme",
+      "contentHash": "6ca5aca215adda99c29bdf2d8c714dc692e7bc418e7b2f7d259fd52a0ac2f8bd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 89,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/ios/DogHealthApp/Images.xcassets/Contents.json": {
+      "filePath": "dog-health-app/ios/DogHealthApp/Images.xcassets/Contents.json",
+      "contentHash": "991ae939fbd598450a066b66404e06c5ae9b7d37e9aa0026de9e318443ba46fb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 7,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/ios/DogHealthApp/Images.xcassets/AppIcon.appiconset/Contents.json": {
+      "filePath": "dog-health-app/ios/DogHealthApp/Images.xcassets/AppIcon.appiconset/Contents.json",
+      "contentHash": "8a18bd4a58344d5fd5ac8f51f2e1a4e3409b0c3e503ea4d0940399900aa9ffd8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 54,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/ios/DogHealthApp/PrivacyInfo.xcprivacy": {
+      "filePath": "dog-health-app/ios/DogHealthApp/PrivacyInfo.xcprivacy",
+      "contentHash": "b9289ecfec677540a293fba948db7268c02b1d44943fa66b1e7a85ba0c31a252",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/.expo/devices.json": {
+      "filePath": "dog-health-app/.expo/devices.json",
+      "contentHash": "bf26ff34a2c5780a4d64769a297a4a82915df9b8f7b1096173f0fbcc20550e6e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/mempalace.yaml": {
+      "filePath": "dog-health-app/mempalace.yaml",
+      "contentHash": "ba82156ec29772373a385d94539a71898e6c5a9c852b66d937f28ee90c25ad22",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 66,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/empty-module.js": {
+      "filePath": "dog-health-app/empty-module.js",
+      "contentHash": "8222b8169ee86f25cdccd84d340340060ae3f0cff55e2ea9d344d7c332733b71",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/fix-aliases.js": {
+      "filePath": "dog-health-app/fix-aliases.js",
+      "contentHash": "e79984a368e380d5d850fcac526ed0f72eb9f01e4f48d1cad4322992b68bef73",
+      "functions": [
+        {
+          "name": "shouldSkip",
+          "params": [
+            "importPath"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "processFile",
+          "params": [
+            "filePath"
+          ],
+          "exported": false,
+          "lineCount": 28
+        },
+        {
+          "name": "walkDir",
+          "params": [
+            "dir"
+          ],
+          "exported": false,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 69,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/.graphify_run.py": {
+      "filePath": "dog-health-app/.graphify_run.py",
+      "contentHash": "282d5520897a64f63503730012f0fc8f156ab5de9be4a511c4f1293e073e9a8d",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "graphify.detect",
+          "specifiers": [
+            "detect"
+          ]
+        },
+        {
+          "source": "graphify.extract",
+          "specifiers": [
+            "extract"
+          ]
+        },
+        {
+          "source": "graphify.build",
+          "specifiers": [
+            "build"
+          ]
+        },
+        {
+          "source": "networkx",
+          "specifiers": [
+            "nx"
+          ]
+        },
+        {
+          "source": "graphify.cluster",
+          "specifiers": [
+            "cluster"
+          ]
+        },
+        {
+          "source": "graphify.report",
+          "specifiers": [
+            "generate"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 73,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/android/gradlew.bat": {
+      "filePath": "dog-health-app/android/gradlew.bat",
+      "contentHash": "57931b17dd228e5c24dac90e815d0bf82477e831a4618dfab4136f5446b42a9f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 95,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/android/gradlew": {
+      "filePath": "dog-health-app/android/gradlew",
+      "contentHash": "a3648413b47ef77af21d5ebc36c687c7d103aaef3e17f33de7d4f080a6f300a3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 253,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/AGENTS.md": {
+      "filePath": "dog-health-app/AGENTS.md",
+      "contentHash": "bf783b60d8a4d09981ee9a59c99105808fc2c14a2e9002561c5d5e1b0d31229f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 185,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/README.md": {
+      "filePath": "dog-health-app/README.md",
+      "contentHash": "759a64b92103cf5bc10c546512f1ab67f3a5bc16c305b68602e61669c65d0719",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 162,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/docs/PROJECT_LOG.md": {
+      "filePath": "dog-health-app/docs/PROJECT_LOG.md",
+      "contentHash": "ff5c5237465d51dd506f83f62acee656e7edc8a2ee9119a9a3d57f8bf3d95fb3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1118,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/docs/superpowers/specs/2026-06-16-enforce-onboarding-auth-design.md": {
+      "filePath": "dog-health-app/docs/superpowers/specs/2026-06-16-enforce-onboarding-auth-design.md",
+      "contentHash": "d5db7059ea00629035ea5fa3197431ba18945a2529c6e80bd80eb7b8f12b3e39",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 165,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/supabase/schema.sql": {
+      "filePath": "dog-health-app/supabase/schema.sql",
+      "contentHash": "ec5f92a69e79e85d82d0bf0bde17b202260cfa5e8c812b8ef75550e9bcce7a6d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 250,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/rn-config-output.txt": {
+      "filePath": "dog-health-app/rn-config-output.txt",
+      "contentHash": "c723ec4fd4b2e5749bc9e55544ee45d0a21222fdaf097395a75e700af2be044c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 14,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/entities.json": {
+      "filePath": "dog-health-app/entities.json",
+      "contentHash": "6224c338ca007e6fc2189dbc84dc6b9cce15a5958053a119cf13a966a8491a34",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "dog-health-app/after_skip_ui.xml": {
+      "filePath": "dog-health-app/after_skip_ui.xml",
+      "contentHash": "e17e1e46aec0352dd7500cf3c16ae94dd1f167a3f7a35268aca2e683b46d2b11",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/welcome_ui.xml": {
+      "filePath": "dog-health-app/welcome_ui.xml",
+      "contentHash": "44008e5a0554c532457a086757a7938431e5013948af8e01bf95549091488881",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/welcome_ui2.xml": {
+      "filePath": "dog-health-app/welcome_ui2.xml",
+      "contentHash": "44008e5a0554c532457a086757a7938431e5013948af8e01bf95549091488881",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/demo_dash.xml": {
+      "filePath": "dog-health-app/demo_dash.xml",
+      "contentHash": "586b71a8d9b6c0dec9bdee446dbaeb47a9c9900ddd1662b304297be1fbe3d349",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/errors_check.xml": {
+      "filePath": "dog-health-app/errors_check.xml",
+      "contentHash": "d4dfda54519ac0473af9ad41592766c717046583e43a03fb4c20b5fb2b266e9e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/assets/image/paw-logo.png": {
+      "filePath": "dog-health-app/assets/image/paw-logo.png",
+      "contentHash": "55b757985bf276bd54e403ba141c5976aef55605139050a4abfeccf333358bdc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 259,
+      "hasStructuralAnalysis": false
+    },
+    "dog-health-app/.expo/README.md": {
+      "filePath": "dog-health-app/.expo/README.md",
+      "contentHash": "0a0e138160f6dddc980b51d59d727a1cf647825235c4b138ef24e915417186cf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": true
+    }
+  }
+}

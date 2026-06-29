@@ -14,7 +14,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button, Input, Header } from '../../components/common';
-import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import { spacing, typography, borderRadius, shadows } from '../../theme';
 import { useDogStore } from '../../store/dogStore';
 import type { OnboardingScreenProps } from '../../navigation/types';
 
@@ -22,6 +22,113 @@ const BREEDS = [
   'Labrador', 'Golden Retriever', 'German Shepherd', 'French Bulldog',
   'Bulldog', 'Poodle', 'Beagle', 'Rottweiler', 'Dachshund', 'Other',
 ];
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5E9CD',
+  },
+  content: {
+    paddingHorizontal: 24,
+    paddingBottom: 20,
+  },
+  headerSection: {
+    marginBottom: 24,
+  },
+  title: {
+    ...typography.styles.headingLG,
+    color: '#1F1A17',
+    marginBottom: 8,
+  },
+  subtitle: {
+    ...typography.styles.bodyMD,
+    color: '#6B625A',
+  },
+  avatarSection: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  avatarCircle: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: '#FDF6E8',
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: '#F3C45A',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  avatarHint: {
+    ...typography.styles.caption,
+    color: '#E2941C',
+  },
+  form: {
+    marginBottom: 16,
+  },
+  breedSelector: {
+    marginBottom: 16,
+  },
+  breedLabel: {
+    ...typography.styles.label,
+    color: '#6B625A',
+    marginBottom: 8,
+  },
+  breedValue: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#EDE2C6',
+    borderWidth: 1.5,
+    borderColor: '#F0E8D8',
+    borderRadius: 16,
+    paddingVertical: spacing.inputPadding.vertical,
+    paddingHorizontal: spacing.inputPadding.horizontal,
+  },
+  breedText: {
+    ...typography.styles.bodyLG,
+    color: '#1F1A17',
+  },
+  breedPlaceholder: {
+    color: '#A39888',
+  },
+  breedList: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#F0E8D8',
+    marginBottom: 16,
+    ...shadows.md,
+  },
+  breedOption: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0E8D8',
+  },
+  breedOptionSelected: {
+    backgroundColor: '#FDF6E8',
+  },
+  breedOptionText: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+  },
+  breedOptionTextSelected: {
+    color: '#E2941C',
+    fontWeight: '600',
+  },
+  row: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  halfInput: {
+    flex: 1,
+  },
+  footer: {
+    paddingHorizontal: 24,
+  },
+});
 
 export default function SetupDogProfileScreen({
   navigation,
@@ -76,7 +183,7 @@ export default function SetupDogProfileScreen({
         {/* Dog Avatar */}
         <View style={styles.avatarSection}>
           <View style={styles.avatarCircle}>
-            <Ionicons name="camera" size={28} color={colors.primary.dark} />
+            <Ionicons name="camera" size={28} color="#E2941C" />
           </View>
           <Text style={styles.avatarHint}>Add a photo</Text>
         </View>
@@ -103,7 +210,7 @@ export default function SetupDogProfileScreen({
               <Ionicons
                 name={showBreedPicker ? 'chevron-up' : 'chevron-down'}
                 size={18}
-                color={colors.text.tertiary}
+                color="#A39888"
               />
             </View>
           </TouchableOpacity>
@@ -161,7 +268,7 @@ export default function SetupDogProfileScreen({
         </View>
       </ScrollView>
 
-      <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.lg }]}>
+      <View style={[styles.footer, { paddingBottom: insets.bottom + 16 }]}>
         <Button
           title="Continue"
           onPress={handleContinue}
@@ -180,110 +287,3 @@ function calculateBirthDate(ageYears: number): string {
   now.setFullYear(now.getFullYear() - ageYears);
   return now.toISOString().split('T')[0];
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  content: {
-    paddingHorizontal: spacing.xxl,
-    paddingBottom: spacing.xl,
-  },
-  headerSection: {
-    marginBottom: spacing.xxl,
-  },
-  title: {
-    ...typography.styles.headingLG,
-    color: colors.text.primary,
-    marginBottom: spacing.sm,
-  },
-  subtitle: {
-    ...typography.styles.bodyMD,
-    color: colors.text.secondary,
-  },
-  avatarSection: {
-    alignItems: 'center',
-    marginBottom: spacing.xxl,
-  },
-  avatarCircle: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    backgroundColor: colors.primary[50],
-    borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: colors.primary[300],
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: spacing.sm,
-  },
-  avatarHint: {
-    ...typography.styles.caption,
-    color: colors.primary.dark,
-  },
-  form: {
-    marginBottom: spacing.lg,
-  },
-  breedSelector: {
-    marginBottom: spacing.lg,
-  },
-  breedLabel: {
-    ...typography.styles.label,
-    color: colors.text.secondary,
-    marginBottom: spacing.sm,
-  },
-  breedValue: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.background.secondary,
-    borderWidth: 1.5,
-    borderColor: colors.border.light,
-    borderRadius: borderRadius.lg,
-    paddingVertical: spacing.inputPadding.vertical,
-    paddingHorizontal: spacing.inputPadding.horizontal,
-  },
-  breedText: {
-    ...typography.styles.bodyLG,
-    color: colors.text.primary,
-  },
-  breedPlaceholder: {
-    color: colors.text.tertiary,
-  },
-  breedList: {
-    backgroundColor: colors.white,
-    borderRadius: borderRadius.lg,
-    borderWidth: 1,
-    borderColor: colors.border.light,
-    marginBottom: spacing.lg,
-    ...shadows.md,
-  },
-  breedOption: {
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border.light,
-  },
-  breedOptionSelected: {
-    backgroundColor: colors.primary[50],
-  },
-  breedOptionText: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-  },
-  breedOptionTextSelected: {
-    color: colors.primary.dark,
-    fontWeight: '600',
-  },
-  row: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-  halfInput: {
-    flex: 1,
-  },
-  footer: {
-    paddingHorizontal: spacing.xxl,
-  },
-});

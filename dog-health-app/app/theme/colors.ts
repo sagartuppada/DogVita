@@ -1,6 +1,7 @@
 /**
  * DogVita Color Palette
- * Warm, premium pet wellness aesthetic
+ * Premium pet-wellness aesthetic
+ * Warm cream backgrounds, soft ivory cards, honey-orange accents, cocoa text
  */
 
 export const lightColors = {
@@ -43,9 +44,9 @@ export const lightColors = {
   },
 
   background: {
-    primary: '#F5EAD3',
-    secondary: '#EDE3CC',
-    card: '#FBF5E8',
+    primary: '#F5E9CD',
+    secondary: '#EDE2C6',
+    card: '#FBF4E4',
     elevated: '#FFFFFF',
     modal: '#FFFFFF',
     overlay: 'rgba(31, 26, 23, 0.5)',
@@ -71,80 +72,6 @@ export const lightColors = {
     connecting: '#FF9800',
     disconnected: '#A39888',
     error: '#F44336',
-  },
-
-  white: '#FFFFFF',
-  black: '#1F1A17',
-} as const;
-
-export const darkColors = {
-  primary: {
-    DEFAULT: '#F3A93B',
-    dark: '#E2941C',
-    light: '#F5C46B',
-    50: '#2D2009',
-    100: '#3D2A0D',
-    200: '#5C4215',
-    300: '#7A581D',
-    400: '#F3A93B',
-    500: '#E2941C',
-    600: '#C47E15',
-    700: '#A06610',
-    800: '#7D4E0C',
-    900: '#5A3808',
-  },
-
-  secondary: {
-    DEFAULT: '#8A7F75',
-    light: '#A99F93',
-    dark: '#4D4540',
-  },
-
-  status: {
-    success: '#66BB6A',
-    warning: '#FFA726',
-    error: '#EF5350',
-    info: '#64B5F6',
-  },
-
-  health: {
-    heartRate: '#EF5350',
-    temperature: '#FFA726',
-    activity: '#66BB6A',
-    sleep: '#9575CD',
-    battery: '#66BB6A',
-    gps: '#64B5F6',
-  },
-
-  background: {
-    primary: '#121212',
-    secondary: '#1E1E1E',
-    card: '#252525',
-    elevated: '#2D2D2D',
-    modal: '#2D2D2D',
-    overlay: 'rgba(0, 0, 0, 0.7)',
-  },
-
-  text: {
-    primary: '#F0E8D8',
-    secondary: '#A99F93',
-    tertiary: '#6B625A',
-    inverse: '#1F1A17',
-    link: '#F3A93B',
-  },
-
-  border: {
-    DEFAULT: '#3D3D3D',
-    light: '#2D2D2D',
-    focused: '#F3A93B',
-    error: '#EF5350',
-  },
-
-  ble: {
-    connected: '#66BB6A',
-    connecting: '#FFA726',
-    disconnected: '#6B625A',
-    error: '#EF5350',
   },
 
   white: '#FFFFFF',

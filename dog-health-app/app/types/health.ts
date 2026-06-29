@@ -14,6 +14,7 @@ export interface HealthMetrics {
 }
 
 export interface HeartRateData {
+  dogId?: string;
   bpm: number;
   variability?: number;
   zone: HeartRateZone;
@@ -23,6 +24,7 @@ export interface HeartRateData {
 export type HeartRateZone = 'rest' | 'light' | 'moderate' | 'active' | 'peak';
 
 export interface TemperatureData {
+  dogId?: string;
   celsius: number;
   fahrenheit: number;
   isAbnormal: boolean;
@@ -30,6 +32,7 @@ export interface TemperatureData {
 }
 
 export interface ActivityData {
+  dogId?: string;
   steps: number;
   distance: number;
   activeMinutes: number;
@@ -41,6 +44,7 @@ export interface ActivityData {
 export type ActivityType = 'resting' | 'walking' | 'running' | 'playing' | 'eating' | 'other';
 
 export interface SleepData {
+  dogId?: string;
   duration: number;
   quality: number;
   deepSleep: number;
@@ -96,6 +100,7 @@ export interface GeofenceAlert {
 export interface HealthAlert {
   id: string;
   dogId: string;
+  ownerId?: string;
   type: AlertType;
   severity: AlertSeverity;
   message: string;

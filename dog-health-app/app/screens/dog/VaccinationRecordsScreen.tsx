@@ -17,17 +17,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDogStore } from '../../store/dogStore';
 import { Card, EmptyState } from '../../components/common';
-import { colors, spacing, typography, borderRadius } from '../../theme';
+import { spacing, typography, borderRadius } from '../../theme';
 import type { VaccinationRecordsScreenProps } from '../../navigation/types';
 import type { VaccinationStatus, VaccinationRecord } from '../../types';
-
-const STATUS_CONFIG: Record<VaccinationStatus, { color: string; bg: string; label: string; icon: string }> = {
-  completed: { color: colors.status.success, bg: colors.status.success + '18', label: 'Completed', icon: 'checkmark-circle' },
-  upcoming: { color: colors.status.info, bg: colors.status.info + '18', label: 'Upcoming', icon: 'time' },
-  due: { color: colors.status.warning, bg: colors.status.warning + '18', label: 'Due Soon', icon: 'alert-circle' },
-  overdue: { color: colors.status.error, bg: colors.status.error + '18', label: 'Overdue', icon: 'warning' },
-  skipped: { color: colors.text.tertiary, bg: colors.text.tertiary + '12', label: 'Skipped', icon: 'close-circle' },
-};
 
 const VACCINE_NAMES = [
   'Rabies',
@@ -50,6 +42,251 @@ const daysUntil = (dateStr?: string) => {
   if (!dateStr) return null;
   const days = Math.ceil((new Date(dateStr).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
   return days;
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.md,
+  },
+  backButton: {
+    padding: 4,
+    width: 40,
+  },
+  title: {
+    ...typography.styles.headingXL,
+    color: '#1F1A17',
+  },
+  summaryCard: {
+    marginHorizontal: spacing.page,
+    marginBottom: spacing.md,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
+  summaryBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    backgroundColor: '#EDE2C6',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: borderRadius.lg,
+  },
+  summaryText: {
+    ...typography.styles.bodySM,
+    fontWeight: '600',
+  },
+  listHeader: {
+    paddingHorizontal: spacing.page,
+    marginTop: spacing.lg,
+    marginBottom: spacing.md,
+  },
+  listTitle: {
+    ...typography.styles.label,
+    color: '#6B625A',
+  },
+  recordCard: {
+    marginHorizontal: spacing.page,
+    marginBottom: spacing.md,
+  },
+  recordRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statusIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.md,
+  },
+  recordInfo: {
+    flex: 1,
+  },
+  recordName: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+    fontWeight: '600',
+  },
+  recordMeta: {
+    marginTop: 2,
+  },
+  recordMetaText: {
+    ...typography.styles.caption,
+    color: '#A39888',
+  },
+  recordVet: {
+    ...typography.styles.caption,
+    color: '#6B625A',
+    marginTop: 2,
+  },
+  statusBadge: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    borderRadius: borderRadius.pill,
+  },
+  statusText: {
+    ...typography.styles.caption,
+    fontWeight: '600',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#F5E9CD',
+    borderTopLeftRadius: borderRadius.xxl,
+    borderTopRightRadius: borderRadius.xxl,
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.xl,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+  },
+  modalTitle: {
+    ...typography.styles.headingLG,
+    color: '#1F1A17',
+  },
+  modalLabel: {
+    ...typography.styles.caption,
+    color: '#6B625A',
+    marginBottom: spacing.xs,
+    marginTop: spacing.md,
+  },
+  modalInput: {
+    backgroundColor: '#FBF4E4',
+    borderRadius: borderRadius.lg,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    color: '#1F1A17',
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#E9DDC9',
+  },
+  nameSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FBF4E4',
+    borderRadius: borderRadius.lg,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    borderWidth: 1,
+    borderColor: '#E9DDC9',
+  },
+  nameSelectorText: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+  },
+  nameSelectorPlaceholder: {
+    ...typography.styles.bodyMD,
+    color: '#A39888',
+  },
+  namePicker: {
+    backgroundColor: '#FBF4E4',
+    borderRadius: borderRadius.lg,
+    padding: spacing.sm,
+    marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: '#F0E8D8',
+  },
+  nameOption: {
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: borderRadius.md,
+  },
+  nameOptionActive: {
+    backgroundColor: '#F3A93B18',
+  },
+  nameOptionText: {
+    ...typography.styles.bodySM,
+    color: '#1F1A17',
+  },
+  nameOptionTextActive: {
+    color: '#F3A93B',
+    fontWeight: '600',
+  },
+  nameInput: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: '#F0E8D8',
+    marginTop: spacing.sm,
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: spacing.lg,
+  },
+  toggleLabel: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+  },
+  toggle: {
+    width: 48,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    paddingHorizontal: 2,
+  },
+  toggleKnob: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    alignSelf: 'flex-start',
+  },
+  toggleKnobActive: {
+    alignSelf: 'flex-end',
+  },
+  saveBtn: {
+    backgroundColor: '#F3A93B',
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+    marginTop: spacing.xl,
+  },
+  saveBtnText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  deleteBtn: {
+    alignItems: 'center',
+    marginTop: spacing.md,
+    marginBottom: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  deleteBtnText: {
+    color: '#F44336',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
+
+const STATUS_CONFIG: Record<VaccinationStatus, { color: string; bg: string; label: string; icon: string }> = {
+  completed: { color: '#4CAF50', bg: '#4CAF5018', label: 'Completed', icon: 'checkmark-circle' },
+  upcoming: { color: '#5B9BD5', bg: '#5B9BD518', label: 'Upcoming', icon: 'time' },
+  due: { color: '#FF9800', bg: '#FF980018', label: 'Due Soon', icon: 'alert-circle' },
+  overdue: { color: '#F44336', bg: '#F4433618', label: 'Overdue', icon: 'warning' },
+  skipped: { color: '#A39888', bg: '#A3988812', label: 'Skipped', icon: 'close-circle' },
 };
 
 export default function VaccinationRecordsScreen({ navigation, route }: VaccinationRecordsScreenProps) {
@@ -155,11 +392,11 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.text.primary} />
+          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
         </TouchableOpacity>
         <Text style={styles.title}>Vaccinations</Text>
         <TouchableOpacity onPress={openAdd} style={styles.backButton}>
-          <Ionicons name="add" size={24} color={colors.primary.DEFAULT} />
+          <Ionicons name="add" size={24} color="#F3A93B" />
         </TouchableOpacity>
       </View>
 
@@ -173,16 +410,16 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
             <View style={styles.summaryRow}>
               {overdueCount > 0 && (
                 <View style={styles.summaryBadge}>
-                  <Ionicons name="warning" size={16} color={colors.status.error} />
-                  <Text style={[styles.summaryText, { color: colors.status.error }]}>
+                  <Ionicons name="warning" size={16} color="#F44336" />
+                  <Text style={[styles.summaryText, { color: '#F44336' }]}>
                     {overdueCount} overdue
                   </Text>
                 </View>
               )}
               {dueCount > 0 && (
                 <View style={styles.summaryBadge}>
-                  <Ionicons name="alert-circle" size={16} color={colors.status.warning} />
-                  <Text style={[styles.summaryText, { color: colors.status.warning }]}>
+                  <Ionicons name="alert-circle" size={16} color="#FF9800" />
+                  <Text style={[styles.summaryText, { color: '#FF9800' }]}>
                     {dueCount} due soon
                   </Text>
                 </View>
@@ -229,8 +466,8 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
                         {record.nextDueDate && (
                           <Text style={[
                             styles.recordMetaText,
-                            days !== null && days <= 0 && { color: colors.status.error },
-                            days !== null && days > 0 && days <= 30 && { color: colors.status.warning },
+                            days !== null && days <= 0 && { color: '#F44336' },
+                            days !== null && days > 0 && days <= 30 && { color: '#FF9800' },
                           ]}>
                             {days !== null ? (days <= 0 ? `Overdue by ${Math.abs(days)} days` : `Due in ${days} days`) : ''}
                           </Text>
@@ -265,7 +502,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
                 {editRecord ? 'Edit Vaccination' : 'Add Vaccination'}
               </Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Ionicons name="close" size={24} color={colors.text.secondary} />
+                <Ionicons name="close" size={24} color="#6B625A" />
               </TouchableOpacity>
             </View>
 
@@ -279,7 +516,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
               <Text style={vaccineName ? styles.nameSelectorText : styles.nameSelectorPlaceholder}>
                 {vaccineName || 'Select or type a vaccine name'}
               </Text>
-              <Ionicons name={showNamePicker ? 'chevron-up' : 'chevron-down'} size={16} color={colors.text.tertiary} />
+              <Ionicons name={showNamePicker ? 'chevron-up' : 'chevron-down'} size={16} color="#A39888" />
             </TouchableOpacity>
 
             {showNamePicker && (
@@ -310,7 +547,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
                     if (!VACCINE_NAMES.includes(text)) setShowNamePicker(false);
                   }}
                   placeholder="Custom name..."
-                  placeholderTextColor={colors.text.tertiary}
+                  placeholderTextColor="#A39888"
                 />
               </View>
             )}
@@ -321,7 +558,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
               value={administeredDate}
               onChangeText={setAdministeredDate}
               placeholder="YYYY-MM-DD (optional)"
-              placeholderTextColor={colors.text.tertiary}
+              placeholderTextColor="#A39888"
             />
 
             <Text style={styles.modalLabel}>Next Due Date</Text>
@@ -330,7 +567,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
               value={nextDueDate}
               onChangeText={setNextDueDate}
               placeholder="YYYY-MM-DD (optional)"
-              placeholderTextColor={colors.text.tertiary}
+              placeholderTextColor="#A39888"
             />
 
             <Text style={styles.modalLabel}>Vet Name</Text>
@@ -339,7 +576,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
               value={vetName}
               onChangeText={setVetName}
               placeholder="Optional"
-              placeholderTextColor={colors.text.tertiary}
+              placeholderTextColor="#A39888"
             />
 
             <Text style={styles.modalLabel}>Batch Number</Text>
@@ -348,7 +585,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
               value={batchNumber}
               onChangeText={setBatchNumber}
               placeholder="Optional"
-              placeholderTextColor={colors.text.tertiary}
+              placeholderTextColor="#A39888"
             />
 
             <Text style={styles.modalLabel}>Notes</Text>
@@ -357,7 +594,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
               value={notes}
               onChangeText={setNotes}
               placeholder="Optional"
-              placeholderTextColor={colors.text.tertiary}
+              placeholderTextColor="#A39888"
               multiline
             />
 
@@ -367,7 +604,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
                 onPress={() => setReminderEnabled((r) => !r)}
                 style={[
                   styles.toggle,
-                  { backgroundColor: reminderEnabled ? colors.primary.DEFAULT : colors.border.DEFAULT },
+                  { backgroundColor: reminderEnabled ? '#F3A93B' : '#E9DDC9' },
                 ]}
               >
                 <View style={[styles.toggleKnob, reminderEnabled && styles.toggleKnobActive]} />
@@ -396,241 +633,3 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
-  },
-  backButton: {
-    padding: 4,
-    width: 40,
-  },
-  title: {
-    ...typography.styles.headingXL,
-    color: colors.text.primary,
-  },
-  summaryCard: {
-    marginHorizontal: spacing.page,
-    marginBottom: spacing.md,
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-  summaryBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    backgroundColor: colors.background.secondary,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: borderRadius.lg,
-  },
-  summaryText: {
-    ...typography.styles.bodySM,
-    fontWeight: '600',
-  },
-  listHeader: {
-    paddingHorizontal: spacing.page,
-    marginTop: spacing.lg,
-    marginBottom: spacing.md,
-  },
-  listTitle: {
-    ...typography.styles.label,
-    color: colors.text.secondary,
-  },
-  recordCard: {
-    marginHorizontal: spacing.page,
-    marginBottom: spacing.md,
-  },
-  recordRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  statusIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: spacing.md,
-  },
-  recordInfo: {
-    flex: 1,
-  },
-  recordName: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-    fontWeight: '600',
-  },
-  recordMeta: {
-    marginTop: 2,
-  },
-  recordMetaText: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-  },
-  recordVet: {
-    ...typography.styles.caption,
-    color: colors.text.secondary,
-    marginTop: 2,
-  },
-  statusBadge: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-    borderRadius: borderRadius.pill,
-  },
-  statusText: {
-    ...typography.styles.caption,
-    fontWeight: '600',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: colors.background.primary,
-    borderTopLeftRadius: borderRadius.xxl,
-    borderTopRightRadius: borderRadius.xxl,
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.xl,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.xl,
-  },
-  modalTitle: {
-    ...typography.styles.headingLG,
-    color: colors.text.primary,
-  },
-  modalLabel: {
-    ...typography.styles.caption,
-    color: colors.text.secondary,
-    marginBottom: spacing.xs,
-    marginTop: spacing.md,
-  },
-  modalInput: {
-    backgroundColor: colors.background.card,
-    borderRadius: borderRadius.lg,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    color: colors.text.primary,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: colors.border.DEFAULT,
-  },
-  nameSelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.background.card,
-    borderRadius: borderRadius.lg,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.border.DEFAULT,
-  },
-  nameSelectorText: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-  },
-  nameSelectorPlaceholder: {
-    ...typography.styles.bodyMD,
-    color: colors.text.tertiary,
-  },
-  namePicker: {
-    backgroundColor: colors.background.card,
-    borderRadius: borderRadius.lg,
-    padding: spacing.sm,
-    marginBottom: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.border.light,
-  },
-  nameOption: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderRadius: borderRadius.md,
-  },
-  nameOptionActive: {
-    backgroundColor: colors.primary.DEFAULT + '18',
-  },
-  nameOptionText: {
-    ...typography.styles.bodySM,
-    color: colors.text.primary,
-  },
-  nameOptionTextActive: {
-    color: colors.primary.DEFAULT,
-    fontWeight: '600',
-  },
-  nameInput: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.border.light,
-    marginTop: spacing.sm,
-  },
-  toggleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: spacing.lg,
-  },
-  toggleLabel: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-  },
-  toggle: {
-    width: 48,
-    height: 28,
-    borderRadius: 14,
-    justifyContent: 'center',
-    paddingHorizontal: 2,
-  },
-  toggleKnob: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: colors.white,
-    alignSelf: 'flex-start',
-  },
-  toggleKnobActive: {
-    alignSelf: 'flex-end',
-  },
-  saveBtn: {
-    backgroundColor: colors.primary.DEFAULT,
-    borderRadius: borderRadius.lg,
-    paddingVertical: spacing.md,
-    alignItems: 'center',
-    marginTop: spacing.xl,
-  },
-  saveBtnText: {
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  deleteBtn: {
-    alignItems: 'center',
-    marginTop: spacing.md,
-    marginBottom: spacing.lg,
-    paddingVertical: spacing.sm,
-  },
-  deleteBtnText: {
-    color: colors.status.error,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});

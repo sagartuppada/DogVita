@@ -1,0 +1,32 @@
+# .understandignore
+# Built-in defaults always excluded. Uncomment .gitignore patterns below to exclude.
+
+# --- From .gitignore ---
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+*.apk
+*.aab
+ios/build/
+ios/Pods/
+.expo/
+web-build/
+.metro-health-check*
+.env
+.env.local
+.env.*.local
+*.iml
+.DS_Store
+Thumbs.db
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+tmp/
+temp/
+graphify-out/
+
+# --- Test patterns ---
+# *.test.*
+# *.spec.*
+# *.snap

@@ -12,12 +12,14 @@ import {
   Alert,
   Modal,
   TextInput,
+  Dimensions,
 } from 'react-native';
+import { LineChart } from 'react-native-gifted-charts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDogStore } from '../../store/dogStore';
 import { Card, Button, EmptyState } from '../../components/common';
-import { colors, spacing, typography, borderRadius } from '../../theme';
+import { spacing, typography, borderRadius } from '../../theme';
 import type { WeightHistoryScreenProps } from '../../navigation/types';
 
 const formatWeight = (weight: number, unit: 'kg' | 'lb') => {
@@ -32,16 +34,225 @@ const formatDate = (dateStr: string) => {
   });
 };
 
-const getTrendIcon = (trend?: 'up' | 'down' | 'stable') => {
-  switch (trend) {
-    case 'up':
-      return { icon: 'trending-up', color: colors.status.warning };
-    case 'down':
-      return { icon: 'trending-down', color: colors.status.info };
-    default:
-      return { icon: 'remove', color: colors.text.tertiary };
-  }
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.md,
+  },
+  backButton: {
+    padding: 4,
+    width: 40,
+  },
+  title: {
+    ...typography.styles.headingXL,
+    color: '#1F1A17',
+  },
+  statsCard: {
+    marginHorizontal: spacing.page,
+    marginBottom: spacing.md,
+  },
+  statsRow: {
+    flexDirection: 'row',
+  },
+  stat: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  statDivider: {
+    width: 1,
+    height: 36,
+    backgroundColor: '#F0E8D8',
+    alignSelf: 'center',
+  },
+  statValue: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#1F1A17',
+  },
+  statLabel: {
+    ...typography.styles.caption,
+    color: '#A39888',
+    marginTop: 2,
+  },
+  targetCard: {
+    marginHorizontal: spacing.page,
+    marginBottom: spacing.md,
+  },
+  targetRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  targetText: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+    fontWeight: '600',
+    flex: 1,
+  },
+  targetDiff: {
+    ...typography.styles.caption,
+    color: '#A39888',
+  },
+  listHeader: {
+    paddingHorizontal: spacing.page,
+    marginTop: spacing.lg,
+    marginBottom: spacing.md,
+  },
+  listTitle: {
+    ...typography.styles.label,
+    color: '#6B625A',
+  },
+  recordCard: {
+    marginHorizontal: spacing.page,
+    marginBottom: spacing.md,
+  },
+  recordRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  recordLeft: {
+    flex: 1,
+  },
+  recordWeight: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+    fontWeight: '700',
+  },
+  recordDate: {
+    ...typography.styles.caption,
+    color: '#A39888',
+    marginTop: 2,
+  },
+  recordNotes: {
+    ...typography.styles.caption,
+    color: '#6B625A',
+    marginTop: 2,
+    fontStyle: 'italic',
+  },
+  recordRight: {
+    alignItems: 'flex-end',
+  },
+  currentBadge: {
+    backgroundColor: '#F3A93B18',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: borderRadius.pill,
+  },
+  currentBadgeText: {
+    ...typography.styles.caption,
+    color: '#F3A93B',
+    fontWeight: '600',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#F5E9CD',
+    borderTopLeftRadius: borderRadius.xxl,
+    borderTopRightRadius: borderRadius.xxl,
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.xl,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+  },
+  modalTitle: {
+    ...typography.styles.headingLG,
+    color: '#1F1A17',
+  },
+  modalLabel: {
+    ...typography.styles.caption,
+    color: '#6B625A',
+    marginBottom: spacing.xs,
+    marginTop: spacing.md,
+  },
+  modalInput: {
+    backgroundColor: '#FBF4E4',
+    borderRadius: borderRadius.lg,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    color: '#1F1A17',
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#E9DDC9',
+  },
+  modalWeightRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
+  unitToggle: {
+    flexDirection: 'row',
+    borderRadius: borderRadius.lg,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#F0E8D8',
+  },
+  unitBtn: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    backgroundColor: '#EDE2C6',
+  },
+  unitBtnActive: {
+    backgroundColor: '#F3A93B',
+  },
+  unitBtnText: {
+    ...typography.styles.bodySM,
+    color: '#1F1A17',
+    fontWeight: '600',
+  },
+  unitBtnTextActive: {
+    color: '#FFFFFF',
+  },
+  saveBtn: {
+    backgroundColor: '#F3A93B',
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+    marginTop: spacing.xl,
+  },
+  saveBtnText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  deleteBtn: {
+    alignItems: 'center',
+    marginTop: spacing.md,
+    marginBottom: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  chartCard: {
+    marginHorizontal: spacing.page,
+    marginBottom: spacing.md,
+  },
+  chartTitle: {
+    ...typography.styles.label,
+    color: '#6B625A',
+    marginBottom: spacing.md,
+  },
+  chartContainer: {
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  deleteBtnText: {
+    color: '#F44336',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
 
 export default function WeightHistoryScreen({ navigation, route }: WeightHistoryScreenProps) {
   const insets = useSafeAreaInsets();
@@ -51,6 +262,17 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
   const addWeightRecord = useDogStore((s) => s.addWeightRecord);
   const deleteWeightRecord = useDogStore((s) => s.deleteWeightRecord);
   const updateWeightRecord = useDogStore((s) => s.updateWeightRecord);
+
+  const getTrendIcon = useCallback((trend?: 'up' | 'down' | 'stable') => {
+    switch (trend) {
+      case 'up':
+        return { icon: 'trending-up', color: '#FF9800' };
+      case 'down':
+        return { icon: 'trending-down', color: '#5B9BD5' };
+      default:
+        return { icon: 'remove', color: '#A39888' };
+    }
+  }, []);
 
   const dog = useMemo(() => dogs.find((d) => d.id === dogId) ?? null, [dogs, dogId]);
 
@@ -132,11 +354,11 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.text.primary} />
+          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
         </TouchableOpacity>
         <Text style={styles.title}>Weight History</Text>
         <TouchableOpacity onPress={openAdd} style={styles.backButton}>
-          <Ionicons name="add" size={24} color={colors.primary.DEFAULT} />
+          <Ionicons name="add" size={24} color="#F3A93B" />
         </TouchableOpacity>
       </View>
 
@@ -156,7 +378,7 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
               </View>
               <View style={styles.statDivider} />
               <View style={styles.stat}>
-                <Text style={[styles.statValue, { color: totalChange > 0 ? colors.status.warning : totalChange < 0 ? colors.status.info : colors.text.primary }]}>
+                <Text style={[styles.statValue, { color: totalChange > 0 ? '#FF9800' : totalChange < 0 ? '#5B9BD5' : '#1F1A17' }]}>
                   {totalChange > 0 ? '+' : ''}{totalChange.toFixed(1)} {latest?.weightUnit}
                 </Text>
                 <Text style={styles.statLabel}>Total Change</Text>
@@ -174,7 +396,7 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
         {dog?.weight && (
           <Card variant="default" padding="md" style={styles.targetCard}>
             <View style={styles.targetRow}>
-              <Ionicons name="scale-outline" size={20} color={colors.primary.DEFAULT} />
+              <Ionicons name="scale-outline" size={20} color="#F3A93B" />
               <Text style={styles.targetText}>
                 Target: {dog.weight} {dog.weightUnit || 'kg'}
               </Text>
@@ -183,6 +405,46 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
                   {Math.abs(latest.weight - dog.weight).toFixed(1)} {latest.weightUnit} {latest.weight > dog.weight ? 'over' : 'under'}
                 </Text>
               )}
+            </View>
+          </Card>
+        )}
+
+        {/* Weight Trend Chart */}
+        {dogWeightHistory.length >= 2 && (
+          <Card variant="default" padding="md" style={styles.chartCard}>
+            <Text style={styles.chartTitle}>Weight Trend</Text>
+            <View style={styles.chartContainer}>
+              <LineChart
+                data={dogWeightHistory.map((record, index) => ({
+                  value: record.weight,
+                  label: formatDate(record.date),
+                  dataPointText: record.weight.toFixed(1),
+                  showVerticalLine: index === dogWeightHistory.length - 1,
+                  verticalLineThickness: 1,
+                  verticalLineColor: '#F3A93B40',
+                }))}
+                width={Dimensions.get('window').width - spacing.page * 2 - spacing.md * 2 - 40}
+                height={160}
+                spacing={Math.min((Dimensions.get('window').width - spacing.page * 2 - spacing.md * 2 - 80) / Math.max(dogWeightHistory.length - 1, 1), 80)}
+                color="#F3A93B"
+                thickness={2}
+                dataPointsColor="#F3A93B"
+                dataPointsRadius={4}
+                textColor="#A39888"
+                textFontSize={10}
+                xAxisLabelTextStyle={{ color: '#A39888', fontSize: 9 }}
+                yAxisTextStyle={{ color: '#A39888', fontSize: 10 }}
+                yAxisColor="#F0E8D8"
+                xAxisColor="#F0E8D8"
+                noOfSections={4}
+                hideRules={false}
+                rulesColor="#F0E8D860"
+                startFillColor="#F3A93B"
+                endFillColor="#F3A93B10"
+                areaChart
+                curved
+                isAnimated
+              />
             </View>
           </Card>
         )}
@@ -254,7 +516,7 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
                 {editRecord ? 'Edit Weight' : 'Add Weight'}
               </Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Ionicons name="close" size={24} color={colors.text.secondary} />
+                <Ionicons name="close" size={24} color="#6B625A" />
               </TouchableOpacity>
             </View>
 
@@ -266,7 +528,7 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
                 onChangeText={(text) => setWeightInput(text.replace(/[^0-9.]/g, ''))}
                 keyboardType="decimal-pad"
                 placeholder="0.0"
-                placeholderTextColor={colors.text.tertiary}
+                placeholderTextColor="#A39888"
               />
               <View style={styles.unitToggle}>
                 {(['kg', 'lb'] as const).map((u) => (
@@ -287,7 +549,7 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
               value={dateInput}
               onChangeText={setDateInput}
               placeholder="YYYY-MM-DD"
-              placeholderTextColor={colors.text.tertiary}
+              placeholderTextColor="#A39888"
             />
 
             <Text style={styles.modalLabel}>Notes (optional)</Text>
@@ -296,7 +558,7 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
               value={notesInput}
               onChangeText={setNotesInput}
               placeholder="e.g. Post-holiday check"
-              placeholderTextColor={colors.text.tertiary}
+              placeholderTextColor="#A39888"
               multiline
             />
 
@@ -322,211 +584,3 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
-  },
-  backButton: {
-    padding: 4,
-    width: 40,
-  },
-  title: {
-    ...typography.styles.headingXL,
-    color: colors.text.primary,
-  },
-  statsCard: {
-    marginHorizontal: spacing.page,
-    marginBottom: spacing.md,
-  },
-  statsRow: {
-    flexDirection: 'row',
-  },
-  stat: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  statDivider: {
-    width: 1,
-    height: 36,
-    backgroundColor: colors.border.light,
-    alignSelf: 'center',
-  },
-  statValue: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: colors.text.primary,
-  },
-  statLabel: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginTop: 2,
-  },
-  targetCard: {
-    marginHorizontal: spacing.page,
-    marginBottom: spacing.md,
-  },
-  targetRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  targetText: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-    fontWeight: '600',
-    flex: 1,
-  },
-  targetDiff: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-  },
-  listHeader: {
-    paddingHorizontal: spacing.page,
-    marginTop: spacing.lg,
-    marginBottom: spacing.md,
-  },
-  listTitle: {
-    ...typography.styles.label,
-    color: colors.text.secondary,
-  },
-  recordCard: {
-    marginHorizontal: spacing.page,
-    marginBottom: spacing.md,
-  },
-  recordRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  recordLeft: {
-    flex: 1,
-  },
-  recordWeight: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-    fontWeight: '700',
-  },
-  recordDate: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginTop: 2,
-  },
-  recordNotes: {
-    ...typography.styles.caption,
-    color: colors.text.secondary,
-    marginTop: 2,
-    fontStyle: 'italic',
-  },
-  recordRight: {
-    alignItems: 'flex-end',
-  },
-  currentBadge: {
-    backgroundColor: colors.primary.DEFAULT + '18',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
-    borderRadius: borderRadius.pill,
-  },
-  currentBadgeText: {
-    ...typography.styles.caption,
-    color: colors.primary.DEFAULT,
-    fontWeight: '600',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: colors.background.primary,
-    borderTopLeftRadius: borderRadius.xxl,
-    borderTopRightRadius: borderRadius.xxl,
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.xl,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.xl,
-  },
-  modalTitle: {
-    ...typography.styles.headingLG,
-    color: colors.text.primary,
-  },
-  modalLabel: {
-    ...typography.styles.caption,
-    color: colors.text.secondary,
-    marginBottom: spacing.xs,
-    marginTop: spacing.md,
-  },
-  modalInput: {
-    backgroundColor: colors.background.card,
-    borderRadius: borderRadius.lg,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    color: colors.text.primary,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: colors.border.DEFAULT,
-  },
-  modalWeightRow: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-  unitToggle: {
-    flexDirection: 'row',
-    borderRadius: borderRadius.lg,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: colors.border.light,
-  },
-  unitBtn: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    backgroundColor: colors.background.secondary,
-  },
-  unitBtnActive: {
-    backgroundColor: colors.primary.DEFAULT,
-  },
-  unitBtnText: {
-    ...typography.styles.bodySM,
-    color: colors.text.primary,
-    fontWeight: '600',
-  },
-  unitBtnTextActive: {
-    color: colors.white,
-  },
-  saveBtn: {
-    backgroundColor: colors.primary.DEFAULT,
-    borderRadius: borderRadius.lg,
-    paddingVertical: spacing.md,
-    alignItems: 'center',
-    marginTop: spacing.xl,
-  },
-  saveBtnText: {
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  deleteBtn: {
-    alignItems: 'center',
-    marginTop: spacing.md,
-    marginBottom: spacing.lg,
-    paddingVertical: spacing.sm,
-  },
-  deleteBtnText: {
-    color: colors.status.error,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});

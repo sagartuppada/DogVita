@@ -15,9 +15,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTrackingStore } from '../../store/trackingStore';
 import { Card } from '../../components/common';
 import { DogMap } from '../../components/maps';
-import { colors, spacing, typography } from '../../theme';
+import { spacing, typography } from '../../theme';
 import type { RouteDetailScreenProps } from '../../navigation/types';
-
 
 const formatDuration = (seconds: number) => {
   const h = Math.floor(seconds / 3600);
@@ -38,6 +37,110 @@ const formatSpeed = (meters: number, seconds: number) => {
   const kmh = (meters / 1000) / (seconds / 3600);
   return `${kmh.toFixed(1)} km/h`;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5E9CD',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.md,
+  },
+  backButton: {
+    padding: 4,
+    width: 40,
+  },
+  title: {
+    ...typography.styles.headingLG,
+    color: '#1F1A17',
+    flex: 1,
+    textAlign: 'center',
+    marginHorizontal: spacing.sm,
+  },
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  errorText: {
+    ...typography.styles.bodyMD,
+    color: '#A39888',
+    marginTop: spacing.md,
+  },
+  mapContainer: {
+    height: 280,
+    marginHorizontal: spacing.page,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    marginHorizontal: spacing.page,
+    marginTop: spacing.lg,
+  },
+  statCard: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  statValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1F1A17',
+    marginTop: spacing.sm,
+  },
+  statLabel: {
+    ...typography.styles.caption,
+    color: '#A39888',
+    marginTop: 2,
+  },
+  infoCard: {
+    marginHorizontal: spacing.page,
+    marginTop: spacing.lg,
+  },
+  sectionTitle: {
+    ...typography.styles.label,
+    color: '#6B625A',
+    marginBottom: spacing.md,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0E8D8',
+  },
+  infoLabel: {
+    ...typography.styles.bodySM,
+    color: '#A39888',
+  },
+  infoValue: {
+    ...typography.styles.bodySM,
+    color: '#1F1A17',
+    fontWeight: '500',
+  },
+  deleteButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: spacing.page,
+    marginTop: spacing.xl,
+    paddingVertical: spacing.md,
+    borderRadius: 12,
+    backgroundColor: '#F4433610',
+  },
+  deleteText: {
+    ...typography.styles.bodyMD,
+    color: '#F44336',
+    fontWeight: '600',
+    marginLeft: spacing.sm,
+  },
+});
 
 export default function RouteDetailScreen({ navigation, route: navRoute }: RouteDetailScreenProps) {
   const insets = useSafeAreaInsets();
@@ -74,11 +177,11 @@ export default function RouteDetailScreen({ navigation, route: navRoute }: Route
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={24} color={colors.text.primary} />
+            <Ionicons name="chevron-back" size={24} color="#1F1A17" />
           </TouchableOpacity>
         </View>
         <View style={styles.centered}>
-          <Ionicons name="alert-circle-outline" size={48} color={colors.text.tertiary} />
+          <Ionicons name="alert-circle-outline" size={48} color="#A39888" />
           <Text style={styles.errorText}>Route not found</Text>
         </View>
       </View>
@@ -89,7 +192,7 @@ export default function RouteDetailScreen({ navigation, route: navRoute }: Route
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.text.primary} />
+          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
         </TouchableOpacity>
         <Text style={styles.title} numberOfLines={1}>
           {route.name}
@@ -114,17 +217,17 @@ export default function RouteDetailScreen({ navigation, route: navRoute }: Route
         {/* Stats Cards */}
         <View style={styles.statsRow}>
           <Card variant="default" padding="md" style={styles.statCard}>
-            <Ionicons name="time-outline" size={22} color={colors.primary.DEFAULT} />
+            <Ionicons name="time-outline" size={22} color="#F3A93B" />
             <Text style={styles.statValue}>{formatDuration(route.duration)}</Text>
             <Text style={styles.statLabel}>Duration</Text>
           </Card>
           <Card variant="default" padding="md" style={styles.statCard}>
-            <Ionicons name="trail-sign-outline" size={22} color={colors.status.success} />
+            <Ionicons name="trail-sign-outline" size={22} color="#4CAF50" />
             <Text style={styles.statValue}>{formatDistance(route.totalDistance)}</Text>
             <Text style={styles.statLabel}>Distance</Text>
           </Card>
           <Card variant="default" padding="md" style={styles.statCard}>
-            <Ionicons name="speedometer-outline" size={22} color={colors.status.info} />
+            <Ionicons name="speedometer-outline" size={22} color="#5B9BD5" />
             <Text style={styles.statValue}>{formatSpeed(route.totalDistance, route.duration)}</Text>
             <Text style={styles.statLabel}>Avg Speed</Text>
           </Card>
@@ -170,114 +273,10 @@ export default function RouteDetailScreen({ navigation, route: navRoute }: Route
           }}
           activeOpacity={0.7}
         >
-          <Ionicons name="trash-outline" size={18} color={colors.status.error} />
+          <Ionicons name="trash-outline" size={18} color="#F44336" />
           <Text style={styles.deleteText}>Delete Route</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
-  },
-  backButton: {
-    padding: 4,
-    width: 40,
-  },
-  title: {
-    ...typography.styles.headingLG,
-    color: colors.text.primary,
-    flex: 1,
-    textAlign: 'center',
-    marginHorizontal: spacing.sm,
-  },
-  centered: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  errorText: {
-    ...typography.styles.bodyMD,
-    color: colors.text.tertiary,
-    marginTop: spacing.md,
-  },
-  mapContainer: {
-    height: 280,
-    marginHorizontal: spacing.page,
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  statsRow: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginHorizontal: spacing.page,
-    marginTop: spacing.lg,
-  },
-  statCard: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  statValue: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.text.primary,
-    marginTop: spacing.sm,
-  },
-  statLabel: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginTop: 2,
-  },
-  infoCard: {
-    marginHorizontal: spacing.page,
-    marginTop: spacing.lg,
-  },
-  sectionTitle: {
-    ...typography.styles.label,
-    color: colors.text.secondary,
-    marginBottom: spacing.md,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border.light,
-  },
-  infoLabel: {
-    ...typography.styles.bodySM,
-    color: colors.text.tertiary,
-  },
-  infoValue: {
-    ...typography.styles.bodySM,
-    color: colors.text.primary,
-    fontWeight: '500',
-  },
-  deleteButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: spacing.page,
-    marginTop: spacing.xl,
-    paddingVertical: spacing.md,
-    borderRadius: 12,
-    backgroundColor: colors.status.error + '10',
-  },
-  deleteText: {
-    ...typography.styles.bodyMD,
-    color: colors.status.error,
-    fontWeight: '600',
-    marginLeft: spacing.sm,
-  },
-});

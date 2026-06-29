@@ -110,7 +110,7 @@ export const useHealthStore = create<HealthStore>()(
           ],
         })),
 
-      setBatteryLevel: (dogId, data) =>
+      setBatteryLevel: (dogId, data) => {
         set((state) => ({
           currentMetrics: {
             ...state.currentMetrics,
@@ -120,7 +120,17 @@ export const useHealthStore = create<HealthStore>()(
               timestamp: new Date().toISOString(),
             },
           },
-        })),
+        }));
+        // Fire low-battery notification (fire-and-forget)
+        if (data.level <= 20) {
+          try {
+            const { notificationsService } = require('../services/notifications');
+            notificationsService.initialize().then(() => {
+              notificationsService.scheduleLowBatteryAlert(dogId, data.level);
+            }).catch((err: unknown) => console.warn('[healthStore] Low battery notification failed:', err));
+          } catch (err) { console.warn('[healthStore] Low battery notification failed:', err); }
+        }
+      },
 
       updateLocation: (dogId, data) =>
         set((state) => ({
@@ -138,30 +148,33 @@ export const useHealthStore = create<HealthStore>()(
 
       clearHistory: (dogId) =>
         set((state) => ({
-          heartRateHistory: [],
-          temperatureHistory: [],
-          activityHistory: [],
-          sleepHistory: [],
-          currentMetrics: {},
+          heartRateHistory: state.heartRateHistory.filter((d) => d.dogId !== dogId),
+          temperatureHistory: state.temperatureHistory.filter((d) => d.dogId !== dogId),
+          activityHistory: state.activityHistory.filter((d) => d.dogId !== dogId),
+          sleepHistory: state.sleepHistory.filter((d) => d.dogId !== dogId),
+          currentMetrics: Object.fromEntries(
+            Object.entries(state.currentMetrics).filter(([key]) => key !== dogId)
+          ),
         })),
 
       getLatestHeartRate: (dogId) => {
         const { heartRateHistory } = get();
-        return heartRateHistory[heartRateHistory.length - 1] || null;
+        const filtered = heartRateHistory.filter((d) => d.dogId === dogId);
+        return filtered[filtered.length - 1] || null;
       },
 
       getLatestTemperature: (dogId) => {
         const { temperatureHistory } = get();
-        return temperatureHistory[temperatureHistory.length - 1] || null;
+        const filtered = temperatureHistory.filter((d) => d.dogId === dogId);
+        return filtered[filtered.length - 1] || null;
       },
 
       fetchHeartRateHistory: async (dogId) => {
         if (!isSupabaseConfigured()) return;
         try {
           const history = await healthService.getHeartRateHistory(dogId);
-          if (history.length > 0) {
-            set({ heartRateHistory: history });
-          }
+          // Success from server = source of truth. Replace local history.
+          set({ heartRateHistory: history });
         } catch (error) {
           console.warn('[healthStore.fetchHeartRateHistory] Supabase fetch failed:', (error as Error).message);
         }
@@ -171,9 +184,8 @@ export const useHealthStore = create<HealthStore>()(
         if (!isSupabaseConfigured()) return;
         try {
           const history = await healthService.getTemperatureHistory(dogId);
-          if (history.length > 0) {
-            set({ temperatureHistory: history });
-          }
+          // Success from server = source of truth. Replace local history.
+          set({ temperatureHistory: history });
         } catch (error) {
           console.warn('[healthStore.fetchTemperatureHistory] Supabase fetch failed:', (error as Error).message);
         }
@@ -183,9 +195,8 @@ export const useHealthStore = create<HealthStore>()(
         if (!isSupabaseConfigured()) return;
         try {
           const history = await healthService.getActivityHistory(dogId);
-          if (history.length > 0) {
-            set({ activityHistory: history });
-          }
+          // Success from server = source of truth. Replace local history.
+          set({ activityHistory: history });
         } catch (error) {
           console.warn('[healthStore.fetchActivityHistory] Supabase fetch failed:', (error as Error).message);
         }

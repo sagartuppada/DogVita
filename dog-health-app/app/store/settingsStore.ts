@@ -12,10 +12,10 @@ interface SettingsState extends UserSettings {
   isFirstLaunch: boolean;
   hasCompletedOnboarding: boolean;
   lastSyncTime: string | null;
-  theme: 'light' | 'dark' | 'system';
   isBLEEnabled: boolean;
   isLocationEnabled: boolean;
   isNotificationsEnabled: boolean;
+  _hasHydrated: boolean;
 }
 
 interface SettingsActions {
@@ -26,8 +26,7 @@ interface SettingsActions {
   setTimeFormat: (format: TimeFormat) => void;
   setDateFormat: (format: DateFormat) => void;
   setNotifications: (enabled: boolean) => void;
-  setDarkMode: (enabled: boolean) => void;
-  setTheme: (theme: 'light' | 'dark' | 'system') => void;
+
   setAutoSync: (enabled: boolean) => void;
   setGPSInterval: (interval: number) => void;
   setHeartRateThreshold: (threshold: number) => void;
@@ -54,7 +53,7 @@ const defaultUnits: Units = {
 const initialState: SettingsState = {
   units: defaultUnits,
   notifications: true,
-  darkMode: false,
+
   autoSync: true,
   gpsInterval: 5000,
   heartRateThreshold: 180,
@@ -63,10 +62,11 @@ const initialState: SettingsState = {
   isFirstLaunch: true,
   hasCompletedOnboarding: false,
   lastSyncTime: null,
-  theme: 'light',
+
   isBLEEnabled: true,
   isLocationEnabled: true,
   isNotificationsEnabled: true,
+  _hasHydrated: false,
 };
 
 export const useSettingsStore = create<SettingsStore>()(
@@ -106,9 +106,7 @@ export const useSettingsStore = create<SettingsStore>()(
 
       setNotifications: (notifications) => set({ notifications }),
 
-      setDarkMode: (darkMode) => set({ darkMode }),
 
-      setTheme: (theme) => set({ theme, darkMode: theme === 'dark' }),
 
       setAutoSync: (autoSync) => set({ autoSync }),
 
@@ -143,16 +141,21 @@ export const useSettingsStore = create<SettingsStore>()(
     {
       name: 'settings-storage',
       storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: () => {
+        return (state) => {
+          if (state) state._hasHydrated = true;
+        };
+      },
       partialize: (state) => ({
         units: state.units,
         notifications: state.notifications,
-        darkMode: state.darkMode,
+
         autoSync: state.autoSync,
         gpsInterval: state.gpsInterval,
         heartRateThreshold: state.heartRateThreshold,
         lowBatteryThreshold: state.lowBatteryThreshold,
         hasCompletedOnboarding: state.hasCompletedOnboarding,
-        theme: state.theme,
+
         isBLEEnabled: state.isBLEEnabled,
         isLocationEnabled: state.isLocationEnabled,
         isNotificationsEnabled: state.isNotificationsEnabled,
@@ -162,6 +165,7 @@ export const useSettingsStore = create<SettingsStore>()(
 );
 
 export const selectUnits = (state: SettingsStore) => state.units;
-export const selectIsDarkMode = (state: SettingsStore) => state.darkMode;
 export const selectHasCompletedOnboarding = (state: SettingsStore) =>
   state.hasCompletedOnboarding;
+export const selectHasHydrated = (state: SettingsStore) =>
+  state._hasHydrated;

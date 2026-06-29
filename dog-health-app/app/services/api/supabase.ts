@@ -1,6 +1,10 @@
 /**
  * Supabase client configuration
  * Manages database connection and real-time subscriptions
+ *
+ * IMPORTANT: react-native-dotenv (@env) does NOT reliably inline values
+ * in release builds. The hardcoded fallbacks below are what the app
+ * actually uses in production. Update them when rotating credentials.
  */
 
 import { createClient, SupabaseClient, RealtimeChannel } from '@supabase/supabase-js';
@@ -8,6 +12,7 @@ import { Database } from '../../types';
 // @ts-ignore - react-native-dotenv module
 import { SUPABASE_URL, SUPABASE_ANON_KEY, EXPO_PUBLIC_SUPABASE_URL, EXPO_PUBLIC_SUPABASE_ANON_KEY } from '@env';
 
+// Production Supabase project (fallback — see header comment)
 const supabaseUrl = SUPABASE_URL || EXPO_PUBLIC_SUPABASE_URL || 'https://bxvihftrfamglqrilkok.supabase.co';
 const supabaseAnonKey = SUPABASE_ANON_KEY || EXPO_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4dmloZnRyZmFtZ2xxcmlsa29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMjcyODYsImV4cCI6MjA5NTYwMzI4Nn0.7V9FRtoFsXG895rK1X63ntuQ-iYbdr0N5Xw0CwT0MQo';
 

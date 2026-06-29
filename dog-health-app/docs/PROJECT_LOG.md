@@ -1112,6 +1112,47 @@ Emulator has no internet. `OfflineMapView` provides green grid + marker visualiz
 - `docs/superpowers/specs/2026-06-16-enforce-onboarding-auth-design.md` — Onboarding enforcement design
 - `docs/PROJECT_LOG.md` — This file (complete project log)
 
+
+
+
+
+UG 1: Fix alerts.ts owner_id = dogId bug + wire ownerId
+
+BUG 2-4: Fix sign-out stale-data leaks
+
+BUG 5: Stop tracking screen auto-loading demo data
+
+BUG 6: Reset stale activeDogId after fetchDogs
+
+ISSUE 7: Fix fetchGeofences owner_id/dog_id mismatch
+
+ISSUE 9: Fix hydration race
+
+ISSUE 10: Make updateDog/deleteDog not throw uncaught
+
+ISSUE 11: clearHistory(dogId) filter by dogId
+
+ISSUE 12-13: success=replace/error=keep pattern
+
+ISSUE 14: Document baked-in Supabase key
+
+ISSUE 15: Remove unused subscribeToTable dead code
+
+ISSUE 16: Wire clearOldLocations into fetch path
+
+ISSUE 17: Make demo data IDs unique
+
+ISSUE 18: Harden fetch trailing-slash interceptor
+
+ISSUE 19: Wire up geofence alert pipeline
+
+ISSUE 20: Add eslint.config.js flat config
+
+ISSUE 21: Remove verified-unused scaffolding
+
+ISSUE 22: Don't persist BLE isConnected state
+
+Final: typecheck + verify
 ---
 
 **End of Project Log**

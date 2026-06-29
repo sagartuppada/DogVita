@@ -10,8 +10,31 @@ import { useDogStore } from '../../store/dogStore';
 import { useHealthStore } from '../../store/healthStore';
 import { Card, EmptyState } from '../../components/common';
 import HeartRateChart from '../../components/charts/HeartRateChart';
-import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import { spacing, typography, borderRadius, shadows } from '../../theme';
 import type { HealthTabScreenProps } from '../../navigation/types';
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  scrollContent: { paddingHorizontal: 16, paddingTop: 16 },
+  header: { marginBottom: 24 },
+  title: { ...typography.styles.headingXL, color: '#1F1A17' },
+  dogName: { ...typography.styles.bodySM, color: '#A39888', marginTop: 2 },
+  sectionTitle: { ...typography.styles.label, color: '#6B625A', marginBottom: 12, marginTop: 20 },
+  chipsGrid: { flexDirection: 'row', gap: 12, marginBottom: 12 },
+  chip: { flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FBF4E4', borderRadius: 20, padding: 16, ...shadows.sm },
+  chipIcon: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
+  chipContent: { flex: 1 },
+  chipLabel: { ...typography.styles.caption, color: '#A39888', marginBottom: 2 },
+  chipValueRow: { flexDirection: 'row', alignItems: 'baseline' },
+  chipValue: { fontSize: 17, fontWeight: '700', color: '#1F1A17' },
+  chipUnit: { ...typography.styles.caption, color: '#A39888', marginLeft: 3 },
+  activityCard: { marginBottom: 20 },
+  activityRow: { flexDirection: 'row', justifyContent: 'space-around' },
+  activityItem: { alignItems: 'center' },
+  activityCircle: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
+  activityValue: { fontSize: 17, fontWeight: '700', color: '#1F1A17' },
+  activityLabel: { ...typography.styles.caption, color: '#A39888', marginTop: 2 },
+});
 
 const MetricChip: React.FC<{
   icon: string;
@@ -62,9 +85,7 @@ export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>)
     ]);
   }, [activeDogId, fetchHeartRateHistory, fetchTemperatureHistory, fetchActivityHistory, fetchLatestMetrics]);
 
-  useEffect(() => {
-    fetchAllData();
-  }, [fetchAllData]);
+  useEffect(() => { fetchAllData(); }, [fetchAllData]);
 
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(() => {
@@ -74,19 +95,9 @@ export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>)
 
   const last20 = useMemo(() => heartRateHistory.slice(-20), [heartRateHistory]);
   const last20Bpm = useMemo(() => last20.map((d) => d.bpm), [last20]);
-
-  const hrMin = useMemo(
-    () => (last20Bpm.length > 0 ? Math.min(...last20Bpm) : null),
-    [last20Bpm],
-  );
-  const hrMax = useMemo(
-    () => (last20Bpm.length > 0 ? Math.max(...last20Bpm) : null),
-    [last20Bpm],
-  );
-  const latestHR = useMemo(
-    () => (last20Bpm.length > 0 ? last20Bpm[last20Bpm.length - 1] : null),
-    [last20Bpm],
-  );
+  const hrMin = useMemo(() => (last20Bpm.length > 0 ? Math.min(...last20Bpm) : null), [last20Bpm]);
+  const hrMax = useMemo(() => (last20Bpm.length > 0 ? Math.max(...last20Bpm) : null), [last20Bpm]);
+  const latestHR = useMemo(() => (last20Bpm.length > 0 ? last20Bpm[last20Bpm.length - 1] : null), [last20Bpm]);
 
   const metrics = activeDogId ? currentMetrics[activeDogId] : null;
   const latestTemp = useMemo(() => {
@@ -111,79 +122,45 @@ export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>)
       <ScrollView
         contentContainerStyle={[styles.scrollContent, { paddingBottom: 100 }]}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary.DEFAULT} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#F3A93B" />}
       >
-        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Health</Text>
           <Text style={styles.dogName}>{activeDog.name}</Text>
         </View>
 
-        {/* Heart Rate Chart */}
-        <HeartRateChart
-          data={last20Bpm}
-          current={latestHR}
-          min={hrMin}
-          max={hrMax}
-        />
+        <HeartRateChart data={last20Bpm} current={latestHR} min={hrMin} max={hrMax} />
 
-        {/* Metric Chips */}
         <Text style={styles.sectionTitle}>Current Vitals</Text>
         <View style={styles.chipsGrid}>
-          <MetricChip
-            icon="thermometer"
-            label="Temperature"
-            value={latestTemp ? latestTemp.celsius.toFixed(1) : '--'}
-            unit="°C"
-            color={colors.health.temperature}
-          />
-          <MetricChip
-            icon="flash"
-            label="Battery"
-            value={latestBattery !== null ? String(latestBattery) : '--'}
-            unit="%"
-            color={colors.primary.dark}
-          />
+          <MetricChip icon="thermometer" label="Temperature" value={latestTemp ? latestTemp.celsius.toFixed(1) : '--'} unit="°C" color="#FF9800" />
+          <MetricChip icon="flash" label="Battery" value={latestBattery !== null ? String(latestBattery) : '--'} unit="%" color="#E2941C" />
         </View>
-
         <View style={styles.chipsGrid}>
-          <MetricChip
-            icon="heart"
-            label="Heart Rate"
-            value={latestHR ? String(latestHR) : '--'}
-            unit="bpm"
-            color={colors.health.heartRate}
-          />
-          <MetricChip
-            icon="footsteps"
-            label="Steps"
-            value={latestActivity ? String(latestActivity.steps) : '--'}
-            unit="today"
-            color={colors.status.success}
-          />
+          <MetricChip icon="heart" label="Heart Rate" value={latestHR ? String(latestHR) : '--'} unit="bpm" color="#F44336" />
+          <MetricChip icon="footsteps" label="Steps" value={latestActivity ? String(latestActivity.steps) : '--'} unit="today" color="#4CAF50" />
         </View>
 
-        {/* Activity Summary */}
         <Card variant="default" padding="md" style={styles.activityCard}>
           <Text style={styles.sectionTitle}>Activity Summary</Text>
           <View style={styles.activityRow}>
             <View style={styles.activityItem}>
-              <View style={[styles.activityCircle, { backgroundColor: colors.status.success + '18' }]}>
-                <Ionicons name="walk" size={20} color={colors.status.success} />
+              <View style={[styles.activityCircle, { backgroundColor: '#4CAF5018' }]}>
+                <Ionicons name="walk" size={20} color="#4CAF50" />
               </View>
               <Text style={styles.activityValue}>{latestActivity ? `${latestActivity.activeMinutes}m` : '--'}</Text>
               <Text style={styles.activityLabel}>Active</Text>
             </View>
             <View style={styles.activityItem}>
-              <View style={[styles.activityCircle, { backgroundColor: colors.primary.DEFAULT + '18' }]}>
-                <Ionicons name="flame" size={20} color={colors.primary.DEFAULT} />
+              <View style={[styles.activityCircle, { backgroundColor: '#F3A93B18' }]}>
+                <Ionicons name="flame" size={20} color="#F3A93B" />
               </View>
               <Text style={styles.activityValue}>{latestActivity ? String(latestActivity.calories) : '--'}</Text>
               <Text style={styles.activityLabel}>Calories</Text>
             </View>
             <View style={styles.activityItem}>
-              <View style={[styles.activityCircle, { backgroundColor: colors.health.sleep + '18' }]}>
-                <Ionicons name="moon" size={20} color={colors.health.sleep} />
+              <View style={[styles.activityCircle, { backgroundColor: '#7E57C218' }]}>
+                <Ionicons name="moon" size={20} color="#7E57C2" />
               </View>
               <Text style={styles.activityValue}>--</Text>
               <Text style={styles.activityLabel}>Sleep</Text>
@@ -194,104 +171,3 @@ export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>)
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  scrollContent: {
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.lg,
-  },
-  header: {
-    marginBottom: spacing.xxl,
-  },
-  title: {
-    ...typography.styles.headingXL,
-    color: colors.text.primary,
-  },
-  dogName: {
-    ...typography.styles.bodySM,
-    color: colors.text.tertiary,
-    marginTop: 2,
-  },
-  sectionTitle: {
-    ...typography.styles.label,
-    color: colors.text.secondary,
-    marginBottom: spacing.md,
-    marginTop: spacing.xl,
-  },
-  chipsGrid: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginBottom: spacing.md,
-  },
-  chip: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.background.card,
-    borderRadius: borderRadius.xl,
-    padding: spacing.lg,
-    ...shadows.sm,
-  },
-  chipIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: spacing.md,
-  },
-  chipContent: {
-    flex: 1,
-  },
-  chipLabel: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginBottom: 2,
-  },
-  chipValueRow: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-  },
-  chipValue: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: colors.text.primary,
-  },
-  chipUnit: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginLeft: 3,
-  },
-  activityCard: {
-    marginBottom: spacing.xl,
-  },
-  activityRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  activityItem: {
-    alignItems: 'center',
-  },
-  activityCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: spacing.sm,
-  },
-  activityValue: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: colors.text.primary,
-  },
-  activityLabel: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-    marginTop: 2,
-  },
-});

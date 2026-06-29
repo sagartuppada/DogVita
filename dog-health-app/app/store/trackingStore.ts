@@ -7,7 +7,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LocationData, Geofence, GeofenceAlert, Route } from '../types';
 import { trackingService } from '../services/api/tracking';
-import { isSupabaseConfigured } from '../services/api/supabase';
+import { supabase, isSupabaseConfigured } from '../services/api/supabase';
 import { useDogStore } from './dogStore';
 
 interface TrackingState {
@@ -79,6 +79,7 @@ export const useTrackingStore = create<TrackingStore>()(
         })),
 
       addLocationToHistory: (location) => {
+        const previousLocation = get().currentLocation;
         set((state) => ({
           locationHistory: [
             ...state.locationHistory.slice(-MAX_LOCATION_HISTORY + 1),
@@ -91,6 +92,37 @@ export const useTrackingStore = create<TrackingStore>()(
             trackingService.addLocation(activeDogId, location).catch((err) =>
               console.warn('[trackingStore] Failed to persist location:', err)
             );
+          }
+        }
+
+        // Check geofence enter/exit transitions (ISSUE 19)
+        const { geofences, isInsideGeofence, addGeofenceAlert } = get();
+        for (const geofence of geofences) {
+          if (!geofence.isActive || !geofence.alertsEnabled) continue;
+          const nowInside = isInsideGeofence(location, geofence);
+          const wasInside = previousLocation
+            ? isInsideGeofence(previousLocation, geofence)
+            : false;
+          if (nowInside && !wasInside) {
+            addGeofenceAlert({
+              id: `gf_alert_${Date.now()}_${geofence.id}`,
+              dogId: useDogStore.getState().activeDogId ?? '',
+              geofenceId: geofence.id,
+              type: 'enter',
+              location,
+              timestamp: new Date().toISOString(),
+              acknowledged: false,
+            });
+          } else if (!nowInside && wasInside) {
+            addGeofenceAlert({
+              id: `gf_alert_${Date.now()}_${geofence.id}`,
+              dogId: useDogStore.getState().activeDogId ?? '',
+              geofenceId: geofence.id,
+              type: 'exit',
+              location,
+              timestamp: new Date().toISOString(),
+              acknowledged: false,
+            });
           }
         }
       },
@@ -141,10 +173,18 @@ export const useTrackingStore = create<TrackingStore>()(
         }
       },
 
-      addGeofenceAlert: (alert) =>
+      addGeofenceAlert: (alert) => {
         set((state) => ({
           activeGeofenceAlerts: [...state.activeGeofenceAlerts, alert],
-        })),
+        }));
+        // Send push notification (fire-and-forget)
+        try {
+          const { notificationsService } = require('../services/notifications');
+          notificationsService.initialize().then(() => {
+            notificationsService.scheduleGeofenceAlert(alert);
+          }).catch((err: unknown) => console.warn('[trackingStore] Geofence notification failed:', err));
+        } catch (err) { console.warn('[trackingStore] Geofence notification failed:', err); }
+      },
 
       acknowledgeGeofenceAlert: (alertId) =>
         set((state) => ({
@@ -194,13 +234,12 @@ export const useTrackingStore = create<TrackingStore>()(
         if (!isSupabaseConfigured()) return;
         try {
           const locations = await trackingService.getLocations(dogId);
-          if (locations.length > 0) {
-            set({
-              locationHistory: locations,
-              currentLocation: locations[0],
-              lastLocationUpdate: locations[0].timestamp,
-            });
-          }
+          // Success from server = source of truth. Replace local history.
+          set({
+            locationHistory: locations,
+            currentLocation: locations[0] ?? null,
+            lastLocationUpdate: locations[0]?.timestamp ?? null,
+          });
         } catch (error) {
           console.warn('[trackingStore.fetchLocations] Supabase fetch failed:', (error as Error).message);
         }
@@ -209,10 +248,13 @@ export const useTrackingStore = create<TrackingStore>()(
       fetchGeofences: async (_dogId) => {
         if (!isSupabaseConfigured()) return;
         try {
-          const geofences = await trackingService.getGeofences(_dogId);
-          if (geofences.length > 0) {
-            set({ geofences });
-          }
+          // Geofences are owner-scoped (owner_id), not dog-scoped. Resolve the
+          // current authenticated user and query by owner_id. The dogId param
+          // is kept for API parity but the query is owner-wide.
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) return;
+          const geofences = await trackingService.getGeofences(user.id);
+          set({ geofences });
         } catch (error) {
           console.warn('[trackingStore.fetchGeofences] Supabase fetch failed:', (error as Error).message);
         }
@@ -311,13 +353,15 @@ export const useTrackingStore = create<TrackingStore>()(
         if (!isSupabaseConfigured()) return;
         try {
           const routes = await trackingService.getRoutes(dogId);
-          if (routes.length > 0) {
-            set((state) => ({
-              routes: [...routes, ...state.routes.filter((r) =>
-                !routes.some((sr) => sr.id === r.id)
-              )],
-            }));
-          }
+          // Success from server = source of truth. Replace local routes, but
+          // preserve the in-progress activeRoute (not yet saved to server).
+          set((state) => {
+            const activeRoute = state.activeRoute;
+            const merged = activeRoute
+              ? [activeRoute, ...routes.filter((r) => r.id !== activeRoute.id)]
+              : routes;
+            return { routes: merged.slice(0, 200) };
+          });
         } catch (error) {
           console.warn('[trackingStore.fetchRoutes] Supabase fetch failed:', (error as Error).message);
         }
@@ -325,6 +369,7 @@ export const useTrackingStore = create<TrackingStore>()(
 
       loadDemoData: () => {
         const timestamp = new Date().toISOString();
+        const uniqueSuffix = Date.now().toString(36);
         const baseLat = 37.7749;
         const baseLng = -122.4194;
         const demoLocations: LocationData[] = [];
@@ -342,9 +387,9 @@ export const useTrackingStore = create<TrackingStore>()(
         }
 
         const demoRoute: Route = {
-          id: 'demo_route_1',
+          id: `demo_route_${uniqueSuffix}`,
           dogId: 'demo_dog_1',
-          name: 'Morning Walk',
+          name: 'Morning Walk (Demo)',
           startTime: new Date(Date.now() - 50 * 30000).toISOString(),
           endTime: timestamp,
           locations: demoLocations,

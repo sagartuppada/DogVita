@@ -15,7 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDogStore } from '../../store/dogStore';
 import { Card, Input, Button } from '../../components/common';
-import { colors, spacing, typography, borderRadius } from '../../theme';
+import { spacing, typography, borderRadius } from '../../theme';
 import type { DogProfileScreenProps } from '../../navigation/types';
 
 const GENDER_OPTIONS = [
@@ -27,6 +27,198 @@ const WEIGHT_UNITS = [
   { label: 'kg', value: 'kg' as const },
   { label: 'lb', value: 'lb' as const },
 ];
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.md,
+  },
+  backButton: {
+    padding: 4,
+    width: 40,
+  },
+  title: {
+    ...typography.styles.headingLG,
+    color: '#1F1A17',
+  },
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  errorText: {
+    ...typography.styles.bodyMD,
+    color: '#A39888',
+    marginTop: spacing.md,
+  },
+  photoSection: {
+    alignItems: 'center',
+    paddingVertical: spacing.xl,
+  },
+  photoCircle: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: '#F3A93B18',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.md,
+  },
+  photoLabel: {
+    ...typography.styles.headingMD,
+    color: '#1F1A17',
+  },
+  photoSub: {
+    ...typography.styles.bodySM,
+    color: '#A39888',
+    marginTop: 2,
+  },
+  ageBadge: {
+    ...typography.styles.caption,
+    color: '#F3A93B',
+    fontWeight: '600',
+    marginTop: spacing.xs,
+    backgroundColor: '#F3A93B12',
+    paddingHorizontal: spacing.md,
+    paddingVertical: 4,
+    borderRadius: borderRadius.pill,
+  },
+  quickLinks: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    marginHorizontal: spacing.page,
+    marginBottom: spacing.lg,
+  },
+  quickLink: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FBF4E4',
+    borderRadius: borderRadius.lg,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    gap: spacing.sm,
+  },
+  quickLinkText: {
+    ...typography.styles.bodySM,
+    color: '#1F1A17',
+    fontWeight: '600',
+    flex: 1,
+  },
+  card: {
+    marginHorizontal: spacing.page,
+    marginBottom: spacing.md,
+  },
+  sectionTitle: {
+    ...typography.styles.label,
+    color: '#6B625A',
+    marginBottom: spacing.md,
+  },
+  fieldLabel: {
+    ...typography.styles.label,
+    color: '#6B625A',
+    marginBottom: spacing.sm,
+  },
+  genderRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  genderOption: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.md,
+    borderRadius: borderRadius.lg,
+    backgroundColor: '#EDE2C6',
+    borderWidth: 1.5,
+    borderColor: '#F0E8D8',
+  },
+  genderOptionActive: {
+    backgroundColor: '#F3A93B',
+    borderColor: '#F3A93B',
+  },
+  genderOptionText: {
+    ...typography.styles.bodyMD,
+    color: '#1F1A17',
+    fontWeight: '600',
+  },
+  genderOptionTextActive: {
+    color: '#FFFFFF',
+  },
+  weightRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  weightInput: {
+    flex: 1,
+  },
+  unitToggle: {
+    flexDirection: 'row',
+    borderRadius: borderRadius.lg,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#F0E8D8',
+  },
+  unitOption: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    backgroundColor: '#EDE2C6',
+  },
+  unitOptionActive: {
+    backgroundColor: '#F3A93B',
+  },
+  unitOptionText: {
+    ...typography.styles.bodySM,
+    color: '#1F1A17',
+    fontWeight: '600',
+  },
+  unitOptionTextActive: {
+    color: '#FFFFFF',
+  },
+  readOnlyFields: {
+    gap: 0,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0E8D8',
+  },
+  infoLabel: {
+    ...typography.styles.bodySM,
+    color: '#A39888',
+  },
+  infoValue: {
+    ...typography.styles.bodySM,
+    color: '#1F1A17',
+    fontWeight: '500',
+  },
+  actions: {
+    marginHorizontal: spacing.page,
+    marginTop: spacing.lg,
+    gap: spacing.md,
+    marginBottom: spacing.xxl,
+  },
+});
+
+const InfoRow: React.FC<{ label: string; value: string }> = ({ label, value }) => (
+  <View style={styles.infoRow}>
+    <Text style={styles.infoLabel}>{label}</Text>
+    <Text style={styles.infoValue}>{value}</Text>
+  </View>
+);
 
 export default function DogProfileScreen({ navigation, route }: DogProfileScreenProps) {
   const insets = useSafeAreaInsets();
@@ -110,11 +302,11 @@ export default function DogProfileScreen({ navigation, route }: DogProfileScreen
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={24} color={colors.text.primary} />
+            <Ionicons name="chevron-back" size={24} color="#1F1A17" />
           </TouchableOpacity>
         </View>
         <View style={styles.centered}>
-          <Ionicons name="paw-outline" size={48} color={colors.text.tertiary} />
+          <Ionicons name="paw-outline" size={48} color="#A39888" />
           <Text style={styles.errorText}>Dog not found</Text>
         </View>
       </View>
@@ -125,11 +317,11 @@ export default function DogProfileScreen({ navigation, route }: DogProfileScreen
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.text.primary} />
+          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
         </TouchableOpacity>
         <Text style={styles.title}>{isEditing ? 'Edit Profile' : dog.name}</Text>
         <TouchableOpacity onPress={() => setIsEditing((e) => !e)} style={styles.backButton}>
-          <Ionicons name={isEditing ? 'close' : 'create-outline'} size={22} color={colors.text.primary} />
+          <Ionicons name={isEditing ? 'close' : 'create-outline'} size={22} color="#1F1A17" />
         </TouchableOpacity>
       </View>
 
@@ -140,7 +332,7 @@ export default function DogProfileScreen({ navigation, route }: DogProfileScreen
         {/* Profile Photo Placeholder */}
         <View style={styles.photoSection}>
           <View style={styles.photoCircle}>
-            <Ionicons name="paw" size={40} color={colors.primary.DEFAULT} />
+            <Ionicons name="paw" size={40} color="#F3A93B" />
           </View>
           <Text style={styles.photoLabel}>{dog.name}</Text>
           <Text style={styles.photoSub}>{dog.breed}</Text>
@@ -172,7 +364,7 @@ export default function DogProfileScreen({ navigation, route }: DogProfileScreen
                     <Ionicons
                       name={option.value === 'male' ? 'male' : 'female'}
                       size={18}
-                      color={gender === option.value ? colors.white : colors.text.tertiary}
+                      color={gender === option.value ? '#FFFFFF' : '#A39888'}
                     />
                     <Text
                       style={[
@@ -265,7 +457,7 @@ export default function DogProfileScreen({ navigation, route }: DogProfileScreen
               title="Delete Profile"
               onPress={handleDelete}
               variant="ghost"
-              textStyle={{ color: colors.status.error }}
+              textStyle={{ color: '#F44336' }}
             />
           </View>
         )}
@@ -273,196 +465,3 @@ export default function DogProfileScreen({ navigation, route }: DogProfileScreen
     </View>
   );
 }
-
-const InfoRow: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-  <View style={styles.infoRow}>
-    <Text style={styles.infoLabel}>{label}</Text>
-    <Text style={styles.infoValue}>{value}</Text>
-  </View>
-);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
-  },
-  backButton: {
-    padding: 4,
-    width: 40,
-  },
-  title: {
-    ...typography.styles.headingLG,
-    color: colors.text.primary,
-  },
-  centered: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  errorText: {
-    ...typography.styles.bodyMD,
-    color: colors.text.tertiary,
-    marginTop: spacing.md,
-  },
-  photoSection: {
-    alignItems: 'center',
-    paddingVertical: spacing.xl,
-  },
-  photoCircle: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    backgroundColor: colors.primary.DEFAULT + '18',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: spacing.md,
-  },
-  photoLabel: {
-    ...typography.styles.headingMD,
-    color: colors.text.primary,
-  },
-  photoSub: {
-    ...typography.styles.bodySM,
-    color: colors.text.tertiary,
-    marginTop: 2,
-  },
-  ageBadge: {
-    ...typography.styles.caption,
-    color: colors.primary.DEFAULT,
-    fontWeight: '600',
-    marginTop: spacing.xs,
-    backgroundColor: colors.primary.DEFAULT + '12',
-    paddingHorizontal: spacing.md,
-    paddingVertical: 4,
-    borderRadius: borderRadius.pill,
-  },
-  quickLinks: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginHorizontal: spacing.page,
-    marginBottom: spacing.lg,
-  },
-  quickLink: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.background.card,
-    borderRadius: borderRadius.lg,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    gap: spacing.sm,
-  },
-  quickLinkText: {
-    ...typography.styles.bodySM,
-    color: colors.text.primary,
-    fontWeight: '600',
-    flex: 1,
-  },
-  card: {
-    marginHorizontal: spacing.page,
-    marginBottom: spacing.md,
-  },
-  sectionTitle: {
-    ...typography.styles.label,
-    color: colors.text.secondary,
-    marginBottom: spacing.md,
-  },
-  fieldLabel: {
-    ...typography.styles.label,
-    color: colors.text.secondary,
-    marginBottom: spacing.sm,
-  },
-  genderRow: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  genderOption: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-    paddingVertical: spacing.md,
-    borderRadius: borderRadius.lg,
-    backgroundColor: colors.background.secondary,
-    borderWidth: 1.5,
-    borderColor: colors.border.light,
-  },
-  genderOptionActive: {
-    backgroundColor: colors.primary.DEFAULT,
-    borderColor: colors.primary.DEFAULT,
-  },
-  genderOptionText: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-    fontWeight: '600',
-  },
-  genderOptionTextActive: {
-    color: colors.white,
-  },
-  weightRow: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  weightInput: {
-    flex: 1,
-  },
-  unitToggle: {
-    flexDirection: 'row',
-    borderRadius: borderRadius.lg,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: colors.border.light,
-  },
-  unitOption: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    backgroundColor: colors.background.secondary,
-  },
-  unitOptionActive: {
-    backgroundColor: colors.primary.DEFAULT,
-  },
-  unitOptionText: {
-    ...typography.styles.bodySM,
-    color: colors.text.primary,
-    fontWeight: '600',
-  },
-  unitOptionTextActive: {
-    color: colors.white,
-  },
-  readOnlyFields: {
-    gap: 0,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border.light,
-  },
-  infoLabel: {
-    ...typography.styles.bodySM,
-    color: colors.text.tertiary,
-  },
-  infoValue: {
-    ...typography.styles.bodySM,
-    color: colors.text.primary,
-    fontWeight: '500',
-  },
-  actions: {
-    marginHorizontal: spacing.page,
-    marginTop: spacing.lg,
-    gap: spacing.md,
-    marginBottom: spacing.xxl,
-  },
-});

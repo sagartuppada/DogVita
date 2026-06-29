@@ -3,30 +3,32 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { StatusBar } from 'react-native';
-import { View, StyleSheet } from 'react-native';
+import { StatusBar, View, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SplashScreen from 'react-native-splash-screen';
 import { RootNavigator } from './navigation/RootNavigator';
 import { Loader } from './components/common';
-import { ThemeProvider, useTheme } from './theme/ThemeContext';
+import { lightColors } from './theme/colors';
 import { notificationsService } from './services/notifications';
 import { authService } from './services/auth';
+import { useLLMLifecycle } from './hooks/useLLMLifecycle';
+import { isBundledModel, extractBundledModel, AVAILABLE_MODELS } from './services/ai/modelManager';
 
 const AppContent: React.FC = () => {
-  const { colors, isDark } = useTheme();
+  const colors = lightColors;
   const [isInitializing, setIsInitializing] = useState(true);
+  useLLMLifecycle();
 
   useEffect(() => {
     const initialize = async () => {
       try {
         await Promise.all([
-          notificationsService.requestPermissions(),
-          authService.getCurrentUser(),
+          notificationsService.requestPermissions().catch(() => false),
+          authService.getCurrentUser().catch(() => null),
         ]);
       } catch (error) {
-        console.error('Initialization error:', error);
+        // Initialization failed — proceed anyway
       } finally {
         setIsInitializing(false);
         SplashScreen.hide();
@@ -34,6 +36,12 @@ const AppContent: React.FC = () => {
     };
 
     initialize();
+
+    // Fire-and-forget: extract the primary bundled GGUF model to document dir
+    // in the background so it's ready when the user opens the chat screen.
+    if (isBundledModel('llama-3.2-1b')) {
+      extractBundledModel('llama-3.2-1b').catch(() => {});
+    }
 
     const unsubscribeNotification = notificationsService.addNotificationReceivedListener((notification) => {
       console.log('Notification received:', notification);
@@ -58,10 +66,10 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <GestureHandlerRootView style={styles.container}>
+    <GestureHandlerRootView style={[styles.container, { backgroundColor: colors.background.primary }]}>
       <SafeAreaProvider>
         <StatusBar
-          barStyle={isDark ? 'light-content' : 'dark-content'}
+          barStyle="dark-content"
           backgroundColor={colors.background.primary}
         />
         <RootNavigator />
@@ -71,17 +79,12 @@ const AppContent: React.FC = () => {
 };
 
 export const App: React.FC = () => {
-  return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
-  );
+  return <AppContent />;
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5EAD3',
   },
   loadingContainer: {
     flex: 1,

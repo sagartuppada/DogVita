@@ -8,8 +8,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAlertStore } from '../../store/alertStore';
 import { Card, EmptyState } from '../../components/common';
-import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
-import type { ChatbotTabScreenProps } from '../../navigation/types';
+import { spacing, typography, borderRadius, shadows } from '../../theme';
+import type { ChatbotScreenProps } from '../../navigation/types';
 
 const getAlertIcon = (type: string) => {
   switch (type) {
@@ -57,20 +57,34 @@ const getAlertTitle = (type: string) => {
 
 const getAlertColor = (severity: string) => {
   switch (severity) {
-    case 'critical': return colors.status.error;
-    case 'warning': return colors.status.warning;
-    default: return colors.status.info;
+    case 'critical': return '#F44336';
+    case 'warning': return '#FF9800';
+    default: return '#5B9BD5';
   }
 };
 
-export default function AlertsListScreen({}: ChatbotTabScreenProps<'Chatbot'>) {
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#F5E9CD' },
+  header: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 20 },
+  title: { ...typography.styles.headingXL, color: '#1F1A17' },
+  subtitle: { ...typography.styles.bodySM, color: '#A39888', marginTop: 2 },
+  list: { paddingHorizontal: 16 },
+  alertCard: { marginBottom: 12 },
+  alertRow: { flexDirection: 'row', alignItems: 'flex-start' },
+  alertIcon: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
+  alertContent: { flex: 1 },
+  alertTitle: { ...typography.styles.bodyMD, color: '#1F1A17', fontWeight: '600', marginBottom: 2 },
+  alertMessage: { ...typography.styles.bodySM, color: '#6B625A', marginBottom: 4 },
+  alertTime: { ...typography.styles.caption, color: '#A39888' },
+  unreadDot: { width: 8, height: 8, borderRadius: 4, marginTop: 8, marginLeft: 8 },
+});
+
+export default function AlertsListScreen({}: ChatbotScreenProps) {
   const insets = useSafeAreaInsets();
   const alerts = useAlertStore((s) => s.alerts);
   const fetchAlerts = useAlertStore((s) => s.fetchAlerts);
 
-  useEffect(() => {
-    fetchAlerts();
-  }, [fetchAlerts]);
+  useEffect(() => { fetchAlerts(); }, [fetchAlerts]);
 
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = useCallback(() => {
@@ -119,7 +133,7 @@ export default function AlertsListScreen({}: ChatbotTabScreenProps<'Chatbot'>) {
         renderItem={renderAlert}
         contentContainerStyle={[styles.list, { paddingBottom: 100 }]}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary.DEFAULT} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#F3A93B" />}
         ListEmptyComponent={
           <EmptyState
             icon="notifications-off-outline"
@@ -131,67 +145,3 @@ export default function AlertsListScreen({}: ChatbotTabScreenProps<'Chatbot'>) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  header: {
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.xl,
-  },
-  title: {
-    ...typography.styles.headingXL,
-    color: colors.text.primary,
-  },
-  subtitle: {
-    ...typography.styles.bodySM,
-    color: colors.text.tertiary,
-    marginTop: 2,
-  },
-  list: {
-    paddingHorizontal: spacing.page,
-  },
-  alertCard: {
-    marginBottom: spacing.md,
-  },
-  alertRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  alertIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: spacing.md,
-  },
-  alertContent: {
-    flex: 1,
-  },
-  alertTitle: {
-    ...typography.styles.bodyMD,
-    color: colors.text.primary,
-    fontWeight: '600',
-    marginBottom: 2,
-  },
-  alertMessage: {
-    ...typography.styles.bodySM,
-    color: colors.text.secondary,
-    marginBottom: spacing.xs,
-  },
-  alertTime: {
-    ...typography.styles.caption,
-    color: colors.text.tertiary,
-  },
-  unreadDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginTop: spacing.sm,
-    marginLeft: spacing.sm,
-  },
-});

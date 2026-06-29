@@ -6,9 +6,38 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Input, Header } from '../../components/common';
-import { colors, spacing, typography } from '../../theme';
+import { spacing, typography } from '../../theme';
 import { authService } from '../../services/auth/service';
 import type { OnboardingScreenProps } from '../../navigation/types';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5E9CD',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+  },
+  headerSection: {
+    marginBottom: 28,
+  },
+  title: {
+    ...typography.styles.headingLG,
+    color: '#1F1A17',
+    marginBottom: 8,
+  },
+  subtitle: {
+    ...typography.styles.bodyMD,
+    color: '#6B625A',
+  },
+  form: {
+    marginBottom: 20,
+  },
+  footer: {
+    paddingHorizontal: 24,
+  },
+});
 
 export default function AddPhoneNumberScreen({
   navigation,
@@ -58,7 +87,7 @@ export default function AddPhoneNumberScreen({
         </View>
       </KeyboardAvoidingView>
 
-      <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.lg }]}>
+      <View style={[styles.footer, { paddingBottom: insets.bottom + 16 }]}>
         <Button
           title="Continue"
           onPress={handleContinue}
@@ -71,32 +100,3 @@ export default function AddPhoneNumberScreen({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: spacing.xxl,
-  },
-  headerSection: {
-    marginBottom: spacing.xxxl,
-  },
-  title: {
-    ...typography.styles.headingLG,
-    color: colors.text.primary,
-    marginBottom: spacing.sm,
-  },
-  subtitle: {
-    ...typography.styles.bodyMD,
-    color: colors.text.secondary,
-  },
-  form: {
-    marginBottom: spacing.xl,
-  },
-  footer: {
-    paddingHorizontal: spacing.xxl,
-  },
-});

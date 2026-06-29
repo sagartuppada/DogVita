@@ -14,9 +14,60 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Header } from '../../components/common';
-import { colors, spacing, typography, borderRadius, shadows } from '../../theme';
+import { spacing, typography, borderRadius, shadows } from '../../theme';
 import { authService } from '../../services/auth/service';
 import type { OnboardingScreenProps } from '../../navigation/types';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5E9CD',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+  },
+  headerSection: {
+    marginBottom: 28,
+  },
+  title: {
+    ...typography.styles.headingLG,
+    color: '#1F1A17',
+    marginBottom: 8,
+  },
+  subtitle: {
+    ...typography.styles.bodyMD,
+    color: '#6B625A',
+    lineHeight: 22,
+  },
+  codeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+  codeInput: {
+    width: 48,
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: '#EDE2C6',
+    borderWidth: 1.5,
+    borderColor: '#F0E8D8',
+    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#1F1A17',
+  },
+  codeInputFilled: {
+    borderColor: '#F3A93B',
+    backgroundColor: '#FFFFFF',
+  },
+  footer: {
+    paddingHorizontal: 24,
+  },
+  resendBtn: {
+    marginTop: 12,
+  },
+});
 
 export default function OTPVerificationScreen({
   route,
@@ -112,7 +163,7 @@ export default function OTPVerificationScreen({
         </View>
       </KeyboardAvoidingView>
 
-      <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.lg }]}>
+      <View style={[styles.footer, { paddingBottom: insets.bottom + 16 }]}>
         <Button
           title="Verify"
           onPress={handleVerify}
@@ -133,54 +184,3 @@ export default function OTPVerificationScreen({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: spacing.xxl,
-  },
-  headerSection: {
-    marginBottom: spacing.xxxl,
-  },
-  title: {
-    ...typography.styles.headingLG,
-    color: colors.text.primary,
-    marginBottom: spacing.sm,
-  },
-  subtitle: {
-    ...typography.styles.bodyMD,
-    color: colors.text.secondary,
-    lineHeight: 22,
-  },
-  codeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.lg,
-  },
-  codeInput: {
-    width: 48,
-    height: 56,
-    borderRadius: borderRadius.lg,
-    backgroundColor: colors.background.secondary,
-    borderWidth: 1.5,
-    borderColor: colors.border.light,
-    textAlign: 'center',
-    fontSize: 22,
-    fontWeight: '700',
-    color: colors.text.primary,
-  },
-  codeInputFilled: {
-    borderColor: colors.primary.DEFAULT,
-    backgroundColor: colors.white,
-  },
-  footer: {
-    paddingHorizontal: spacing.xxl,
-  },
-  resendBtn: {
-    marginTop: spacing.md,
-  },
-});

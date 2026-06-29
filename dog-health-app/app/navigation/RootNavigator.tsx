@@ -27,6 +27,8 @@ import WeightHistoryScreen from '../screens/dog/WeightHistoryScreen';
 import VaccinationRecordsScreen from '../screens/dog/VaccinationRecordsScreen';
 import SymptomCheckerScreen from '../screens/ai/SymptomCheckerScreen';
 import DietFeedingScreen from '../screens/ai/DietFeedingScreen';
+import ChatbotScreen from '../screens/chatbot/ChatbotScreen';
+import ChatHistoryScreen from '../screens/chatbot/ChatHistoryScreen';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
@@ -47,11 +49,12 @@ export const RootNavigator: React.FC = () => {
   const hasCompletedOnboarding = useSettingsStore((state) => state.hasCompletedOnboarding);
   const fetchDogs = useDogStore((s) => s.fetchDogs);
   const [authChecked, setAuthChecked] = useState(false);
-  const [hasSession, setHasSession] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
+
     supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setHasSession(!!session);
+      if (!mounted) return;
       setAuthChecked(true);
       if (session) {
         await fetchDogs();
@@ -60,10 +63,12 @@ export const RootNavigator: React.FC = () => {
           useSettingsStore.getState().setOnboardingComplete();
         }
       }
+    }).catch(() => {
+      if (mounted) setAuthChecked(true);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setHasSession(!!session);
+      if (!mounted) return;
       if (session) {
         await fetchDogs();
         const dogs = useDogStore.getState().dogs;
@@ -73,7 +78,14 @@ export const RootNavigator: React.FC = () => {
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Force proceed after 5s if getSession never resolves
+    const fallback = setTimeout(() => { if (mounted) setAuthChecked(true); }, 5000);
+
+    return () => {
+      mounted = false;
+      clearTimeout(fallback);
+      subscription.unsubscribe();
+    };
   }, []);
 
   if (!authChecked) {
@@ -101,6 +113,8 @@ export const RootNavigator: React.FC = () => {
             <RootStack.Screen name="VaccinationRecords" component={VaccinationRecordsScreen} />
             <RootStack.Screen name="SymptomChecker" component={SymptomCheckerScreen} />
             <RootStack.Screen name="DietFeeding" component={DietFeedingScreen} />
+            <RootStack.Screen name="Chatbot" component={ChatbotScreen} />
+            <RootStack.Screen name="ChatHistory" component={ChatHistoryScreen} />
           </>
         ) : (
           <RootStack.Screen name="Onboarding" component={OnboardingNavigator} />

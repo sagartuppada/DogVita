@@ -21,7 +21,7 @@ export type MainTabParamList = {
   Dashboard: undefined;
   Health: undefined;
   Tracking: undefined;
-  Chatbot: undefined;
+  AIOverview: undefined;
 };
 
 export type RootStackParamList = {
@@ -36,6 +36,8 @@ export type RootStackParamList = {
   VaccinationRecords: { dogId: string };
   SymptomChecker: undefined;
   DietFeeding: undefined;
+  ChatHistory: undefined;
+  Chatbot: undefined;
 };
 
 // Screen props types
@@ -51,7 +53,7 @@ export type HealthTabScreenProps<T extends keyof MainTabParamList> =
 export type TrackingTabScreenProps<T extends keyof MainTabParamList> =
   BottomTabScreenProps<MainTabParamList, T>;
 
-export type ChatbotTabScreenProps<T extends keyof MainTabParamList> =
+export type AIOverviewTabScreenProps<T extends keyof MainTabParamList> =
   BottomTabScreenProps<MainTabParamList, T>;
 
 export type SettingsScreenProps = NativeStackScreenProps<RootStackParamList, 'Settings'>;
@@ -63,6 +65,7 @@ export type WeightHistoryScreenProps = NativeStackScreenProps<RootStackParamList
 export type VaccinationRecordsScreenProps = NativeStackScreenProps<RootStackParamList, 'VaccinationRecords'>;
 export type SymptomCheckerScreenProps = NativeStackScreenProps<RootStackParamList, 'SymptomChecker'>;
 export type DietFeedingScreenProps = NativeStackScreenProps<RootStackParamList, 'DietFeeding'>;
+export type ChatbotScreenProps = NativeStackScreenProps<RootStackParamList, 'Chatbot'>;
 
 declare global {
   namespace ReactNavigation {

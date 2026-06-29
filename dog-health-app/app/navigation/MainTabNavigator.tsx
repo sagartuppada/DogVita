@@ -6,13 +6,12 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, Platform } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useTheme } from '../theme/ThemeContext';
-import { spacing, borderRadius, shadows } from '../theme';
+import { spacing, borderRadius, shadows, colors } from '../theme';
 
 import DashboardScreen from '../screens/dashboard/DashboardScreen';
 import HealthOverviewScreen from '../screens/health/HealthOverviewScreen';
 import TrackingOverviewScreen from '../screens/tracking/TrackingOverviewScreen';
-import ChatbotScreen from '../screens/chatbot/ChatbotScreen';
+import AIOverviewScreen from '../screens/ai/AIOverviewScreen';
 
 import type { MainTabParamList } from './types';
 
@@ -22,12 +21,10 @@ const TAB_ICONS: Record<keyof MainTabParamList, { active: string; inactive: stri
   Dashboard: { active: 'home', inactive: 'home-outline' },
   Health: { active: 'heart', inactive: 'heart-outline' },
   Tracking: { active: 'map', inactive: 'map-outline' },
-  Chatbot: { active: 'chatbubble-ellipses', inactive: 'chatbubble-ellipses-outline' },
+  AIOverview: { active: 'sparkles', inactive: 'sparkles-outline' },
 };
 
 export const MainTabNavigator: React.FC = () => {
-  const { colors } = useTheme();
-
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -66,7 +63,7 @@ export const MainTabNavigator: React.FC = () => {
       />
       <Tab.Screen name="Health" component={HealthOverviewScreen} />
       <Tab.Screen name="Tracking" component={TrackingOverviewScreen} />
-      <Tab.Screen name="Chatbot" component={ChatbotScreen} options={{ tabBarLabel: 'AI' }} />
+      <Tab.Screen name="AIOverview" component={AIOverviewScreen} options={{ tabBarLabel: 'AI' }} />
     </Tab.Navigator>
   );
 };

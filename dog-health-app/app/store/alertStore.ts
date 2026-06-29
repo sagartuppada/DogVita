@@ -58,21 +58,31 @@ export const useAlertStore = create<AlertStore>()(
     (set, get) => ({
       ...initialState,
 
-      addAlert: (alertData) =>
+      addAlert: (alertData) => {
+        const alert: HealthAlert = {
+          ...alertData,
+          id: `alert_${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          acknowledged: false,
+        };
         set((state) => {
-          const alert: HealthAlert = {
-            ...alertData,
-            id: `alert_${Date.now()}`,
-            timestamp: new Date().toISOString(),
-            acknowledged: false,
-          };
           const newAlerts = [alert, ...state.alerts].slice(0, 500);
           const unacknowledgedCount = newAlerts.filter((a) => !a.acknowledged).length;
           const criticalAlerts = newAlerts.filter(
             (a) => a.severity === 'critical' && !a.acknowledged
           );
           return { alerts: newAlerts, unacknowledgedCount, criticalAlerts };
-        }),
+        });
+        // Persist to Supabase (fire-and-forget). Uses ownerId if provided,
+        // otherwise falls back to the current authenticated user's id.
+        if (isSupabaseConfigured() && alertData.ownerId) {
+          alertsService
+            .createAlert(alert as HealthAlert & { ownerId: string })
+            .catch((err) =>
+              console.warn('[alertStore.addAlert] Failed to persist alert:', err)
+            );
+        }
+      },
 
       acknowledgeAlert: (alertId) =>
         set((state) => {
@@ -153,15 +163,14 @@ export const useAlertStore = create<AlertStore>()(
           const { data: { user } } = await supabase.auth.getUser();
           if (user) {
             const alerts = await alertsService.getAlerts(user.id);
-            if (alerts.length > 0) {
-              set({
-                alerts,
-                unacknowledgedCount: alerts.filter((a) => !a.acknowledged).length,
-                criticalAlerts: alerts.filter(
-                  (a) => a.severity === 'critical' && !a.acknowledged
-                ),
-              });
-            }
+            // Success from server = source of truth. Replace local alerts.
+            set({
+              alerts,
+              unacknowledgedCount: alerts.filter((a) => !a.acknowledged).length,
+              criticalAlerts: alerts.filter(
+                (a) => a.severity === 'critical' && !a.acknowledged
+              ),
+            });
           }
         } catch (error) {
           console.warn('[alertStore.fetchAlerts] Supabase fetch failed:', (error as Error).message);
