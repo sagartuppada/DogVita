@@ -1,6 +1,6 @@
 # DogVita
 
-Smart wearable dog health monitoring system. A React Native app that connects to an ESP32-S3 dog collar via BLE for real-time health tracking, GPS geofencing, and alert notifications.
+Smart wearable dog health monitoring system. A React Native app that connects to an ESP32-S3 dog collar via BLE for real-time health tracking, GPS geofencing, and alert notifications. Includes an on-device AI assistant powered by llama.rn and a Next.js CRM dashboard.
 
 ## Features
 
@@ -10,28 +10,47 @@ Smart wearable dog health monitoring system. A React Native app that connects to
 - **Sleep Tracking** — Sleep duration and quality analysis
 - **Environmental Monitoring** — Ambient temperature and humidity from collar sensors
 - **Alert System** — Push notifications for health anomalies and geofence breaches
-- **AI Chatbot** — In-app health Q&A assistant
+- **AI Health Assistant** — On-device LLM (llama.rn) for symptom checking, diet recommendations, and health Q&A
+- **Voice Interaction** — Voice input/output for the AI assistant
+- **CRM Dashboard** — Next.js admin panel for monitoring users, subscriptions, and alerts
 - **Supabase Backend** — Cloud sync, auth, and data persistence
 
 ## Architecture
 
 ```
 DogVita/
-├── dog-health-app/          # React Native app (bare workflow)
+├── dog-health-app/              # React Native app (bare workflow)
 │   ├── app/
-│   │   ├── screens/         # 9 screen groups (onboarding, dashboard, health, tracking, alerts, settings, chatbot, device, dog)
-│   │   ├── services/        # BLE, API, auth, GPS, notifications, analytics, storage
-│   │   ├── store/           # Zustand stores (dog, health, ble, tracking, alert, settings)
-│   │   ├── components/      # Reusable UI (maps, dog cards, etc.)
-│   │   ├── navigation/      # React Navigation 7 (tabs + stack)
-│   │   ├── types/           # TypeScript interfaces
-│   │   ├── theme/           # Colors, spacing, typography tokens
-│   │   └── config/          # App constants
-│   └── android/             # Native Android project
-└── graphify-setup/          # Knowledge graph tooling
+│   │   ├── screens/             # 10 screen groups
+│   │   │   ├── onboarding/      # Welcome, Login, SignUp, OTP, Dog Profile, Pair Device
+│   │   │   ├── dashboard/       # Main dashboard
+│   │   │   ├── health/          # Health overview
+│   │   │   ├── tracking/        # GPS tracking, geofences, route history
+│   │   │   ├── alerts/          # Alert list
+│   │   │   ├── settings/        # App settings
+│   │   │   ├── dog/             # Dog profile, vaccinations, weight history
+│   │   │   ├── ai/              # AI overview, symptom checker, diet/feeding
+│   │   │   ├── chatbot/         # Chat interface + history
+│   │   │   └── device/          # Device management
+│   │   ├── services/            # BLE, API, auth, GPS, notifications, AI, storage
+│   │   ├── store/               # Zustand stores (dog, health, ble, tracking, alert, settings, chat)
+│   │   ├── components/          # Reusable UI (maps, dog cards)
+│   │   ├── navigation/          # React Navigation 7 (tabs + stack)
+│   │   ├── types/               # TypeScript interfaces
+│   │   ├── theme/               # Colors, spacing, typography tokens
+│   │   └── config/              # App constants
+│   └── android/                 # Native Android project
+├── crm/                         # Next.js CRM dashboard
+│   ├── app/                     # Pages (login, dashboard)
+│   ├── components/              # UI components (sidebar, charts, tables)
+│   ├── lib/                     # Queries, types, utilities
+│   └── store/                   # Session and UI state
+└── graphify-setup/              # Knowledge graph tooling
 ```
 
 ## Tech Stack
+
+### Mobile App
 
 | Layer | Technology |
 |-------|------------|
@@ -45,6 +64,17 @@ DogVita/
 | Charts | react-native-gifted-charts |
 | Forms | react-hook-form + Zod validation |
 | Icons | react-native-vector-icons/Ionicons |
+| Local AI | llama.rn (on-device LLM inference) |
+| Voice | Voice input/output service |
+
+### CRM Dashboard
+
+| Layer | Technology |
+|-------|------------|
+| Framework | Next.js (App Router) |
+| Styling | Tailwind CSS |
+| State | Zustand |
+| Charts | Recharts |
 
 ## Quick Start
 
@@ -54,22 +84,26 @@ DogVita/
 - Android Studio (with SDK at default path)
 - JAVA_HOME pointing to Android Studio's bundled JDK
 
-### Setup
+### Mobile App
 
 ```bash
 git clone https://github.com/MontageStark/DogVita.git
 cd DogVita/dog-health-app
 npm install
 cp .env.example .env        # configure Supabase + BLE UUIDs
+npx react-native run-android
 ```
 
-### Run
+### CRM Dashboard
 
 ```bash
-npx react-native run-android            # build + launch on device/emulator
+cd crm
+npm install
+cp .env.example .env
+npm run dev
 ```
 
-### Scripts
+### Scripts (Mobile)
 
 | Command | Description |
 |---------|-------------|
@@ -83,7 +117,7 @@ npx react-native run-android            # build + launch on device/emulator
 Phone number + OTP authentication via Supabase:
 
 1. **Welcome** — Intro screen with login/signup
-2. **Add Phone** — Enter phone number
+2. **Login / Sign Up** — Email+password or phone number
 3. **Verify OTP** — Enter 6-digit code
 4. **Dog Profile** — Add dog name, breed, weight, age
 5. **Pair Device** — BLE scan and connect to ESP32-S3 collar
@@ -105,6 +139,16 @@ Communicates with ESP32-S3 collar over BLE:
 
 Packet format: little-endian binary frames parsed in `app/services/ble/packetParser.ts`.
 
+## AI Features
+
+On-device AI powered by llama.rn:
+
+- **Symptom Checker** — Describe symptoms, get potential causes and recommendations
+- **Diet & Feeding** — Breed-specific nutrition advice and feeding schedules
+- **Health Q&A** — General pet health questions answered locally
+- **Voice Input** — Speak questions to the assistant
+- **Model Management** — Download and switch between GGUF models
+
 ## State Management
 
 Zustand stores with AsyncStorage persistence:
@@ -117,6 +161,7 @@ Zustand stores with AsyncStorage persistence:
 | `trackingStore` | GPS coordinates, geofence boundaries |
 | `alertStore` | Alert history, notification preferences |
 | `settingsStore` | Onboarding state, app preferences |
+| `chatStore` | AI chat history and session state |
 
 ## Build
 
