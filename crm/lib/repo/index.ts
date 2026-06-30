@@ -1,13 +1,9 @@
 /**
  * Repository — the single swap point between mock data and Supabase.
  *
- * Today every function reads from ./mock-data (deterministic fixtures).
- * Phase 1 will replace this file's body with Supabase queries; the rest
- * of the app (queries.ts, components) stays unchanged because it imports
- * from here, not from mock-data directly.
- *
- * Convention: every function returns a Promise so the swap to async
- * network calls is a drop-in change.
+ * When NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set,
+ * queries go to the real database. Otherwise falls back to deterministic
+ * mock fixtures.
  */
 
 import type {
@@ -20,43 +16,42 @@ import type {
   SupportTicket,
   TimePoint,
 } from "../types";
+import { isSupabaseConfigured } from "../supabase-client";
 import * as mock from "./mock-data";
+import { supabaseRepo } from "./supabase-repo";
 
 export const repo = {
-  // ── Auth (mock) ────────────────────────────────────────────────────────
   async listOperators(): Promise<Operator[]> {
-    return mock.operators;
+    return isSupabaseConfigured ? supabaseRepo.listOperators() : mock.operators;
   },
   async getOperator(id: string): Promise<Operator | null> {
-    return mock.operators.find((o) => o.id === id) ?? null;
+    return isSupabaseConfigured ? supabaseRepo.getOperator(id) : mock.operators.find((o) => o.id === id) ?? null;
   },
 
-  // ── Dashboard ──────────────────────────────────────────────────────────
   async getKpiSnapshot(): Promise<KpiSnapshot> {
-    return mock.getKpiSnapshot();
+    return isSupabaseConfigured ? supabaseRepo.getKpiSnapshot() : mock.getKpiSnapshot();
   },
   async getMrrTrend(days = 30): Promise<TimePoint[]> {
-    return mock.getMrrTrend(days);
+    return isSupabaseConfigured ? supabaseRepo.getMrrTrend(days) : mock.getMrrTrend(days);
   },
   async getActiveDogsTrend(days = 30): Promise<TimePoint[]> {
-    return mock.getActiveDogsTrend(days);
+    return isSupabaseConfigured ? supabaseRepo.getActiveDogsTrend(days) : mock.getActiveDogsTrend(days);
   },
   async getPlanDistribution(): Promise<PlanDistribution[]> {
-    return mock.getPlanDistribution();
+    return isSupabaseConfigured ? supabaseRepo.getPlanDistribution() : mock.getPlanDistribution();
   },
   async getRecentAlerts(limit = 8): Promise<Alert[]> {
-    return mock.getRecentAlerts(limit);
+    return isSupabaseConfigured ? supabaseRepo.getRecentAlerts(limit) : mock.getRecentAlerts(limit);
   },
   async getOpenTickets(): Promise<SupportTicket[]> {
-    return mock.tickets.filter((t) => t.status === "open" || t.status === "pending");
+    return isSupabaseConfigured ? supabaseRepo.getOpenTickets() : mock.tickets.filter((t) => t.status === "open" || t.status === "pending");
   },
 
-  // ── Owners ─────────────────────────────────────────────────────────────
   async getOwnerRows(): Promise<OwnerRow[]> {
-    return mock.getOwnerRows();
+    return isSupabaseConfigured ? supabaseRepo.getOwnerRows() : mock.getOwnerRows();
   },
   async getOwnerDetail(id: string): Promise<OwnerDetail | null> {
-    return mock.getOwnerDetail(id);
+    return isSupabaseConfigured ? supabaseRepo.getOwnerDetail(id) : mock.getOwnerDetail(id);
   },
 };
 

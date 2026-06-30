@@ -74,15 +74,21 @@ function getBundledAssetPath(modelId: string): string | null {
 
 /**
  * Check if a model is available as a bundled asset in the APK.
- *
- * NOTE: We cannot use BlobFS.exists() with file:///android_asset/ URIs
- * because Android APK assets are not real filesystem paths. Instead, we
- * check if the asset path is configured for this platform. The actual
- * file copy is handled by extractBundledModel().
+ * Uses BlobUtil.fetch with bundle-assets:// to probe existence.
  */
-export function isBundledModel(modelId: string): boolean {
-  const assetPath = getBundledAssetPath(modelId);
-  return !!assetPath; // assetPath is non-null only on Android
+export async function isBundledModel(modelId: string): Promise<boolean> {
+  if (Platform.OS !== 'android') return false;
+  const model = AVAILABLE_MODELS.find((m) => m.id === modelId);
+  if (!model || !BlobUtil) return false;
+
+  try {
+    const assetUri = `bundle-assets:///models/${model.filename}`;
+    const res = await BlobUtil.config({ path: BlobFS?.dirs?.CacheDir + '/probe' }).fetch('GET', assetUri);
+    const status = res.info().status;
+    return status === 200;
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -148,7 +154,7 @@ export async function isModelDownloaded(modelId: string): Promise<boolean> {
     } catch { /* ignore */ }
   }
   // Check bundled asset in APK (Android only)
-  return isBundledModel(modelId);
+  return await isBundledModel(modelId);
 }
 
 export interface DownloadProgress {
@@ -167,7 +173,7 @@ export async function downloadModel(
   onProgress?: (progress: DownloadProgress) => void,
 ): Promise<string | null> {
   // Try extracting from bundled APK asset first (free, fast)
-  const bundled = isBundledModel(modelId);
+  const bundled = await isBundledModel(modelId);
   if (bundled) {
     const extracted = await extractBundledModel(modelId, onProgress);
     if (extracted) return extracted;
