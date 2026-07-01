@@ -107,108 +107,87 @@ export const useChatStore = create<ChatStore>()(
           isTyping: true,
         }));
 
-        // Auto-save session on first message
         const currentState = get();
         if (!currentState.currentSessionId) {
-          const sessionId = `session_${Date.now()}`;
-          set({ currentSessionId: sessionId });
+          set({ currentSessionId: `session_${Date.now()}` });
         }
 
-        // Try LLM first, fall back to rule-based
-        const llmAvailable = isLLMAvailable();
         const currentStatus = getLLMStatus();
         set({ llmStatus: currentStatus });
-        if (llmAvailable) {
-          // Auto-initialize if not ready yet (retry with fixed extraction)
-          if (currentStatus !== 'ready') {
-            set({ isTyping: true });
-            initLLM('llama-3.2-1b').then((ready) => {
-              set({ llmStatus: getLLMStatus() });
-              if (ready) {
-                // Model loaded — retry with LLM
-                get().sendMessage(content, context);
-              } else {
-                // Init failed — use rule-based
-                setTimeout(() => {
-                  const aiResponse = aiService.sendMessage(content, context);
-                  set((state) => {
-                    const updated = [...state.messages, aiResponse];
-                    const trimmed = updated.length > MAX_PERSISTED_MESSAGES
-                      ? updated.slice(updated.length - MAX_PERSISTED_MESSAGES) : updated;
-                    const newSessions = saveCurrentSession({ ...state, messages: trimmed });
-                    return { messages: trimmed, isTyping: false, sessions: newSessions };
-                  });
-                }, 600);
-              }
+
+        if (currentStatus === 'ready') {
+          // LLM ready — stream response
+          const { messages } = get();
+          const recentHistory = messages.slice(-10).map((m) => ({
+            role: m.role as 'user' | 'assistant',
+            content: m.content,
+          }));
+          recentHistory.push({ role: 'user', content });
+
+          const streamingMsgId = `stream_${Date.now()}`;
+          set({ isStreaming: true, streamingContent: '', isTyping: false });
+          llmLifecycle.beginInference();
+
+          generateStreamResponse(
+            recentHistory,
+            aiService.buildDogContextSummary(context),
+            (token: string) => {
+              set((state) => ({
+                streamingContent: state.streamingContent + token,
+              }));
+            },
+          ).then((llmResponse) => {
+            const finalContent = llmResponse || '[No response from model]';
+            const aiMessage: ChatMessage = {
+              id: streamingMsgId,
+              role: 'assistant',
+              content: finalContent,
+              timestamp: new Date().toISOString(),
+            };
+            set((state) => {
+              const updated = [...state.messages, aiMessage];
+              const trimmed = updated.length > MAX_PERSISTED_MESSAGES
+                ? updated.slice(updated.length - MAX_PERSISTED_MESSAGES) : updated;
+              llmLifecycle.endInference();
+              const newSessions = saveCurrentSession({ ...state, messages: trimmed });
+              return {
+                messages: trimmed,
+                isTyping: false,
+                isStreaming: false,
+                streamingContent: '',
+                sessions: newSessions,
+              };
             });
-            return;
-          }
-          if (currentStatus === 'ready') {
-            const { messages } = get();
-            const recentHistory = messages.slice(-10).map((m) => ({
-              role: m.role as 'user' | 'assistant',
-              content: m.content,
-            }));
-            recentHistory.push({ role: 'user', content });
-
-            const streamingMsgId = `stream_${Date.now()}`;
-            set({ isStreaming: true, streamingContent: '', isTyping: false });
-            llmLifecycle.beginInference();
-
-            generateStreamResponse(
-              recentHistory,
-              aiService.buildDogContextSummary(context),
-              (token: string) => {
-                set((state) => ({
-                  streamingContent: state.streamingContent + token,
-                }));
-              },
-            ).then((llmResponse) => {
-              const finalContent = llmResponse || aiService.sendMessage(content, context).content;
-              const aiMessage: ChatMessage = {
-                id: streamingMsgId,
+          }).catch(() => {
+            llmLifecycle.endInference();
+            set({ isTyping: false, isStreaming: false, streamingContent: '' });
+          });
+        } else {
+          // LLM not ready — try to initialize, then retry
+          const llmPromise = initLLM('gemma-4-e2b');
+          const timeoutPromise = new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 30000));
+          Promise.race([llmPromise, timeoutPromise]).then((ready) => {
+            set({ llmStatus: getLLMStatus() });
+            if (ready) {
+              get().sendMessage(content, context);
+            } else {
+              // LLM failed — show error message
+              const errorMsg: ChatMessage = {
+                id: `err_${Date.now()}`,
                 role: 'assistant',
-                content: finalContent,
+                content: 'AI model failed to load. Please check device storage and memory, then restart the app.',
                 timestamp: new Date().toISOString(),
               };
               set((state) => {
-                const updated = [...state.messages, aiMessage];
-                const trimmed =
-                  updated.length > MAX_PERSISTED_MESSAGES
-                    ? updated.slice(updated.length - MAX_PERSISTED_MESSAGES)
-                    : updated;
-                llmLifecycle.endInference();
-                // Auto-save session
+                const updated = [...state.messages, errorMsg];
+                const trimmed = updated.length > MAX_PERSISTED_MESSAGES
+                  ? updated.slice(updated.length - MAX_PERSISTED_MESSAGES) : updated;
                 const newSessions = saveCurrentSession({ ...state, messages: trimmed });
-                return {
-                  messages: trimmed,
-                  isTyping: false,
-                  isStreaming: false,
-                  streamingContent: '',
-                  sessions: newSessions,
-                };
+                return { messages: trimmed, isTyping: false, sessions: newSessions };
               });
-            }).catch(() => {
-              llmLifecycle.endInference();
-              set({ isTyping: false, isStreaming: false, streamingContent: '' });
-            });
-            return;
-          }
-        }
-
-        // Rule-based fallback (LLM unavailable or init failed)
-        setTimeout(() => {
-          const aiResponse = aiService.sendMessage(content, context);
-          set((state) => {
-            const updated = [...state.messages, aiResponse];
-            const trimmed =
-              updated.length > MAX_PERSISTED_MESSAGES
-                ? updated.slice(updated.length - MAX_PERSISTED_MESSAGES)
-                : updated;
-            const newSessions = saveCurrentSession({ ...state, messages: trimmed });
-            return { messages: trimmed, isTyping: false, sessions: newSessions };
+            }
           });
-        }, 600);
+        }
       },
 
       addMessage: (message) =>
@@ -218,13 +197,19 @@ export const useChatStore = create<ChatStore>()(
 
       initModelEagerly: () => {
         const current = get().llmStatus;
+        console.log('[chatStore] initModelEagerly called, status:', current, 'llmAvailable:', isLLMAvailable());
         if (current === 'ready') return;
-        if (!isLLMAvailable()) return;
-        if (_eagerInitStarted) return; // Prevent duplicate intervals
+        if (!isLLMAvailable()) {
+          console.log('[chatStore] LLM not available — skipping init');
+          return;
+        }
+        if (_eagerInitStarted) return;
         _eagerInitStarted = true;
 
         // Start init in background — don't block UI
-        initLLM('llama-3.2-1b').then((ready) => {
+        const llmPromise = initLLM('gemma-4-e2b');
+        const timeoutPromise = new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 30000));
+        Promise.race([llmPromise, timeoutPromise]).then(() => {
           set({ llmStatus: getLLMStatus() });
         });
 
