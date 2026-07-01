@@ -5,28 +5,30 @@
  * Requires: npm install llama.rn (+ New Architecture in native build)
  */
 
-import { getModelPath, isModelDownloaded, extractBundledModel, AVAILABLE_MODELS } from './modelManager';
-
-// Lazy-loaded to avoid crash when package isn't installed
-let BlobFS: any = null;
-try {
-  const mod = require('react-native-blob-util');
-  BlobFS = mod.fs || mod?.default?.fs;
-} catch {
-  // Package not installed
-}
+import { getModelPath, isModelDownloaded, extractBundledModel, downloadModel, AVAILABLE_MODELS } from './modelManager';
 
 // Lazy-loaded to avoid crash when llama.rn isn't installed
 let initLlama: any = null;
+let installJsi: any = null;
+let loadLlamaModelInfo: any = null;
+let toggleNativeLog: any = null;
 try {
   const llamaModule = require('llama.rn');
   initLlama = llamaModule.initLlama;
-} catch {
-  // Package not installed
+  installJsi = llamaModule.installJsi;
+  loadLlamaModelInfo = llamaModule.loadLlamaModelInfo;
+  toggleNativeLog = llamaModule.toggleNativeLog;
+  console.log('[llmService] llama.rn loaded');
+} catch (e: any) {
+  console.log('[llmService] llama.rn load failed:', e?.message);
+}
+
+interface LlamaCompletionResult {
+  text: string;
 }
 
 interface LlamaContext {
-  completion: (params: any, callback?: (token: string) => void) => Promise<string>;
+  completion: (params: any, callback?: (data: { token: string }) => void) => Promise<LlamaCompletionResult>;
   unload: () => Promise<void>;
 }
 
@@ -47,45 +49,6 @@ const state: LLMState = {
 };
 
 const SYSTEM_PROMPT = `You are DogVita, an AI health assistant for dogs. You help dog owners with nutrition, exercise, grooming, behavior, vaccines, and general health questions. Be concise, helpful, and always recommend consulting a veterinarian for specific medical concerns. Use emoji sparingly for readability.`;
-
-function buildChatPrompt(
-  messages: Array<{ role: 'user' | 'assistant'; content: string }>,
-  dogContext?: string,
-): string {
-  const systemMsg = SYSTEM_PROMPT + (dogContext ? `\n\nAbout the user's dog:\n${dogContext}` : '');
-
-  // Detect model format from activeModelId
-  const modelId = state.activeModelId ?? '';
-  const isLlama = modelId.includes('llama');
-
-  if (isLlama) {
-    // Llama 3.2 chat format: <|begin_of_text|> with [INST] blocks
-    let prompt = `<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n${systemMsg}<|eot_id|>`;
-    for (const msg of messages) {
-      const header = msg.role === 'user' ? 'user' : 'assistant';
-      prompt += `<|start_header_id|>${header}<|end_header_id|>\n${msg.content}<|eot_id|>`;
-    }
-    prompt += `<|start_header_id|>assistant<|end_header_id|>\n`;
-    return prompt;
-  }
-
-  // Default: ChatML format (Qwen, most other models)
-  let prompt = `<|system|>\n${systemMsg}\n<|end|>\n`;
-  for (const msg of messages) {
-    const tag = msg.role === 'user' ? 'user' : 'assistant';
-    prompt += `<|${tag}|>\n${msg.content}\n<|end|>\n`;
-  }
-  prompt += `<|assistant|>\n`;
-  return prompt;
-}
-
-async function fileExistsAtPath(filePath: string): Promise<boolean> {
-  try {
-    return await BlobFS?.exists(filePath) ?? false;
-  } catch {
-    return false;
-  }
-}
 
 /** Check if the LLM engine is available (llama.rn installed). */
 export function isLLMAvailable(): boolean {
@@ -133,14 +96,18 @@ export async function initLLM(modelId: string): Promise<boolean> {
 
   const downloaded = await isModelDownloaded(modelId);
   if (!downloaded) {
-    state.status = 'not_downloaded';
-    state.error = 'Model not downloaded yet';
-    return false;
+    console.log('[llmService] Model not found locally, downloading:', modelId);
+    const downloaded = await downloadModel(modelId);
+    if (!downloaded) {
+      state.status = 'not_downloaded';
+      state.error = 'Model not downloaded yet';
+      return false;
+    }
+    console.log('[llmService] Download complete:', downloaded);
   }
 
   let modelPath = getModelPath(modelId);
 
-  // If model is bundled but not yet extracted to document dir, extract it now
   const fileExists = modelPath ? await fileExistsAtPath(modelPath) : false;
   if (!fileExists) {
     const extracted = await extractBundledModel(modelId);
@@ -152,6 +119,19 @@ export async function initLLM(modelId: string): Promise<boolean> {
     modelPath = extracted;
   }
 
+  // Verify file size
+  try {
+    const mod = require('react-native-blob-util');
+    const fs = (mod.default || mod).fs;
+    if (fs) {
+      const stat = await fs.stat(modelPath);
+      const model = AVAILABLE_MODELS.find((m) => m.id === modelId);
+      console.log('[llmService] File:', modelPath, 'size:', stat.size, 'expected:', model?.sizeBytes);
+    }
+  } catch (e: any) {
+    console.log('[llmService] stat error:', e?.message);
+  }
+
   if (!modelPath) {
     state.status = 'error';
     state.error = 'Could not resolve model path';
@@ -159,21 +139,46 @@ export async function initLLM(modelId: string): Promise<boolean> {
   }
 
   try {
+    const modelUri = `file://${modelPath}`;
+    console.log('[llmService] initLlama starting:', modelUri);
+
+    // Install JSI
+    if (installJsi) {
+      try {
+        await installJsi();
+        console.log('[llmService] installJsi succeeded');
+      } catch (e: any) {
+        console.log('[llmService] installJsi failed:', e?.message);
+      }
+    }
+
+    // Try to get model info first — validates GGUF without full load
+    if (loadLlamaModelInfo) {
+      try {
+        console.log('[llmService] Loading model info...');
+        const info = await loadLlamaModelInfo(modelUri);
+        console.log('[llmService] Model info:', JSON.stringify(info).substring(0, 200));
+      } catch (e: any) {
+        console.log('[llmService] loadLlamaModelInfo failed:', e?.message);
+      }
+    }
+
     const ctx = await initLlama({
-      model: `file://${modelPath}`,
-      n_ctx: 2048,
-      n_gpu_layers: 99,
+      model: modelUri,
+      jinja: true,
     });
+    console.log('[llmService] initLlama SUCCESS');
     state.context = ctx;
     state.status = 'ready';
     state.error = null;
     return true;
-  } catch (err) {
+  } catch (err: any) {
+    const errMsg = err?.message || String(err);
+    console.log('[llmService] initLlama FAILED:', errMsg);
     state.status = 'error';
-    state.error = (err as Error).message;
+    state.error = errMsg;
     state.context = null;
     state.activeModelId = null;
-    console.warn('[llmService.initLLM] Failed to initialize:', err);
     return false;
   }
 }
@@ -185,18 +190,23 @@ export async function generateResponse(
 ): Promise<string | null> {
   if (!state.context || state.status !== 'ready') return null;
 
-  const prompt = buildChatPrompt(messages, dogContext);
+  const systemMsg = SYSTEM_PROMPT + (dogContext ? `\n\nAbout the user's dog:\n${dogContext}` : '');
+
+  const chatMessages = [
+    { role: 'system' as const, content: systemMsg },
+    ...messages.map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content })),
+  ];
 
   try {
     const response = await state.context.completion({
-      prompt,
+      messages: chatMessages,
       n_predict: 512,
       temperature: 0.7,
       top_p: 0.9,
       repeat_penalty: 1.1,
-      stop: ['<|end|>', '<|user|>'],
+      stop: ['</s>', '<|end|>', '<|user|>', '<end_of_turn>'],
     });
-    return response?.trim() ?? null;
+    return response?.text?.trim() ?? null;
   } catch (err) {
     console.warn('[llmService.generateResponse] Inference failed:', err);
     return null;
@@ -211,22 +221,27 @@ export async function generateStreamResponse(
 ): Promise<string | null> {
   if (!state.context || state.status !== 'ready') return null;
 
-  const prompt = buildChatPrompt(messages, dogContext);
+  const systemMsg = SYSTEM_PROMPT + (dogContext ? `\n\nAbout the user's dog:\n${dogContext}` : '');
+
+  const chatMessages = [
+    { role: 'system' as const, content: systemMsg },
+    ...messages.map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content })),
+  ];
 
   try {
     let fullResponse = '';
     await state.context.completion(
       {
-        prompt,
+        messages: chatMessages,
         n_predict: 512,
         temperature: 0.7,
         top_p: 0.9,
         repeat_penalty: 1.1,
-        stop: ['<|end|>', '<|user|>'],
+        stop: ['</s>', '<|end|>', '<|user|>', '<end_of_turn>'],
       },
-      (token: string) => {
-        fullResponse += token;
-        onToken(token);
+      (data: { token: string }) => {
+        fullResponse += data.token;
+        onToken(data.token);
       },
     );
     return fullResponse.trim() || null;
@@ -254,4 +269,14 @@ export async function unloadLLM(): Promise<void> {
 /** Get info about the currently loaded model. */
 export function getLoadedModelInfo(): { modelId: string | null; status: LLMStatus } {
   return { modelId: state.activeModelId, status: state.status };
+}
+
+async function fileExistsAtPath(filePath: string): Promise<boolean> {
+  try {
+    const mod = require('react-native-blob-util');
+    const fs = mod.fs || mod?.default?.fs;
+    return await fs?.exists(filePath) ?? false;
+  } catch {
+    return false;
+  }
 }
