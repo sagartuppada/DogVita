@@ -55,6 +55,10 @@ C:\Users\User\AppData\Local\Android\Sdk\platform-tools\adb.exe install -r <path-
 
 Must point to Android Studio's bundled JDK (`C:\Program Files\Android\Android Studio\jbr`). A system JDK breaks the Gradle build.
 
+### Old Architecture Patch Removed
+
+The Old Architecture patch (`scripts/patch-llama-rn.js`) has been removed. New Architecture is now required for llama.rn to work. `newArchEnabled=true` is already set in `android/gradle.properties`.
+
 ## Entry Points & Layout
 
 - `index.js` → `AppRegistry.registerComponent` → `app/App.tsx` → `RootNavigator`
@@ -141,6 +145,31 @@ Unlike older code that returned `null` silently, `createDog()` now throws errors
 ### Persisted store keys (all cleared on sign out)
 
 `dog-storage`, `health-storage`, `alert-storage`, `tracking-storage`, `ble-storage`, `settings-storage`
+
+## On-Device LLM
+
+llama.rn 0.12.5 provides on-device LLM inference via the messages API with Jinja templates. The GGUF file's embedded chat template handles formatting automatically — no manual prompt building.
+
+### Available Models
+
+| Model | Size | Min RAM | Notes |
+|-------|------|---------|-------|
+| SmolLM2 135M | 90 MB | 0.5 GB | Lightweight, fast |
+| Llama 3.2 1B | 800 MB | 1.5 GB | Good balance |
+| Qwen 2.5 1.5B | 1 GB | 2.0 GB | Balanced |
+| **Gemma 4 E2B** | **2.9 GB** | **4.0 GB** | **Default.** Google's mobile-optimized model with 128K context |
+
+### LLM Lifecycle
+
+- `useLLMLifecycle` hook automatically unloads the model when app goes to background (frees ~1-4GB RAM)
+- Model reloads when app returns to foreground
+- Default model: Gemma 4 E2B (falls back to Llama 3.2 1B on low-RAM devices)
+
+### LLM Service Files
+
+- `app/services/ai/modelManager.ts` — model catalog and download management
+- `app/services/ai/llmService.ts` — llama.rn wrapper (messages API + Jinja)
+- `app/hooks/useLLMLifecycle.ts` — background/foreground model lifecycle
 
 ## Supabase Schema
 
