@@ -12,12 +12,11 @@ let BlobUtil: any = null;
 let BlobFS: any = null;
 try {
   const mod = require('react-native-blob-util');
-  // CRITICAL: mod.default is the native codegen spec (NativeBlobUtils) which
-  // lacks JS-side bundle-assets:// handling. We need the full JS module (mod)
-  // which exports config/fetch from ./fetch with proper URI scheme support.
-  BlobUtil = mod;
-  BlobFS = mod.fs;
-} catch (err: any) {
+  // The module's default export has config/fetch/fs. mod itself is the module namespace.
+  const blobUtil = mod.default || mod;
+  BlobUtil = blobUtil;
+  BlobFS = blobUtil.fs;
+} catch {
   // Package not installed
 }
 
@@ -31,6 +30,14 @@ export interface ModelInfo {
 }
 
 export const AVAILABLE_MODELS: ModelInfo[] = [
+  {
+    id: 'smollm2-135m',
+    name: 'SmolLM2 135M',
+    url: 'https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct-GGUF/resolve/main/smollm2-135m-instruct-q4_k_m.gguf',
+    filename: 'smollm2-135m-instruct-q4_k_m.gguf',
+    sizeBytes: 90_000_000,
+    minRamGB: 0.5,
+  },
   {
     id: 'llama-3.2-1b',
     name: 'Llama 3.2 1B',
@@ -46,6 +53,14 @@ export const AVAILABLE_MODELS: ModelInfo[] = [
     filename: 'qwen2.5-1.5b-instruct-q4_k_m.gguf',
     sizeBytes: 1_000_000_000,
     minRamGB: 2.0,
+  },
+  {
+    id: 'gemma-4-e2b',
+    name: 'Gemma 4 E2B',
+    url: 'https://huggingface.co/google/gemma-4-E2B-it-qat-q4_0-gguf/resolve/main/gemma-4-E2B-it-qat-q4_0.gguf',
+    filename: 'gemma-4-E2B-it-qat-q4_0.gguf',
+    sizeBytes: 2_900_000_000,
+    minRamGB: 4.0,
   },
 ];
 
@@ -74,73 +89,19 @@ function getBundledAssetPath(modelId: string): string | null {
 
 /**
  * Check if a model is available as a bundled asset in the APK.
- * Uses BlobUtil.fetch with bundle-assets:// to probe existence.
+ * Uses BlobFS.asset() to verify the asset exists.
  */
 export async function isBundledModel(modelId: string): Promise<boolean> {
   if (Platform.OS !== 'android') return false;
   const model = AVAILABLE_MODELS.find((m) => m.id === modelId);
-  if (!model || !BlobUtil) return false;
+  if (!model || !BlobFS) return false;
 
   try {
-    const assetUri = `bundle-assets:///models/${model.filename}`;
-    const res = await BlobUtil.config({ path: BlobFS?.dirs?.CacheDir + '/probe' }).fetch('GET', assetUri);
-    const status = res.info().status;
-    return status === 200;
+    const assetPath = BlobFS.asset(`models/${model.filename}`);
+    const exists = await BlobFS.exists(assetPath);
+    return exists;
   } catch {
     return false;
-  }
-}
-
-/**
- * Extract a bundled model from APK assets to the document directory.
- * Uses react-native-blob-util's bundle-assets:// URI scheme for native streaming.
- * llama.rn requires a real file path, so we must copy the asset to disk.
- */
-export async function extractBundledModel(
-  modelId: string,
-  onProgress?: (progress: DownloadProgress) => void,
-): Promise<string | null> {
-  const model = AVAILABLE_MODELS.find((m) => m.id === modelId);
-  if (!model || !BlobUtil || !BlobFS) return null;
-
-  const dir = getDocumentDir();
-  const destPath = `${dir}/${model.filename}`;
-
-  // Ensure directory exists
-  try {
-    if (BlobFS) {
-      const exists = await BlobFS.exists(dir);
-      if (!exists) await BlobFS.mkdir(dir);
-    }
-  } catch { /* ignore */ }
-
-  // Already extracted
-  try {
-    if (BlobFS) {
-      const alreadyExists = await BlobFS.exists(destPath);
-      if (alreadyExists) return destPath;
-    }
-  } catch { /* ignore */ }
-
-  // Copy from APK assets to document dir using bundle-assets:// protocol.
-  try {
-    const assetUri = `bundle-assets:///models/${model.filename}`;
-    onProgress?.({ received: 0, total: model.sizeBytes, percent: 0 });
-
-    const task = BlobUtil.config({ path: destPath }).fetch('GET', assetUri);
-    if (onProgress) {
-      task.progress((received: number, total: number) => {
-        onProgress({ received, total, percent: Math.round((received / total) * 100) });
-      });
-    }
-    const res = await task;
-    onProgress?.({ received: model.sizeBytes, total: model.sizeBytes, percent: 100 });
-    return res.path();
-  } catch (err: any) {
-    console.warn('[modelManager.extractBundledModel] Extraction failed:', err?.message);
-    // Clean up partial file
-    try { await BlobFS?.unlink(destPath); } catch { /* ignore */ }
-    return null;
   }
 }
 
@@ -226,6 +187,53 @@ export async function downloadModel(
   }
 }
 
+/**
+ * Extract a bundled model from APK assets to the document directory.
+ * Uses react-native-blob-util's bundle-assets:// URI scheme for native streaming.
+ * llama.rn requires a real file path, so we must copy the asset to disk.
+ */
+export async function extractBundledModel(
+  modelId: string,
+  onProgress?: (progress: DownloadProgress) => void,
+): Promise<string | null> {
+  const model = AVAILABLE_MODELS.find((m) => m.id === modelId);
+  if (!model || !BlobUtil || !BlobFS) return null;
+
+  const dir = getDocumentDir();
+  const destPath = `${dir}/${model.filename}`;
+
+  // Ensure directory exists
+  try {
+    const exists = await BlobFS.exists(dir);
+    if (!exists) await BlobFS.mkdir(dir);
+  } catch { /* ignore */ }
+
+  // Already extracted
+  try {
+    const alreadyExists = await BlobFS.exists(destPath);
+    if (alreadyExists) return destPath;
+  } catch { /* ignore */ }
+
+  // Copy from APK assets to document dir using BlobFS.asset()
+  try {
+    const assetPath = BlobFS.asset(`models/${model.filename}`);
+    console.log('[modelManager] Extracting:', assetPath, '->', destPath);
+    onProgress?.({ received: 0, total: model.sizeBytes, percent: 0 });
+
+    await BlobFS.cp(assetPath, destPath);
+
+    const stat = await BlobFS.stat(destPath);
+    console.log('[modelManager] Extracted:', stat.size, 'bytes');
+
+    onProgress?.({ received: model.sizeBytes, total: model.sizeBytes, percent: 100 });
+    return destPath;
+  } catch (err: any) {
+    console.warn('[modelManager.extractBundledModel] Extraction failed:', err?.message);
+    try { await BlobFS?.unlink(destPath); } catch { /* ignore */ }
+    return null;
+  }
+}
+
 /** Delete a downloaded model file to free space. */
 export async function deleteModel(modelId: string): Promise<void> {
   const path = getModelPath(modelId);
@@ -237,5 +245,3 @@ export async function deleteModel(modelId: string): Promise<void> {
     // ignore
   }
 }
-
-
