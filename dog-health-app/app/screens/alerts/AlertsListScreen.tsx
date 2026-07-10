@@ -9,7 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAlertStore } from '../../store/alertStore';
 import { Card, EmptyState } from '../../components/common';
 import { spacing, typography, borderRadius, shadows } from '../../theme';
-import type { ChatbotScreenProps } from '../../navigation/types';
+import type { ChatScreenProps } from '../../navigation/types';
 
 const getAlertIcon = (type: string) => {
   switch (type) {
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   unreadDot: { width: 8, height: 8, borderRadius: 4, marginTop: 8, marginLeft: 8 },
 });
 
-export default function AlertsListScreen({}: ChatbotScreenProps) {
+export default function AlertsListScreen({}: ChatScreenProps) {
   const insets = useSafeAreaInsets();
   const alerts = useAlertStore((s) => s.alerts);
   const fetchAlerts = useAlertStore((s) => s.fetchAlerts);

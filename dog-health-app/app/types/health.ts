@@ -121,7 +121,8 @@ export type AlertType =
   | 'geofence_exit'
   | 'activity_abnormal'
   | 'sleep_disruption'
-  | 'device_disconnect';
+  | 'device_disconnect'
+  | 'feeding_logged';
 
 export type AlertSeverity = 'info' | 'warning' | 'critical';
 

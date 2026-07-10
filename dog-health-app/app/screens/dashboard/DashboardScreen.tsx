@@ -44,6 +44,7 @@ const ALERT_TYPE_LABELS: Record<string, string> = {
   activity_abnormal: 'Abnormal Activity',
   sleep_disruption: 'Sleep Disruption',
   device_disconnect: 'Device Disconnected',
+  feeding_logged: 'Feeding Logged',
 };
 
 const ALERT_TYPE_ICONS: Record<string, string> = {
@@ -57,6 +58,7 @@ const ALERT_TYPE_ICONS: Record<string, string> = {
   activity_abnormal: 'footsteps',
   sleep_disruption: 'moon',
   device_disconnect: 'bluetooth',
+  feeding_logged: 'restaurant',
 };
 
 const styles = StyleSheet.create({
@@ -209,7 +211,7 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
           { text: 'Log', onPress: () => {
             useAlertStore.getState().addAlert({
               dogId: activeDog.id,
-              type: 'activity_abnormal',
+              type: 'feeding_logged',
               severity: 'info',
               message: `Feeding logged for ${activeDog.name}`,
             });

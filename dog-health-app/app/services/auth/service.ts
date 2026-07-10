@@ -6,6 +6,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from '../api/supabase';
 import { AuthUser, AuthSession } from '../../types';
+import { aiService } from '../ai/service';
 
 const STORE_KEYS = [
   'dog-storage',
@@ -14,7 +15,6 @@ const STORE_KEYS = [
   'tracking-storage',
   'ble-storage',
   'settings-storage',
-  'chat-storage',
 ];
 
 class AuthService {
@@ -157,7 +157,6 @@ class AuthService {
       const { useAlertStore } = require('../../store/alertStore');
       const { useTrackingStore } = require('../../store/trackingStore');
       const { useHealthStore } = require('../../store/healthStore');
-      const { useChatStore } = require('../../store/chatStore');
 
       useSettingsStore.setState({
         hasCompletedOnboarding: false,
@@ -193,12 +192,9 @@ class AuthService {
         routes: [],
         activeRoute: null,
       });
-      useChatStore.setState({ messages: [], isTyping: false });
-      // Reset AI conversation context
-      try {
-        const { aiService } = require('../ai');
-        aiService.resetContext();
-      } catch {}
+
+      // Reset AI conversation context to prevent stale data leaking between accounts
+      aiService.resetContext();
 
       return { success: true };
     } catch (err) {

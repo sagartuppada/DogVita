@@ -30,6 +30,7 @@
     "react-native-base64": "^0.2.1",
     "react-native-ble-plx": "^3.1.2",
     "react-native-blob-util": "^0.24.10",
+    "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.20.2",
     "react-native-gifted-charts": "^1.4.51",
     "react-native-maps": "^1.18.0",

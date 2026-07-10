@@ -2,7 +2,7 @@
  * AIOverviewScreen - AI hub / landing page for all AI features
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -13,11 +13,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDogStore } from '../../store/dogStore';
-import { useChatStore } from '../../store/chatStore';
-import { isLLMAvailable } from '../../services/ai/llmService';
 import { spacing, borderRadius } from '../../theme';
 import type { AIOverviewTabScreenProps } from '../../navigation/types';
-
 
 type Props = AIOverviewTabScreenProps<'AIOverview'>;
 
@@ -30,7 +27,7 @@ const FEATURE_CARDS = [
     color: '#F3A93B',
     bgColor: '#F3A93B18',
     borderColor: '#F3A93B40',
-    screen: 'Chatbot' as const,
+    screen: 'Chat' as const,
   },
   {
     id: 'symptoms',
@@ -152,88 +149,6 @@ const styles = StyleSheet.create({
     color: '#1F1A17',
     textAlign: 'center',
   },
-  recentHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.page,
-    marginBottom: spacing.sm,
-  },
-  recentLabel: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#A39888',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  viewAllBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-  },
-  viewAllText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#F3A93B',
-  },
-  sessionCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: spacing.page,
-    backgroundColor: '#FBF4E4',
-    borderRadius: borderRadius.md,
-    padding: spacing.md,
-    marginBottom: spacing.sm,
-    borderWidth: 1,
-    borderColor: '#F0E8D8',
-  },
-  sessionIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#F3A93B15',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: spacing.sm,
-  },
-  sessionInfo: {
-    flex: 1,
-  },
-  sessionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1F1A17',
-    marginBottom: 2,
-  },
-  sessionMeta: {
-    fontSize: 12,
-    color: '#A39888',
-  },
-  emptySessions: {
-    alignItems: 'center',
-    paddingVertical: spacing.xl,
-    paddingHorizontal: spacing.page,
-  },
-  emptyIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#F3A93B10',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: spacing.sm,
-  },
-  emptyTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1F1A17',
-    marginBottom: 2,
-  },
-  emptyText: {
-    fontSize: 12,
-    color: '#A39888',
-    textAlign: 'center',
-  },
   tipsCard: {
     marginHorizontal: spacing.page,
     marginBottom: spacing.lg,
@@ -263,35 +178,11 @@ const styles = StyleSheet.create({
   },
 });
 
-function formatRelativeTime(iso: string): string {
-  const now = Date.now();
-  const then = new Date(iso).getTime();
-  const diffMin = Math.floor((now - then) / 60000);
-  if (diffMin < 1) return 'Just now';
-  if (diffMin < 60) return `${diffMin}m ago`;
-  const diffHrs = Math.floor(diffMin / 60);
-  if (diffHrs < 24) return `${diffHrs}h ago`;
-  const diffDays = Math.floor(diffHrs / 24);
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return new Date(iso).toLocaleDateString();
-}
-
 export default function AIOverviewScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const dogs = useDogStore((s) => s.dogs);
   const activeDogId = useDogStore((s) => s.activeDogId);
-  const sessions = useChatStore((s) => s.sessions);
-  const llmStatus = useChatStore((s) => s.llmStatus);
-
   const activeDog = dogs.find((d) => d.id === activeDogId) ?? null;
-
-  const recentSessions = useMemo(
-    () =>
-      [...sessions]
-        .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-        .slice(0, 3),
-    [sessions],
-  );
 
   const navigateTo = (screen: string) => {
     navigation.getParent()?.navigate(screen);
@@ -317,7 +208,7 @@ export default function AIOverviewScreen({ navigation }: Props) {
       <TouchableOpacity
         style={styles.heroCard}
         activeOpacity={0.85}
-        onPress={() => navigateTo('Chatbot')}
+        onPress={() => navigateTo('Chat')}
       >
         <View style={styles.heroIconWrap}>
           <Ionicons name="chatbubble-ellipses" size={26} color="#FFFFFF" />
@@ -325,13 +216,7 @@ export default function AIOverviewScreen({ navigation }: Props) {
         <View style={styles.heroText}>
           <Text style={styles.heroTitle}>Chat with AI</Text>
           <Text style={styles.heroSubtitle}>
-            {isLLMAvailable()
-              ? llmStatus === 'ready'
-                ? 'Powered by local AI • No internet needed'
-                : llmStatus === 'loading'
-                  ? 'Loading local AI model...'
-                  : 'Ask about nutrition, symptoms, exercise, or anything dog-related'
-              : 'Ask about nutrition, symptoms, exercise, or anything dog-related'}
+            Ask about nutrition, symptoms, exercise, or anything dog-related
           </Text>
         </View>
         <View style={styles.heroArrow}>
@@ -376,60 +261,6 @@ export default function AIOverviewScreen({ navigation }: Props) {
           <Text style={styles.tipText}>Ask the AI assistant for personalized health advice anytime</Text>
         </View>
       </View>
-
-      {/* Recent Conversations */}
-      {recentSessions.length > 0 && (
-        <>
-          <View style={styles.recentHeader}>
-            <Text style={styles.recentLabel}>Recent Conversations</Text>
-            <TouchableOpacity
-              style={styles.viewAllBtn}
-              onPress={() => navigation.getParent()?.navigate('ChatHistory')}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.viewAllText}>View All</Text>
-              <Ionicons name="chevron-forward" size={14} color="#F3A93B" />
-            </TouchableOpacity>
-          </View>
-          {recentSessions.map((session) => {
-            const msgCount = session.messages.filter((m) => m.role === 'user').length;
-            return (
-              <TouchableOpacity
-                key={session.id}
-                style={styles.sessionCard}
-                activeOpacity={0.7}
-                onPress={() => navigation.getParent()?.navigate('Chatbot')}
-              >
-                <View style={styles.sessionIcon}>
-                  <Ionicons name="chatbubble" size={16} color="#F3A93B" />
-                </View>
-                <View style={styles.sessionInfo}>
-                  <Text style={styles.sessionTitle} numberOfLines={1}>
-                    {session.title}
-                  </Text>
-                  <Text style={styles.sessionMeta}>
-                    {formatRelativeTime(session.updatedAt)} · {msgCount} message{msgCount !== 1 ? 's' : ''}
-                  </Text>
-                </View>
-                <Ionicons name="chevron-forward" size={16} color="#A39888" />
-              </TouchableOpacity>
-            );
-          })}
-        </>
-      )}
-
-      {/* Empty state for no sessions */}
-      {recentSessions.length === 0 && (
-        <View style={styles.emptySessions}>
-          <View style={styles.emptyIcon}>
-            <Ionicons name="chatbubbles-outline" size={22} color="#F3A93B" />
-          </View>
-          <Text style={styles.emptyTitle}>Start a conversation</Text>
-          <Text style={styles.emptyText}>
-            Tap "Chat with AI" to ask about your dog's health, diet, or behavior
-          </Text>
-        </View>
-      )}
     </ScrollView>
   );
 }

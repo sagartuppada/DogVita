@@ -10,14 +10,12 @@ import { BLEDevice, BLEConnectionState } from '../types';
 export const useBLE = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [devices, setDevices] = useState<BLEDevice[]>([]);
-  
-  const {
-    isConnected,
-    connectionStatus,
-    connectedDeviceId,
-    connectedDeviceName,
-    lastError,
-  } = useBLEStore();
+
+  const isConnected = useBLEStore((s) => s.isConnected);
+  const connectionStatus = useBLEStore((s) => s.connectionStatus);
+  const connectedDeviceId = useBLEStore((s) => s.connectedDeviceId);
+  const connectedDeviceName = useBLEStore((s) => s.connectedDeviceName);
+  const lastError = useBLEStore((s) => s.lastError);
 
   const startScan = useCallback(async () => {
     setIsScanning(true);

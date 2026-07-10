@@ -40,8 +40,8 @@ export const MainTabNavigator: React.FC = () => {
         tabBarStyle: {
           position: 'absolute',
           bottom: spacing.lg,
-          left: 290,
-          right: 290,
+          alignSelf: 'center',
+          width: 260,
           height: 56,
           borderRadius: borderRadius.xl,
           backgroundColor: colors.white,

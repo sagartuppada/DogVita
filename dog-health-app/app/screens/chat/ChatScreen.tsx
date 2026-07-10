@@ -1,0 +1,346 @@
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  TextInput,
+  FlatList,
+  Text,
+  ActivityIndicator,
+  StyleSheet,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { isModelDownloaded, downloadModel } from '../../services/ai/modelManager';
+import { loadModel } from '../../services/ai/llmService';
+import { useLlamaChat } from '../../hooks/useLlamaChat';
+import { spacing, borderRadius, colors } from '../../theme';
+
+export default function ChatScreen() {
+  const insets = useSafeAreaInsets();
+  const [ready, setReady] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  const { messages, sendMessage, isGenerating, clearMessages, cancelGeneration } = useLlamaChat();
+  const [input, setInput] = useState('');
+  const [sendError, setSendError] = useState<string | null>(null);
+  const flatListRef = React.useRef<FlatList>(null);
+
+  const initModel = React.useCallback(async () => {
+    setError(null);
+    setProgress(0);
+    try {
+      if (!(await isModelDownloaded())) {
+        await downloadModel(setProgress);
+      }
+      await loadModel();
+      setReady(true);
+    } catch (e) {
+      const msg = (e as Error).message || 'Failed to load model';
+      setError(msg);
+    }
+  }, []);
+
+  useEffect(() => {
+    initModel();
+  }, [initModel]);
+
+  const scrollToBottom = React.useCallback(() => {
+    flatListRef.current?.scrollToEnd({ animated: true });
+  }, []);
+
+  const handleSend = async () => {
+    const text = input.trim();
+    if (!text || isGenerating) return;
+    setInput('');
+    setSendError(null);
+    try {
+      await sendMessage(text);
+    } catch (e) {
+      const msg = (e as Error).message || 'Generation failed';
+      if (!msg.includes('cancelled')) {
+        setSendError(msg);
+      }
+    }
+  };
+
+  if (!ready) {
+    return (
+      <View style={[styles.loadingContainer, { paddingTop: insets.top }]}>
+        {error ? (
+          <>
+            <Ionicons name="alert-circle-outline" size={48} color="#F44336" />
+            <Text style={[styles.loadingText, { color: '#F44336', marginTop: spacing.md }]}>
+              {error}
+            </Text>
+            <TouchableOpacity
+              style={styles.retryButton}
+              onPress={initModel}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="refresh" size={20} color="#FFFFFF" />
+              <Text style={styles.retryText}>Retry</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
+            <Text style={styles.loadingText}>
+              {progress > 0
+                ? `Downloading model… ${Math.round(progress * 100)}%`
+                : 'Preparing offline model…'}
+            </Text>
+            {progress > 0 && (
+              <View style={styles.progressBar}>
+                <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
+              </View>
+            )}
+          </>
+        )}
+      </View>
+    );
+  }
+
+  return (
+    <KeyboardAvoidingView
+      style={[styles.container, { paddingTop: insets.top }]}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={0}
+    >
+      <FlatList
+        ref={flatListRef}
+        data={messages}
+        keyExtractor={(_, i) => String(i)}
+        contentContainerStyle={styles.messagesList}
+        onContentSizeChange={scrollToBottom}
+        renderItem={({ item }) => (
+          <View
+            style={[
+              styles.messageBubble,
+              item.role === 'user' ? styles.userBubble : styles.assistantBubble,
+            ]}
+          >
+            <Text
+              style={[
+                styles.messageText,
+                item.role === 'user' ? styles.userText : styles.assistantText,
+              ]}
+            >
+              {item.content}
+            </Text>
+          </View>
+        )}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Ionicons name="chatbubble-ellipses-outline" size={48} color={colors.primary.DEFAULT} />
+            <Text style={styles.emptyTitle}>Ask about your dog</Text>
+            <Text style={styles.emptySubtitle}>
+              Nutrition, exercise, behavior, health — anything goes.
+            </Text>
+          </View>
+        }
+      />
+
+      {sendError && (
+        <View style={styles.errorBanner}>
+          <Ionicons name="alert-circle" size={16} color="#F44336" />
+          <Text style={styles.errorText} numberOfLines={2}>{sendError}</Text>
+          <TouchableOpacity onPress={() => setSendError(null)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <Ionicons name="close" size={16} color="#F44336" />
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <View style={[styles.inputRow, { paddingBottom: insets.bottom + spacing.sm }]}>
+        {messages.length > 0 && (
+          <TouchableOpacity
+            style={styles.clearButton}
+            onPress={clearMessages}
+            disabled={isGenerating}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="add-circle-outline" size={28} color={isGenerating ? '#A39888' : colors.primary.DEFAULT} />
+          </TouchableOpacity>
+        )}
+        <TextInput
+          style={styles.input}
+          value={input}
+          onChangeText={setInput}
+          placeholder="Ask about your dog…"
+          placeholderTextColor="#A39888"
+          editable={!isGenerating}
+          onSubmitEditing={handleSend}
+          returnKeyType="send"
+        />
+        {isGenerating ? (
+          <TouchableOpacity
+            style={styles.sendButton}
+            onPress={cancelGeneration}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="stop-circle" size={32} color="#F44336" />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={[styles.sendButton, !input.trim() && styles.sendButtonDisabled]}
+            onPress={handleSend}
+            disabled={!input.trim()}
+            activeOpacity={0.7}
+          >
+            <Ionicons
+              name="arrow-up-circle"
+              size={32}
+              color={!input.trim() ? '#A39888' : colors.primary.DEFAULT}
+            />
+          </TouchableOpacity>
+        )}
+      </View>
+    </KeyboardAvoidingView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5E9CD',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5E9CD',
+  },
+  loadingText: {
+    marginTop: spacing.md,
+    fontSize: 14,
+    color: '#6B625A',
+  },
+  progressBar: {
+    width: 200,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#E0D5C1',
+    marginTop: spacing.sm,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#F3A93B',
+    borderRadius: 2,
+  },
+  messagesList: {
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.sm,
+    flexGrow: 1,
+  },
+  messageBubble: {
+    maxWidth: '82%',
+    borderRadius: borderRadius.lg,
+    padding: spacing.md,
+    marginBottom: spacing.sm,
+  },
+  userBubble: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#F3A93B',
+    borderBottomRightRadius: 4,
+  },
+  assistantBubble: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#FBF4E4',
+    borderWidth: 1,
+    borderColor: '#F0E8D8',
+    borderBottomLeftRadius: 4,
+  },
+  messageText: {
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  userText: {
+    color: '#FFFFFF',
+  },
+  assistantText: {
+    color: '#1F1A17',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 120,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1F1A17',
+    marginTop: spacing.md,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: '#A39888',
+    marginTop: spacing.xs,
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.page,
+    paddingTop: spacing.sm,
+    gap: spacing.sm,
+  },
+  input: {
+    flex: 1,
+    height: 48,
+    borderRadius: borderRadius.xl,
+    backgroundColor: '#FBF4E4',
+    borderWidth: 1,
+    borderColor: '#F0E8D8',
+    paddingHorizontal: spacing.md,
+    fontSize: 15,
+    color: '#1F1A17',
+  },
+  sendButton: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sendButtonDisabled: {
+    opacity: 0.5,
+  },
+  retryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    marginTop: spacing.md,
+    backgroundColor: colors.primary.DEFAULT,
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    borderRadius: borderRadius.pill,
+  },
+  retryText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  errorBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    marginHorizontal: spacing.page,
+    marginBottom: spacing.xs,
+    backgroundColor: '#F4433612',
+    borderRadius: borderRadius.md,
+    padding: spacing.sm,
+  },
+  errorText: {
+    flex: 1,
+    fontSize: 13,
+    color: '#F44336',
+  },
+  clearButton: {
+    width: 36,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

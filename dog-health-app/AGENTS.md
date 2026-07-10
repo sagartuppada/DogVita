@@ -148,28 +148,27 @@ Unlike older code that returned `null` silently, `createDog()` now throws errors
 
 ## On-Device LLM
 
-llama.rn 0.12.5 provides on-device LLM inference via the messages API with Jinja templates. The GGUF file's embedded chat template handles formatting automatically — no manual prompt building.
+llama.rn provides on-device LLM inference via the messages API with Jinja templates. The GGUF file's embedded chat template handles formatting automatically — no manual prompt building.
 
-### Available Models
+### Model
 
 | Model | Size | Min RAM | Notes |
 |-------|------|---------|-------|
-| SmolLM2 135M | 90 MB | 0.5 GB | Lightweight, fast |
-| Llama 3.2 1B | 800 MB | 1.5 GB | Good balance |
-| Qwen 2.5 1.5B | 1 GB | 2.0 GB | Balanced |
-| **Gemma 4 E2B** | **2.9 GB** | **4.0 GB** | **Default.** Google's mobile-optimized model with 128K context |
-
-### LLM Lifecycle
-
-- `useLLMLifecycle` hook automatically unloads the model when app goes to background (frees ~1-4GB RAM)
-- Model reloads when app returns to foreground
-- Default model: Gemma 4 E2B (falls back to Llama 3.2 1B on low-RAM devices)
+| **SmolLM3 3B** | **~2.0 GB** | **4.0 GB** | Q4_K_M quant. Downloaded on first launch. |
 
 ### LLM Service Files
 
-- `app/services/ai/modelManager.ts` — model catalog and download management
-- `app/services/ai/llmService.ts` — llama.rn wrapper (messages API + Jinja)
-- `app/hooks/useLLMLifecycle.ts` — background/foreground model lifecycle
+- `app/services/ai/modelManager.ts` — model download via `react-native-fs`
+- `app/services/ai/llmService.ts` — llama.rn wrapper (init, completion, teardown)
+- `app/hooks/useLlamaChat.ts` — React hook for chat state + streaming
+- `app/screens/chat/ChatScreen.tsx` — chat UI
+
+### Flow
+
+1. `App.tsx` does NOT eagerly load the model — avoids OOM on low-RAM devices
+2. `ChatScreen` handles download progress + model init in `useEffect` on mount
+3. `useLlamaChat` hook manages message history + streaming
+4. Model is downloaded from HuggingFace on first launch (~2.0GB)
 
 ## Supabase Schema
 

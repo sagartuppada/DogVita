@@ -154,9 +154,7 @@ class NotificationsService {
   // ── Health Alert Notifications ──
 
   async scheduleHealthAlert(alert: HealthAlert): Promise<string> {
-    const channelId = alert.severity === 'critical'
-      ? NOTIFICATION_CHANNELS.HEALTH_ALERTS.id
-      : NOTIFICATION_CHANNELS.HEALTH_ALERTS.id;
+    const channelId = NOTIFICATION_CHANNELS.HEALTH_ALERTS.id;
 
     const notificationId = `health_${alert.id}`;
     const severityEmoji = alert.severity === 'critical' ? '🚨' : alert.severity === 'warning' ? '⚠️' : 'ℹ️';
@@ -365,6 +363,7 @@ class NotificationsService {
       sleep_disruption: 'Sleep Disruption',
       geofence_enter: 'Geofence Entry',
       geofence_exit: 'Geofence Exit',
+      feeding_logged: 'Feeding Logged',
     };
     return titles[type] || 'Health Alert';
   }

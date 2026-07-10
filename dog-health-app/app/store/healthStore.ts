@@ -288,7 +288,5 @@ export const useHealthStore = create<HealthStore>()(
   )
 );
 
-export const selectCurrentHeartRate = (dogId: string) => (state: HealthStore) =>
-  state.currentMetrics[dogId]?.heartRate || null;
-
+export const selectCurrentMetrics = (state: HealthStore) => state.currentMetrics;
 export const selectIsMonitoring = (state: HealthStore) => state.isMonitoring;

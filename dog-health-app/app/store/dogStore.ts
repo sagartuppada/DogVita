@@ -61,6 +61,12 @@ export const useDogStore = create<DogStore>()(
 
       addDog: async (input) => {
         set({ isLoading: true, error: null });
+        const createLocalDog = (): Dog => ({
+          id: `dog_${Date.now()}`,
+          ...input,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
         try {
           if (isSupabaseConfigured()) {
             const { data: { user } } = await supabase.auth.getUser();
@@ -85,12 +91,7 @@ export const useDogStore = create<DogStore>()(
               }
             }
           }
-          const newDog: Dog = {
-            id: `dog_${Date.now()}`,
-            ...input,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
+          const newDog = createLocalDog();
           set((state) => ({
             dogs: [...state.dogs, newDog],
             activeDogId: newDog.id,
@@ -99,12 +100,7 @@ export const useDogStore = create<DogStore>()(
           return newDog;
         } catch (error) {
           console.warn('[dogStore.addDog] Supabase insert failed, using local:', (error as Error).message);
-          const newDog: Dog = {
-            id: `dog_${Date.now()}`,
-            ...input,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
+          const newDog = createLocalDog();
           set((state) => ({
             dogs: [...state.dogs, newDog],
             activeDogId: newDog.id,

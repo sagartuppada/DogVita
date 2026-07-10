@@ -1,12 +1,9 @@
 /**
- * AI Health Assistant service - Hybrid rule-based + on-device LLM engine
+ * AI Health Assistant service - Rule-based pet health advice
  * Uses dog profile data to personalize responses
- *
- * v3: Added hybrid LLM mode via llama.rn (graceful fallback when not installed)
  */
 
 import { Dog, WeightRecord, VaccinationRecord } from '../../types';
-import { isLLMAvailable, generateStreamResponse, getLLMStatus, type LLMStatus } from './llmService';
 
 export interface ChatMessage {
   id: string;
@@ -551,26 +548,6 @@ export const aiService = {
     conversationCtx.mentionedSymptoms = [];
   },
 
-  /** Check if the LLM engine is available for hybrid mode */
-  isLLMAvailable,
-
-  /** Get current LLM status */
-  getLLMStatus(): LLMStatus {
-    return getLLMStatus();
-  },
-
-  /** Build dog context string for LLM system prompt */
-  buildDogContextSummary,
-
-  /** Stream a response from the on-device LLM. Returns null if LLM isn't ready. */
-  async sendLLMMessage(
-    messages: Array<{ role: 'user' | 'assistant'; content: string }>,
-    context: DogHealthContext,
-    onToken: (token: string) => void,
-  ): Promise<string | null> {
-    const dogContext = buildDogContextSummary(context);
-    return generateStreamResponse(messages, dogContext, onToken);
-  },
 };
 
 function getQuickReplies(intent: string | null): string[] | undefined {
