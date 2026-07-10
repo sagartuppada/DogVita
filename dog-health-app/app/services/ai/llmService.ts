@@ -1,5 +1,7 @@
 import { initLlama, LlamaContext } from 'llama.rn';
 import { MODEL_PATH } from './modelManager';
+import { Dog } from '../../types';
+import { getKnowledgeContext } from './knowledgeContext';
 
 let context: LlamaContext | null = null;
 let loadPromise: Promise<void> | null = null;
@@ -54,12 +56,46 @@ export function isModelLoaded(): boolean {
   return context !== null;
 }
 
-const SYSTEM_PROMPT =
-  'You are a helpful assistant for dog owners. Answer general pet-care ' +
-  'questions clearly and briefly. For anything urgent or serious, tell ' +
-  'the user to contact a veterinarian.';
+function calculateAge(birthDate?: string): string | null {
+  if (!birthDate) return null;
+  const birth = new Date(birthDate);
+  const now = new Date();
+  const totalMonths = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
+  if (totalMonths < 0) return null;
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
+  if (years === 0) return `${months} month${months !== 1 ? 's' : ''} old`;
+  if (months === 0) return `${years} year${years !== 1 ? 's' : ''} old`;
+  return `${years} year${years !== 1 ? 's' : ''}, ${months} month${months !== 1 ? 's' : ''} old`;
+}
 
-// SmolLM3 stop tokens - covers all formats the model may emit
+export function buildSystemPrompt(dog?: Dog | null, query?: string): string {
+  let prompt =
+    'You are a knowledgeable dog health assistant. Answer questions clearly ' +
+    'and briefly. For anything urgent or serious, recommend contacting a ' +
+    'veterinarian. Use the dog\'s profile and expert knowledge below to personalize your answers.';
+
+  if (dog) {
+    const parts = [`\n\nCurrent dog profile:`];
+    parts.push(`- Name: ${dog.name}`);
+    parts.push(`- Breed: ${dog.breed}`);
+    const age = calculateAge(dog.birthDate);
+    if (age) parts.push(`- Age: ${age}`);
+    if (dog.weight) parts.push(`- Weight: ${dog.weight} ${dog.weightUnit || 'kg'}`);
+    if (dog.gender) parts.push(`- Gender: ${dog.gender}`);
+    prompt += parts.join('\n');
+  }
+
+  if (query) {
+    const knowledge = getKnowledgeContext(query, dog?.breed);
+    if (knowledge) {
+      prompt += `\n\n${knowledge}`;
+    }
+  }
+
+  return prompt;
+}
+
 const STOP_TOKENS = [
   String.fromCharCode(60) + 'end_of_turn' + String.fromCharCode(62),
   String.fromCharCode(60) + 'eot_id' + String.fromCharCode(62),
@@ -72,6 +108,7 @@ export async function streamChat(
   history: { role: 'user' | 'assistant'; content: string }[],
   onToken: (token: string) => void,
   signal?: AbortSignal,
+  dog?: Dog | null,
 ): Promise<string> {
   if (!context) throw new Error('Model not loaded. Go back and try again.');
 
@@ -83,9 +120,11 @@ export async function streamChat(
   signal?.addEventListener('abort', abortHandler);
 
   try {
+    // Extract the latest user message for knowledge retrieval
+    const lastUserMsg = [...history].reverse().find((m) => m.role === 'user');
     const result = await context.completion(
       {
-        messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...history],
+        messages: [{ role: 'system', content: buildSystemPrompt(dog, lastUserMsg?.content) }, ...history],
         n_predict: 512,
         temperature: 0.6,
         top_p: 0.95,

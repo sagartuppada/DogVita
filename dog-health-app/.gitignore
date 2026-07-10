@@ -6,8 +6,7 @@ node_modules/
 dist/
 web-build/
 
-# Native builds
-android/
+# Native build outputs
 ios/
 *.orig.*
 
