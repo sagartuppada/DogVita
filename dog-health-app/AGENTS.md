@@ -154,7 +154,7 @@ llama.rn provides on-device LLM inference via the messages API with Jinja templa
 
 | Model | Size | Min RAM | Notes |
 |-------|------|---------|-------|
-| **SmolLM3 3B** | **~2.0 GB** | **4.0 GB** | Q4_K_M quant. Downloaded on first launch. |
+| **Qwen2.5-0.5B-Instruct** | **~300 MB** | **1.5 GB** | Q4_K_M quant. Downloaded on first chat open. |
 
 ### LLM Service Files
 
@@ -168,7 +168,7 @@ llama.rn provides on-device LLM inference via the messages API with Jinja templa
 1. `App.tsx` does NOT eagerly load the model — avoids OOM on low-RAM devices
 2. `ChatScreen` handles download progress + model init in `useEffect` on mount
 3. `useLlamaChat` hook manages message history + streaming
-4. Model is downloaded from HuggingFace on first launch (~2.0GB)
+4. Model is downloaded from HuggingFace on first chat open (~300MB)
 
 ## Supabase Schema
 

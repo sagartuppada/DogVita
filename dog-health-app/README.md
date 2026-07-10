@@ -1,162 +1,198 @@
-# Dog Health App
+# DogVita — Smart Dog Health Monitor
 
-A production-grade React Native + Expo application for smart wearable dog health monitoring. This app connects to an ESP32-S3 dog collar wearable via BLE and provides comprehensive health monitoring including heart rate, GPS tracking, geofencing, activity tracking, sleep monitoring, and environmental alerts.
+React Native 0.76 (bare workflow) app for the DogVita ESP32-S3 BLE dog collar. On-device LLM health assistant, GPS tracking, geofencing, health monitoring, and Supabase cloud sync.
 
 ## Features
 
-- **Heart Rate Monitoring**: Real-time heart rate tracking with configurable alerts
-- **GPS Tracking**: Live location monitoring with geofencing support
-- **Activity Tracking**: Step counting, distance, and activity level monitoring
-- **Sleep Tracking**: Monitor your dog's sleep patterns and quality
-- **Environmental Monitoring**: Temperature and humidity tracking
-- **Alert System**: Push notifications for health anomalies and geofence breaches
-- **Real-time Analytics**: Visual charts showing health trends over time
-- **Supabase Backend**: Cloud sync and data persistence
+- **On-Device AI** — Qwen2.5-0.5B runs locally on the phone via llama.rn (no internet required for chat)
+- **BLE Collar** — Real-time heart rate, temperature, GPS, battery from ESP32-S3
+- **GPS Tracking** — Live location, route recording, geofence alerts
+- **Health Dashboard** — Heart rate, temperature, SpO2, activity charts
+- **Dog Profiles** — Weight history, vaccination records, breed info
+- **AI Health Assistant** — Symptom checker, diet calculator, feeding schedules
+- **Supabase Backend** — Cloud sync, auth, real-time updates
 
 ## Tech Stack
 
-- **Framework**: React Native with Expo SDK 52
-- **Language**: TypeScript 5.3
-- **State Management**: Zustand
-- **Navigation**: React Navigation 7 (Bottom Tabs + Stack)
-- **Backend**: Supabase
-- **BLE**: react-native-ble-plx
-- **Maps**: react-native-maps
-- **Charts**: react-native-gifted-charts
+| Layer | Technology |
+|-------|-----------|
+| Framework | React Native 0.76 (bare, no Expo) |
+| Language | TypeScript (strict) |
+| State | Zustand (persisted via AsyncStorage) |
+| Navigation | React Navigation 7 |
+| Backend | Supabase (auth, DB, real-time) |
+| BLE | react-native-ble-plx |
+| Maps | react-native-maps |
+| LLM | llama.rn (Qwen2.5-0.5B-Instruct-Q4_K_M) |
+| Charts | react-native-gifted-charts |
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- Android Studio (JDK bundled with it)
+- Physical Android device (BLE doesn't work in emulators)
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/MontageStark/DogVita.git
+cd DogVita/dog-health-app
+npm install
+```
+
+### 2. Set up environment
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your Supabase credentials:
+- `SUPABASE_URL` — your Supabase project URL
+- `SUPABASE_ANON_KEY` — your Supabase anon/public key
+
+### 3. Generate native projects
+
+This is a bare React Native project. The `android/` directory is not in git (too large, machine-specific). Generate it:
+
+```bash
+npx react-native init DogHealthApp --version 0.76.6
+# Copy the generated android/ directory into this project:
+cp -r ../DogHealthApp/android ./android
+# Or if you have the android/ from a previous build, just copy it in.
+```
+
+Alternatively, if you received the `android/` directory from someone (zip, shared drive, etc.), just place it in the project root.
+
+### 4. Build and run
+
+**Set environment variables (Windows PowerShell):**
+
+```powershell
+$env:ANDROID_HOME = "C:\Users\$env:USERNAME\AppData\Local\Android\Sdk"
+$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
+```
+
+**Build release APK:**
+
+```powershell
+cd android
+.\gradlew.bat app:assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a
+```
+
+**Install on device:**
+
+```powershell
+adb install -r app\build\outputs\apk\release\app-release.apk
+```
+
+### 5. Verify
+
+```bash
+npm run typecheck    # TypeScript compilation
+npm run lint         # ESLint
+```
 
 ## Project Structure
 
 ```
 dog-health-app/
 ├── app/
-│   ├── navigation/        # Navigation configuration
-│   ├── screens/           # All app screens
-│   ├── components/        # Reusable UI components
-│   ├── services/          # BLE, API, storage services
+│   ├── screens/           # All screens (onboarding, dashboard, chat, etc.)
+│   ├── navigation/        # React Navigation setup
+│   ├── components/        # Reusable UI (maps, charts, cards)
+│   ├── services/          # API, auth, BLE, AI, GPS services
 │   ├── hooks/             # Custom React hooks
 │   ├── store/             # Zustand state stores
-│   ├── types/              # TypeScript type definitions
-│   ├── utils/              # Utility functions
-│   ├── theme/              # Theme configuration
-│   ├── assets/             # Images, fonts, etc.
-│   ├── config/             # App configuration
-│   └── App.tsx             # App entry point
-├── tests/                  # Test files
-├── docs/                   # Documentation
-└── [config files]          # Package.json, tsconfig, etc.
+│   ├── types/             # TypeScript types
+│   ├── theme/             # Colors, spacing, typography
+│   └── config/            # App configuration
+├── android/               # Native Android project (not in git)
+├── supabase/
+│   └── schema.sql         # Full database schema + RLS policies
+├── index.js               # Entry point (Hermes polyfills)
+├── metro.config.js        # Metro bundler config (Node.js stubs)
+├── babel.config.js        # Babel config (env vars, aliases)
+├── tsconfig.json          # TypeScript config
+├── package.json           # Dependencies
+├── .env.example           # Environment template
+├── CHANGELOG.md           # Detailed changelog with problem/solution pairs
+└── AGENTS.md              # Developer guide for AI assistants
 ```
 
-## Getting Started
+## On-Device LLM
 
-### Prerequisites
+The app includes an on-device AI health assistant powered by llama.rn.
 
-- Node.js 18+
-- npm or yarn
-- Expo CLI (`npm install -g expo-cli`)
-- Xcode (for iOS development)
-- Android Studio (for Android development)
+**Model:** Qwen2.5-0.5B-Instruct-Q4_K_M (~300MB, downloaded on first chat open)
 
-### Installation
+**How it works:**
+1. User opens the AI tab → `ChatScreen` mounts
+2. If model not downloaded → downloads from HuggingFace (~300MB, with progress)
+3. Model loads into memory via `initLlama()` (120s timeout)
+4. User types a question → streamed response via `context.completion()`
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd dog-health-app
+**Key files:**
+- `app/services/ai/modelManager.ts` — download via `react-native-fs`
+- `app/services/ai/llmService.ts` — llama.rn wrapper
+- `app/hooks/useLlamaChat.ts` — React hook for chat state
+- `app/screens/chat/ChatScreen.tsx` — chat UI
+
+**Memory constraints:**
+- `n_ctx: 1024` (context window)
+- `n_batch: 256` (batch size)
+- `n_gpu_layers: 0` (CPU-only)
+- Model loaded lazily (not at app startup) to avoid OOM
+
+## Supabase Setup
+
+1. Create a Supabase project at https://supabase.com
+2. Run `supabase/schema.sql` in the SQL editor to create all tables
+3. Run the additional migrations from `AGENTS.md` (profiles email column, dogs gender column, routes table)
+4. Copy your project URL and anon key into `.env`
+
+**Tables:** `profiles`, `dogs`, `health_metrics`, `alerts`, `locations`, `geofences`, `routes`
+
+## Build Notes
+
+### Windows MAX_PATH
+
+Windows limits paths to 260 characters. Gradle breaks at this depth. If building on Windows, use a short build path:
+
+```
+Canonical (edit here):  C:\Users\User\Desktop\Santo\DogVita\dog-health-app
+Build copy (build here): C:\R\dog-health-app
 ```
 
-2. Install dependencies:
-```bash
-npm install
+Sync with `robocopy /MIR` or `Copy-Item` before building.
+
+### JAVA_HOME
+
+Must point to Android Studio's bundled JDK — a system JDK breaks the Gradle build:
+
+```powershell
+$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
 ```
 
-3. Start the development server:
-```bash
-npm start
-```
+### react-native-svg
 
-4. Run on iOS/Android:
-```bash
-npm run ios    # iOS
-npm run android # Android
-```
+Pinned to 15.11.2 for RN 0.76 compatibility. Version 15.15.5 uses `StyleSizeLength` which doesn't exist in RN 0.76's Yoga.
 
-### Environment Setup
+### Hermes Polyfills
 
-Copy `.env.example` to `.env` and configure:
-
-```bash
-cp .env.example .env
-```
-
-Configure your Supabase credentials and BLE UUIDs.
-
-## Authentication Flow
-
-The app uses phone number + OTP authentication:
-
-1. **WelcomeScreen**: Introduction and login/signup options
-2. **AddPhoneNumberScreen**: Enter phone number
-3. **OTPVerificationScreen**: Verify OTP code
-4. **SetupDogProfileScreen**: Add dog information
-5. **PairDeviceScreen**: Connect to ESP32-S3 collar
-6. **DashboardScreen**: Main app dashboard
-
-## BLE Communication
-
-The app communicates with the ESP32-S3 collar using BLE with the following service structure:
-
-- **Heart Rate Service**: Real-time heart rate data (UUID: 180d)
-- **GPS Service**: Location coordinates
-- **Temperature Service**: Ambient temperature
-- **Battery Service**: Battery level monitoring
-- **Activity Service**: Step count and activity levels
-
-## State Management
-
-Uses Zustand stores for different domains:
-
-- `dogStore`: Dog profiles and information
-- `healthStore`: Health metrics (heart rate, temperature, etc.)
-- `bleStore`: BLE connection and device state
-- `trackingStore`: GPS tracking and geofencing
-- `alertStore`: Alerts and notifications
-- `settingsStore`: App settings and preferences
+`index.js` polyfills `URL`, `URLSearchParams` for Hermes. Supabase-js crashes without them. Do not remove.
 
 ## Available Scripts
 
-- `npm start` - Start Expo development server
-- `npm run dev` - Start with dev client
-- `npm run android` - Run on Android
-- `npm run ios` - Run on iOS
-- `npm run web` - Run on web
-- `npm run lint` - Run ESLint
-- `npm run typecheck` - Run TypeScript type checking
-- `npm run test` - Run tests
-
-## Build for Production
-
-### Android
 ```bash
-npx expo build:android
-# or with EAS
-eas build --platform android
-```
-
-### iOS
-```bash
-npx expo build:ios
-# or with EAS
-eas build --platform ios
+npm run typecheck    # tsc --noEmit
+npm run lint         # ESLint
+npm start            # Start Metro bundler
+npm run android      # Build and run on Android
+npm test             # Jest (no test files yet)
 ```
 
 ## License
 
-MIT License
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
+MIT
