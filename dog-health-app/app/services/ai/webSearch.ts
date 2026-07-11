@@ -120,6 +120,7 @@ async function wikipediaSearch(query: string, abortSignal?: AbortSignal): Promis
     srsearch: searchQuery,
     format: 'json',
     srlimit: '5',
+    origin: '*',
   });
   const searchUrl = `https://en.wikipedia.org/w/api.php?${params.toString()}`;
 
@@ -128,8 +129,8 @@ async function wikipediaSearch(query: string, abortSignal?: AbortSignal): Promis
     {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'DogVita/1.0 (Android; DogHealthApp; contact@dogvita.app)',
+        'Accept': 'application/json, text/javascript, */*',
+        'User-Agent': 'DogVita/1.0 (Android; DogHealthApp; https://github.com/MontageStark/DogVita)',
       },
       signal: abortSignal,
     },
@@ -138,7 +139,14 @@ async function wikipediaSearch(query: string, abortSignal?: AbortSignal): Promis
 
   if (!res.ok) throw new Error(`Wikipedia search returned ${res.status}`);
 
-  const data = await res.json();
+  const contentType = res.headers.get('content-type') || '';
+  const text = await res.text();
+
+  if (!contentType.includes('json') && !text.trimStart().startsWith('{')) {
+    throw new Error(`Wikipedia returned non-JSON (${contentType})`);
+  }
+
+  const data = JSON.parse(text);
   const results: SearchResult[] = [];
 
   if (data.query && data.query.search && Array.isArray(data.query.search)) {
@@ -175,6 +183,7 @@ async function jinaReadUrl(url: string, abortSignal?: AbortSignal): Promise<stri
         headers: {
           'Accept': 'text/plain',
           'X-Return-Format': 'text',
+          'User-Agent': 'DogVita/1.0',
         },
         signal: abortSignal,
       },
@@ -182,6 +191,7 @@ async function jinaReadUrl(url: string, abortSignal?: AbortSignal): Promise<stri
     );
     if (!res.ok) return '';
     const text = await res.text();
+    if (text.startsWith('<') || text.startsWith('<!')) return '';
     return text.replace(/\s+/g, ' ').trim().slice(0, 500);
   } catch {
     return '';
@@ -220,6 +230,7 @@ export async function searchWeb(query: string, abortSignal?: AbortSignal): Promi
          explaintext: 'true',
           format: 'json',
           exchars: '500',
+          origin: '*',
         });
         const summaryUrl = `https://en.wikipedia.org/w/api.php?${params.toString()}`;
         const res = await fetchWithTimeout(
@@ -227,31 +238,35 @@ export async function searchWeb(query: string, abortSignal?: AbortSignal): Promi
           {
             method: 'GET',
             headers: {
-              'Accept': 'application/json',
-              'User-Agent': 'DogVita/1.0 (Android; DogHealthApp; contact@dogvita.app)',
+              'Accept': 'application/json, text/javascript, */*',
+              'User-Agent': 'DogVita/1.0 (Android; DogHealthApp; https://github.com/MontageStark/DogVita)',
             },
             signal,
           },
           3000,
         );
         if (res.ok) {
-          const data = await res.json();
-          if (data.query && data.query.pages) {
-            const pages = Object.values(data.query.pages);
-            if (pages.length > 0) {
-              const page = pages[0] as any;
-              if (page.extract) {
-                results.push({
-                  title: page.title || topicPage,
-                  url: `https://en.wikipedia.org/wiki/${encodeURIComponent(topicPage)}`,
-                  snippet: page.extract.slice(0, MAX_SNIPPET_CHARS * 2),
-                  source: 'Wikipedia',
-                });
+          const contentType = res.headers.get('content-type') || '';
+          const text = await res.text();
+          if (contentType.includes('json') || text.trimStart().startsWith('{')) {
+            const data = JSON.parse(text);
+            if (data.query && data.query.pages) {
+              const pages = Object.values(data.query.pages);
+              if (pages.length > 0) {
+                const page = pages[0] as any;
+                if (page.extract) {
+                  results.push({
+                    title: page.title || topicPage,
+                    url: `https://en.wikipedia.org/wiki/${encodeURIComponent(topicPage)}`,
+                    snippet: page.extract.slice(0, MAX_SNIPPET_CHARS * 2),
+                    source: 'Wikipedia',
+                  });
+                }
               }
             }
           }
         }
-      } catch {
+      } catch (e) {
         // ignore
       }
     }
