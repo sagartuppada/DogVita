@@ -78,7 +78,13 @@ export function buildSystemPrompt(
   let prompt =
     'You are a knowledgeable dog health assistant. Answer questions clearly ' +
     'and briefly. For anything urgent or serious, recommend contacting a ' +
-    'veterinarian. Use the dog\'s profile and expert knowledge below to personalize your answers.';
+    'veterinarian. Use the dog\'s profile and expert knowledge below to personalize your answers.' +
+    '\n\nIMPORTANT RULES:' +
+    '\n- Stay strictly within dog/animal health topics. Never discuss human health, politics, or unrelated topics.' +
+    '\n- When web references are provided, use them as primary sources. Cite the source number [1], [2], [3] in your answer.' +
+    '\n- If web references contradict the knowledge base, prefer the web references (they are more current).' +
+    '\n- If no web references are available, say "I don\'t have enough information to answer that" rather than guessing.' +
+    '\n- Always recommend consulting a veterinarian for serious or persistent issues.';
 
   if (dog) {
     const parts = [`\n\nCurrent dog profile:`];
@@ -115,8 +121,18 @@ const STOP_TOKENS = [
 
 function shouldAutoSearch(query: string): boolean {
   const q = query.toLowerCase();
-  if (q.length < 15) return false;
-  return /\b(latest|recent|today|current|2024|2025|2026|new|update|news|outbreak|recall|study|research|cdc|fda)\b/.test(q);
+  if (q.length < 10) return false;
+
+  const dogContext =
+    /\b(dog|puppy|canine|pup|paws|tail|collar|leash|kibble|bark|fetch|sit|stay|heel)\b/.test(q);
+
+  const animalTopics =
+    /\b(nutrition|diet|food|feed|meal|exercise|walk|play|grooming|bath|brush|shed|training|bark|bite|vaccine|shot|rabies|flea|tick|worm|heartworm|parasite|emergency|poison|toxic|choking|bleeding|seizure|bloat|heatstroke|dental|teeth|breath|weight|fat|overweight|itchy|scratch|hot spot|bald|rash|joint|hip|limping|arthritis|anxiety|stress|separation|puppy|teething|senior|aging|sleep|snore|travel|flying|breed|spay|neuter|wellness|checkup|vet|diagnosis|symptom|treatment|medication|antibiotic|pain|fever|vomit|diarrhea|cough|sneezing|ear|eye|nose|skin|coat|paw|nail|bladder|kidney|liver|heart|cancer|tumor|allergies|allergic|infection|fungus|ringworm|mange|kennel|distemper|parvo|lepto)\b/.test(q);
+
+  const recency =
+    /\b(latest|recent|today|current|2024|2025|2026|new|update|news|outbreak|recall|study|research|cdc|fda)\b/.test(q);
+
+  return dogContext || animalTopics || recency;
 }
 
 export interface StreamChatOptions {
