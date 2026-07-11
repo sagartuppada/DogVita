@@ -32,7 +32,7 @@ export const MainTabNavigator: React.FC = () => {
         tabBarIcon: ({ focused, color }) => {
           const iconSet = TAB_ICONS[route.name];
           const iconName = focused ? iconSet.active : iconSet.inactive;
-          return <Ionicons name={iconName} size={22} color={color} />;
+          return <Ionicons name={iconName} size={18} color={color} />;
         },
         tabBarActiveTintColor: colors.primary.DEFAULT,
         tabBarInactiveTintColor: colors.text.tertiary,
@@ -41,12 +41,12 @@ export const MainTabNavigator: React.FC = () => {
           position: 'absolute',
           bottom: spacing.lg,
           alignSelf: 'center',
-          height: 56,
-          borderRadius: borderRadius.xl,
+          height: 48,
+          borderRadius: borderRadius.lg,
           backgroundColor: colors.white,
-          paddingTop: spacing.xs,
-          paddingBottom: spacing.xs,
-          paddingHorizontal: spacing.lg,
+          paddingTop: 4,
+          paddingBottom: 4,
+          paddingHorizontal: spacing.md,
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
@@ -73,9 +73,9 @@ export const MainTabNavigator: React.FC = () => {
 
 const styles = StyleSheet.create({
   tabLabel: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: '600',
-    marginTop: -2,
+    marginTop: 0,
   },
 });
 
