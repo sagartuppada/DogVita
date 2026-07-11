@@ -2,6 +2,7 @@ import { initLlama, LlamaContext } from 'llama.rn';
 import { MODEL_PATH } from './modelManager';
 import { Dog } from '../../types';
 import { getKnowledgeContext } from './knowledgeContext';
+import { searchWeb, formatSearchContext, SearchResult } from './webSearch';
 
 let context: LlamaContext | null = null;
 let loadPromise: Promise<void> | null = null;
@@ -69,7 +70,11 @@ function calculateAge(birthDate?: string): string | null {
   return `${years} year${years !== 1 ? 's' : ''}, ${months} month${months !== 1 ? 's' : ''} old`;
 }
 
-export function buildSystemPrompt(dog?: Dog | null, query?: string): string {
+export function buildSystemPrompt(
+  dog?: Dog | null,
+  query?: string,
+  webResults?: SearchResult[],
+): string {
   let prompt =
     'You are a knowledgeable dog health assistant. Answer questions clearly ' +
     'and briefly. For anything urgent or serious, recommend contacting a ' +
@@ -93,6 +98,10 @@ export function buildSystemPrompt(dog?: Dog | null, query?: string): string {
     }
   }
 
+  if (webResults && webResults.length > 0) {
+    prompt += formatSearchContext(webResults);
+  }
+
   return prompt;
 }
 
@@ -104,15 +113,31 @@ const STOP_TOKENS = [
   'Assistant:',
 ];
 
+function shouldAutoSearch(query: string): boolean {
+  const q = query.toLowerCase();
+  if (q.length < 15) return false;
+  return /\b(latest|recent|today|current|2024|2025|2026|new|update|news|outbreak|recall|study|research|cdc|fda)\b/.test(q);
+}
+
+export interface StreamChatOptions {
+  dog?: Dog | null;
+  forceWebSearch?: boolean;
+  onSearchingChange?: (isSearching: boolean) => void;
+}
+
 export async function streamChat(
   history: { role: 'user' | 'assistant'; content: string }[],
   onToken: (token: string) => void,
   signal?: AbortSignal,
-  dog?: Dog | null,
+  options: StreamChatOptions | Dog | null = null,
 ): Promise<string> {
+  const opts: StreamChatOptions =
+    options && typeof options === 'object' && 'dog' in options
+      ? (options as StreamChatOptions)
+      : { dog: (options as Dog | null) ?? undefined };
+
   if (!context) throw new Error('Model not loaded. Go back and try again.');
 
-  // Check if already aborted before starting
   if (signal?.aborted) throw new Error('Generation cancelled.');
 
   let cancelled = false;
@@ -120,11 +145,24 @@ export async function streamChat(
   signal?.addEventListener('abort', abortHandler);
 
   try {
-    // Extract the latest user message for knowledge retrieval
     const lastUserMsg = [...history].reverse().find((m) => m.role === 'user');
+    const queryText = lastUserMsg?.content;
+
+    let webResults: SearchResult[] | undefined;
+    if (queryText && (opts.forceWebSearch || shouldAutoSearch(queryText))) {
+      try {
+        opts.onSearchingChange?.(true);
+        webResults = await searchWeb(queryText, signal);
+      } catch {
+        webResults = [];
+      } finally {
+        opts.onSearchingChange?.(false);
+      }
+    }
+
     const result = await context.completion(
       {
-        messages: [{ role: 'system', content: buildSystemPrompt(dog, lastUserMsg?.content) }, ...history],
+        messages: [{ role: 'system', content: buildSystemPrompt(opts.dog, queryText, webResults) }, ...history],
         n_predict: 512,
         temperature: 0.6,
         top_p: 0.95,

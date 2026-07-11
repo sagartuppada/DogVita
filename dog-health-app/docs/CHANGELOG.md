@@ -4,6 +4,25 @@ All notable changes to the DogVita project, timestamped.
 
 ---
 
+## 2026-07-11
+
+### (uncommitted) feat: add web search to AI chat (agent-reach integration)
+
+Integrated web search capability inspired by agent-reach. Recreated the same concept in TypeScript using DuckDuckGo HTML search (free, no API key) and Jina Reader for URL extraction (free, no API key).
+
+1. DuckDuckGo search integration — find trusted sources when local knowledge is insufficient
+2. Jina Reader URL extraction — read actual page content for better context
+3. Trusted domain allow-list — only reputable dog-health sources (AKC, ASPCA, AVMA, PubMed, etc.)
+4. `/search` prefix handler — manual web search trigger
+5. Auto-search on recency keywords — triggers on latest/recent/2024/2025/2026/FDA/CDC
+6. "Searching web..." indicator — visual feedback during network fetch
+
+**Files:** `webSearch.ts` (new), `llmService.ts`, `useLlamaChat.ts`, `ChatScreen.tsx`
+**Build:** arm64-v8a release APK, installed on device `00116651G005894`
+**Docs:** `arch_v4.md`
+
+---
+
 ## 2026-07-10
 
 ### 17:07 — `993c799` feat: enhance offline AI chat
@@ -128,3 +147,4 @@ First successful build and run on Android emulator.
 | v1.0 | 2026-06-03 → 2026-06-25 | Foundation — BLE, Supabase, Auth, Navigation | `docs/arch_v1.md` |
 | v2.0 | 2026-06-29 → 2026-07-10 | On-Device AI — llama.rn, Qwen2.5, Chat UI | `docs/arch_v2.md` |
 | v3.0 | 2026-07-10 | AI Enhancements — Knowledge base, persistence, UX | `docs/arch_v3.md` |
+| v4.0 | 2026-07-11 | Web Search — agent-reach integration, DuckDuckGo + Jina Reader | `docs/arch_v4.md` |

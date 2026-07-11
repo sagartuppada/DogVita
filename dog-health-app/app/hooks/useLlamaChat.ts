@@ -7,10 +7,12 @@ type Message = { role: 'user' | 'assistant'; content: string };
 
 const MAX_HISTORY_MESSAGES = 20;
 const CHAT_HISTORY_KEY = 'ai-chat-history';
+const SEARCH_PREFIX = '/search ';
 
 export function useLlamaChat(activeDog?: Dog | null) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const historyRef = useRef<Message[]>([]);
   const abortRef = useRef<AbortController | null>(null);
   const loadedRef = useRef(false);
@@ -33,7 +35,14 @@ export function useLlamaChat(activeDog?: Dog | null) {
 
   const sendMessage = useCallback(async (text: string) => {
     if (isGenerating) return;
-    const userMsg: Message = { role: 'user', content: text };
+    let forceWebSearch = false;
+    let cleanText = text;
+    if (text.startsWith(SEARCH_PREFIX)) {
+      forceWebSearch = true;
+      cleanText = text.slice(SEARCH_PREFIX.length).trim();
+      if (!cleanText) return;
+    }
+    const userMsg: Message = { role: 'user', content: cleanText };
     historyRef.current = [...historyRef.current, userMsg];
     setMessages((prev) => [...prev, userMsg, { role: 'assistant', content: '' }]);
     setIsGenerating(true);
@@ -58,16 +67,18 @@ export function useLlamaChat(activeDog?: Dog | null) {
           });
         },
         controller.signal,
-        activeDog,
+        {
+          dog: activeDog ?? null,
+          forceWebSearch,
+          onSearchingChange: setIsSearching,
+        },
       );
       historyRef.current = [...historyRef.current, { role: 'assistant', content: full }];
-      // Trim history to keep context window manageable
       if (historyRef.current.length > MAX_HISTORY_MESSAGES) {
         historyRef.current = historyRef.current.slice(-MAX_HISTORY_MESSAGES);
       }
       persistHistory(historyRef.current);
     } catch (e) {
-      // Remove the orphan empty assistant message and user message from history on error
       setMessages((prev) => {
         const last = prev[prev.length - 1];
         if (last && last.role === 'assistant' && last.content === '') {
@@ -75,7 +86,6 @@ export function useLlamaChat(activeDog?: Dog | null) {
         }
         return prev;
       });
-      // Remove the trailing user message from history to prevent format issues
       if (historyRef.current.length > 0 &&
           historyRef.current[historyRef.current.length - 1].role === 'user') {
         historyRef.current = historyRef.current.slice(0, -1);
@@ -86,6 +96,7 @@ export function useLlamaChat(activeDog?: Dog | null) {
       throw e;
     } finally {
       setIsGenerating(false);
+      setIsSearching(false);
       abortRef.current = null;
     }
   }, [isGenerating, persistHistory, activeDog]);
@@ -101,5 +112,5 @@ export function useLlamaChat(activeDog?: Dog | null) {
     AsyncStorage.removeItem(CHAT_HISTORY_KEY);
   }, []);
 
-  return { messages, sendMessage, isGenerating, clearMessages, cancelGeneration };
+  return { messages, sendMessage, isGenerating, isSearching, clearMessages, cancelGeneration };
 }

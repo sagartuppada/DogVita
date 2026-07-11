@@ -64,7 +64,7 @@ export default function ChatScreen() {
   const [ready, setReady] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const { messages, sendMessage, isGenerating, clearMessages, cancelGeneration } = useLlamaChat(activeDog);
+  const { messages, sendMessage, isGenerating, isSearching, clearMessages, cancelGeneration } = useLlamaChat(activeDog);
   const [input, setInput] = useState('');
   const [sendError, setSendError] = useState<string | null>(null);
   const flatListRef = React.useRef<FlatList>(null);
@@ -179,6 +179,14 @@ export default function ChatScreen() {
         keyExtractor={(_, i) => String(i)}
         contentContainerStyle={styles.messagesList}
         onContentSizeChange={scrollToBottom}
+        ListHeaderComponent={
+          isSearching ? (
+            <View style={styles.searchingBanner}>
+              <ActivityIndicator size="small" color="#FFFFFF" />
+              <Text style={styles.searchingText}>Searching the web…</Text>
+            </View>
+          ) : null
+        }
         renderItem={({ item, index }) => (
           <Pressable
             onLongPress={() => item.content && handleCopy(item.content, index)}
@@ -480,5 +488,21 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600' as const,
     color: '#FFFFFF',
+  },
+  searchingBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    alignSelf: 'flex-start',
+    backgroundColor: '#6B625A',
+    borderRadius: borderRadius.pill,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    marginBottom: spacing.sm,
+  },
+  searchingText: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    fontWeight: '500' as const,
   },
 });
