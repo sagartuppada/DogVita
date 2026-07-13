@@ -42,6 +42,7 @@ export const MainTabNavigator: React.FC = () => {
           bottom: spacing.lg,
           alignSelf: 'center',
           width: 280,
+          flex: 0,
           height: 56,
           borderRadius: borderRadius.xl,
           backgroundColor: colors.white,
