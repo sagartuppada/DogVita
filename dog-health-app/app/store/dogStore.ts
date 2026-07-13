@@ -63,6 +63,7 @@ export const useDogStore = create<DogStore>()(
         set({ isLoading: true, error: null });
         const createLocalDog = (): Dog => ({
           id: `dog_${Date.now()}`,
+          species: input.species ?? 'dog',
           ...input,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -206,6 +207,7 @@ export const useDogStore = create<DogStore>()(
       loadDemoData: () => {
         const demoDog: Dog = {
           id: 'demo_dog_1',
+          species: 'dog',
           name: 'Buddy',
           breed: 'Golden Retriever',
           birthDate: '2022-01-15',

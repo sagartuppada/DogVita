@@ -4,6 +4,7 @@
 
 export interface Dog {
   id: string;
+  species: 'dog' | 'cat';
   name: string;
   breed: string;
   birthDate?: string;
@@ -67,6 +68,7 @@ export interface DogBreed {
 export interface CreateDogInput {
   name: string;
   breed: string;
+  species?: 'dog' | 'cat';
   birthDate?: string;
   weight?: number;
   weightUnit?: 'kg' | 'lb';

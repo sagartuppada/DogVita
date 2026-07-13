@@ -154,6 +154,7 @@ function mapDogRow(row: Record<string, unknown>): Dog {
   const weightKg = (row.weight_kg as number) ?? 0;
   return {
     id: row.id as string,
+    species: (row.species as 'dog' | 'cat') || 'dog',
     name: row.name as string,
     breed: (row.breed as string) || '',
     birthDate: (row.birth_date as string) || '',
