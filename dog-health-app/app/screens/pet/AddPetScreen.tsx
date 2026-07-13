@@ -160,6 +160,12 @@ export default function AddPetScreen() {
           </View>
         </View>
 
+        <Text style={styles.label}>Photo</Text>
+        <TouchableOpacity style={styles.photoPlaceholder} activeOpacity={0.7}>
+          <Ionicons name="camera-outline" size={40} color={colors.text.secondary} />
+          <Text style={styles.photoText}>Add Photo</Text>
+        </TouchableOpacity>
+
         <Text style={styles.label}>Gender</Text>
         <View style={styles.genderRow}>
           {(['male', 'female'] as const).map((g) => (
@@ -261,6 +267,21 @@ const styles = StyleSheet.create({
   genderPillActive: { backgroundColor: colors.primary.DEFAULT },
   genderLabel: { ...typography.styles.bodyMD, color: colors.text.secondary },
   genderLabelActive: { color: colors.white },
+  photoPlaceholder: {
+    width: 100,
+    height: 100,
+    borderRadius: borderRadius.lg,
+    backgroundColor: colors.background.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: spacing.sm,
+  },
+  photoText: {
+    ...typography.styles.caption,
+    color: colors.text.secondary,
+    marginTop: spacing.xs,
+  },
   footer: { paddingHorizontal: spacing.lg, paddingBottom: spacing.xl },
   saveBtn: {
     backgroundColor: colors.primary.DEFAULT,
