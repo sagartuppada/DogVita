@@ -8,6 +8,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
   Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -37,8 +38,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5E9CD',
   },
+  scrollContent: {
+    flexGrow: 1,
+  },
   mapContainer: {
-    flex: 1,
+    height: 300,
     position: 'relative',
   },
   mapPlaceholder: {
@@ -278,6 +282,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
 
   return (
     <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
       {/* Map */}
       <View style={styles.mapContainer}>
         {hasLocation ? (
@@ -428,6 +433,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
           </TouchableOpacity>
         </View>
       </Card>
+      </ScrollView>
     </View>
   );
 }
