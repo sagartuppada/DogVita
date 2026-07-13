@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.white,
     borderRadius: borderRadius.xl,
-    height: 56,
-    paddingHorizontal: spacing.md,
+    height: 62,
+    paddingHorizontal: spacing.lg,
     ...shadows.tabBar,
     ...Platform.select({
       ios: {},
@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
   tabItem: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
   },
   tabLabel: {
     fontSize: 10,
