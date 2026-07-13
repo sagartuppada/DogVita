@@ -28,6 +28,8 @@ import VaccinationRecordsScreen from '../screens/dog/VaccinationRecordsScreen';
 import SymptomCheckerScreen from '../screens/ai/SymptomCheckerScreen';
 import DietFeedingScreen from '../screens/ai/DietFeedingScreen';
 import ChatScreen from '../screens/chat/ChatScreen';
+import AddPetScreen from '../screens/pet/AddPetScreen';
+import PrivacyPolicyScreen from '../screens/settings/PrivacyPolicyScreen';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
@@ -113,6 +115,8 @@ export const RootNavigator: React.FC = () => {
             <RootStack.Screen name="SymptomChecker" component={SymptomCheckerScreen} />
             <RootStack.Screen name="DietFeeding" component={DietFeedingScreen} />
             <RootStack.Screen name="Chat" component={ChatScreen} />
+            <RootStack.Screen name="AddPet" component={AddPetScreen} options={{ headerShown: false }} />
+            <RootStack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} options={{ headerShown: false }} />
           </>
         ) : (
           <RootStack.Screen name="Onboarding" component={OnboardingNavigator} />

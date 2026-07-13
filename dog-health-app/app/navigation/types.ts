@@ -37,6 +37,8 @@ export type RootStackParamList = {
   SymptomChecker: undefined;
   DietFeeding: undefined;
   Chat: undefined;
+  AddPet: undefined;
+  PrivacyPolicy: undefined;
 };
 
 // Screen props types
@@ -65,6 +67,8 @@ export type VaccinationRecordsScreenProps = NativeStackScreenProps<RootStackPara
 export type SymptomCheckerScreenProps = NativeStackScreenProps<RootStackParamList, 'SymptomChecker'>;
 export type DietFeedingScreenProps = NativeStackScreenProps<RootStackParamList, 'DietFeeding'>;
 export type ChatScreenProps = NativeStackScreenProps<RootStackParamList, 'Chat'>;
+export type AddPetScreenProps = NativeStackScreenProps<RootStackParamList, 'AddPet'>;
+export type PrivacyPolicyScreenProps = NativeStackScreenProps<RootStackParamList, 'PrivacyPolicy'>;
 
 declare global {
   namespace ReactNavigation {
