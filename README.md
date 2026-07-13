@@ -15,6 +15,12 @@ Smart wearable dog health monitoring system. A React Native app that connects to
 - **CRM Dashboard** — Next.js admin panel for monitoring users, subscriptions, and alerts
 - **Supabase Backend** — Cloud sync, auth, and data persistence
 
+## Screenshots
+
+| Dashboard | Health | Tracking | AI Chat |
+|-----------|--------|----------|---------|
+| ![Dashboard](screenshots/dashboard.png) | ![Health](screenshots/health.png) | ![Tracking](screenshots/tracking.png) | ![AI Chat](screenshots/ai_chat.png) |
+
 ## Architecture
 
 ```
