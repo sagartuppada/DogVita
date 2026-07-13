@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
   headerName: { ...typography.styles.headingXL, color: colors.text.primary, marginTop: 2 },
   headerRight: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   notifButton: { padding: 8 },
-  notifBadge: { position: 'absolute', top: 4, right: 4, width: 10, height: 10, borderRadius: 5, backgroundColor: colors.status.error },
   dogsRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 16, marginBottom: 24 },
   dogAvatar: { alignItems: 'center', width: 72 },
   avatarCircle: { width: 64, height: 64, borderRadius: 32, backgroundColor: colors.background.card, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', ...shadows.sm },
@@ -134,7 +133,6 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
   const isConnected = useBLEStore((s) => s.isConnected);
   const deviceName = useBLEStore((s) => s.connectedDeviceName);
   const alerts = useAlertStore((s) => s.alerts);
-  const unacknowledgedCount = useAlertStore((s) => s.unacknowledgedCount);
   const acknowledgeAlert = useAlertStore((s) => s.acknowledgeAlert);
   const acknowledgeAll = useAlertStore((s) => s.acknowledgeAll);
   const fetchAlerts = useAlertStore((s) => s.fetchAlerts);
@@ -241,12 +239,13 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
   }, [topAlert, acknowledgeAlert]);
 
   const handleMarkAllDone = useCallback(() => {
-    if (unacknowledgedCount === 0) return;
-    Alert.alert('Acknowledge All', `Mark all ${unacknowledgedCount} alerts as done?`, [
+    const count = alerts.filter((a) => !a.acknowledged && a.dogId === activeDogId).length;
+    if (count === 0) return;
+    Alert.alert('Acknowledge All', `Mark all ${count} alerts as done?`, [
       { text: 'Cancel', style: 'cancel' },
       { text: 'All Done', onPress: () => acknowledgeAll() },
     ]);
-  }, [unacknowledgedCount, acknowledgeAll]);
+  }, [alerts, activeDogId, acknowledgeAll]);
 
   if (!activeDog) {
     return (
@@ -279,8 +278,7 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
               activeOpacity={0.7}
               onPress={() => navigation.getParent()?.navigate('Settings')}
             >
-              <Ionicons name="notifications-outline" size={26} color={colors.text.primary} />
-              {unacknowledgedCount > 0 && <View style={styles.notifBadge} />}
+              <Ionicons name="person-outline" size={26} color={colors.text.primary} />
             </TouchableOpacity>
           </View>
         </View>
@@ -306,7 +304,7 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
               </Text>
             </TouchableOpacity>
           ))}
-          <TouchableOpacity style={styles.addDogBtn} activeOpacity={0.7} onPress={() => navigation.getParent()?.navigate('Settings')}>
+          <TouchableOpacity style={styles.addDogBtn} activeOpacity={0.7} onPress={() => navigation.getParent()?.navigate('AddPet')}>
             <View style={styles.addIconCircle}>
               <Ionicons name="add" size={28} color={colors.primary.DEFAULT} />
             </View>
