@@ -247,6 +247,13 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
             value="v1.0.0"
             onPress={() => Alert.alert('About', 'DogVita v1.0.0\nSmart health monitoring for your best friend')}
           />
+          <View style={styles.separator} />
+          <SettingRow
+            icon="shield-checkmark-outline"
+            iconColor="#6B625A"
+            label="Privacy Policy"
+            onPress={() => navigation.navigate('PrivacyPolicy')}
+          />
         </Card>
 
         {/* Logout */}
