@@ -254,6 +254,13 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
             label="Privacy Policy"
             onPress={() => navigation.navigate('PrivacyPolicy')}
           />
+          <View style={styles.separator} />
+          <SettingRow
+            icon="document-text-outline"
+            iconColor="#6B625A"
+            label="Terms & Conditions"
+            onPress={() => navigation.navigate('TermsConditions')}
+          />
         </Card>
 
         {/* Logout */}

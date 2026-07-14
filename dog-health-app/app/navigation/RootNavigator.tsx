@@ -30,6 +30,7 @@ import DietFeedingScreen from '../screens/ai/DietFeedingScreen';
 import ChatScreen from '../screens/chat/ChatScreen';
 import AddPetScreen from '../screens/pet/AddPetScreen';
 import PrivacyPolicyScreen from '../screens/settings/PrivacyPolicyScreen';
+import TermsConditionsScreen from '../screens/settings/TermsConditionsScreen';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
@@ -117,6 +118,7 @@ export const RootNavigator: React.FC = () => {
             <RootStack.Screen name="Chat" component={ChatScreen} />
             <RootStack.Screen name="AddPet" component={AddPetScreen} options={{ headerShown: false }} />
             <RootStack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} options={{ headerShown: false }} />
+            <RootStack.Screen name="TermsConditions" component={TermsConditionsScreen} options={{ headerShown: false }} />
           </>
         ) : (
           <RootStack.Screen name="Onboarding" component={OnboardingNavigator} />
