@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   dogNameLabel: { ...typography.styles.caption, color: colors.text.primary, marginTop: 6, fontWeight: '500', textAlign: 'center' },
   addDogBtn: { alignItems: 'center', width: 72 },
   addIconCircle: { width: 64, height: 64, borderRadius: 32, backgroundColor: colors.background.card, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderStyle: 'dashed', borderColor: colors.primary.DEFAULT },
-  snapshotCard: { backgroundColor: colors.primary.DEFAULT, borderRadius: borderRadius.xxl, padding: 20, marginBottom: 24, ...shadows.md },
+  snapshotCard: { backgroundColor: colors.primary.DEFAULT, borderRadius: borderRadius.xl, padding: 20, marginBottom: 24, ...shadows.elevatedCard },
   snapshotLabel: { ...typography.styles.overline, color: '#FFFFFFCC', marginBottom: 8, letterSpacing: 1.5 },
   snapshotTitle: { fontSize: 22, fontWeight: '700', color: '#FFFFFF', marginBottom: 4 },
   snapshotDesc: { fontSize: 14, color: '#FFFFFFCC', marginBottom: 16, lineHeight: 20 },
@@ -86,31 +86,31 @@ const styles = StyleSheet.create({
   markDoneText: { fontSize: 15, fontWeight: '600', color: colors.primary.DEFAULT },
   allBtn: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFFFFF22', borderRadius: borderRadius.pill, paddingVertical: 10, paddingHorizontal: 16, gap: 4 },
   allBtnText: { fontSize: 15, fontWeight: '600', color: '#FFFFFF' },
-  noAlertCard: { backgroundColor: colors.background.card, borderRadius: borderRadius.xxl, padding: 20, marginBottom: 24, alignItems: 'center', ...shadows.sm },
+  noAlertCard: { backgroundColor: '#4CAF5012', borderRadius: borderRadius.xl, padding: 20, marginBottom: 24, alignItems: 'center', ...shadows.elevatedCard },
   noAlertIcon: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#4CAF5018', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
   noAlertTitle: { fontSize: 16, fontWeight: '600', color: colors.text.primary, marginBottom: 4 },
   noAlertDesc: { fontSize: 13, color: colors.text.tertiary, textAlign: 'center' },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: colors.text.primary },
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: colors.text.primary, fontFamily: typography.fontFamily.bold },
   seeAllLink: { fontSize: 14, fontWeight: '600', color: colors.primary.DEFAULT },
   quickLogRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 28 },
   quickLogItem: { alignItems: 'center', gap: 8 },
   quickLogIcon: { width: 56, height: 56, borderRadius: borderRadius.lg, backgroundColor: colors.background.card, alignItems: 'center', justifyContent: 'center', ...shadows.sm },
   quickLogLabel: { fontSize: 12, fontWeight: '500', color: colors.text.primary },
-  upcomingItem: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.background.card, borderRadius: borderRadius.xl, padding: 16, marginBottom: 12, ...shadows.sm },
+  upcomingItem: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.background.card, borderRadius: borderRadius.xl, padding: 16, marginBottom: 12, ...shadows.elevatedCard, borderLeftWidth: 4 },
   upcomingIconWrap: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#F3A93B18', alignItems: 'center', justifyContent: 'center', marginRight: 14 },
   upcomingInfo: { flex: 1 },
   upcomingTitle: { fontSize: 15, fontWeight: '600', color: colors.text.primary },
   upcomingSub: { fontSize: 13, color: colors.text.tertiary, marginTop: 2 },
   upcomingTag: { backgroundColor: '#F3A93B18', borderRadius: borderRadius.pill, paddingVertical: 4, paddingHorizontal: 10 },
   upcomingTagText: { fontSize: 12, fontWeight: '600', color: colors.primary.DEFAULT },
-  deviceRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.background.card, borderRadius: borderRadius.xl, padding: 16, marginBottom: 12, ...shadows.sm },
+  deviceRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.background.card, borderRadius: borderRadius.xl, padding: 16, marginBottom: 12, ...shadows.elevatedCard },
   deviceInfo: { flexDirection: 'row', alignItems: 'center', flex: 1 },
   deviceIconWrap: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.background.secondary, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
   deviceText: {},
   deviceName: { fontSize: 15, fontWeight: '600', color: colors.text.primary },
   deviceStatus: { fontSize: 13, color: colors.text.tertiary, marginTop: 2 },
-  emptyUpcoming: { backgroundColor: colors.background.card, borderRadius: borderRadius.xl, padding: 24, alignItems: 'center', marginBottom: 12, ...shadows.sm },
+  emptyUpcoming: { backgroundColor: colors.background.card, borderRadius: borderRadius.xl, padding: 24, alignItems: 'center', marginBottom: 12, ...shadows.elevatedCard },
   emptyUpcomingText: { fontSize: 14, color: colors.text.tertiary, marginTop: 8 },
 });
 
@@ -355,7 +355,7 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
               activeOpacity={0.7}
               onPress={() => handleQuickAction(action.id)}
             >
-              <View style={styles.quickLogIcon}>
+              <View style={[styles.quickLogIcon, { backgroundColor: action.color + '15' }]}>
                 <Ionicons name={action.icon} size={24} color={action.color} />
               </View>
               <Text style={styles.quickLogLabel}>{action.label}</Text>
@@ -377,7 +377,7 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
           upcomingAlerts.map((alert) => (
             <TouchableOpacity
               key={alert.id}
-              style={styles.upcomingItem}
+              style={[styles.upcomingItem, { borderLeftColor: alert.severity === 'critical' ? '#F44336' : alert.severity === 'warning' ? '#FF9800' : '#5B9BD5' }]}
               activeOpacity={0.7}
               onPress={() => acknowledgeAlert(alert.id)}
             >
@@ -413,7 +413,7 @@ export default function DashboardScreen({ navigation }: DashboardScreenProps<'Da
               <Text style={styles.sectionTitle}>Active Walk</Text>
             </View>
             <TouchableOpacity
-              style={styles.upcomingItem}
+              style={[styles.upcomingItem, { borderLeftColor: '#4CAF50' }]}
               activeOpacity={0.7}
               onPress={() => navigation.navigate('Tracking')}
             >
