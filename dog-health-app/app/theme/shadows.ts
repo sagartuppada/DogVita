@@ -91,6 +91,56 @@ export const shadows = {
     shadowRadius: 8,
     elevation: 2,
   } as ViewStyle,
+
+  /** Elevated card — playful depth for colored cards */
+  elevatedCard: {
+    shadowColor: '#3D322A',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 8,
+  } as ViewStyle,
+
+  /** Colored glow — health metric cards */
+  glowRed: {
+    shadowColor: '#F44336',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 6,
+  } as ViewStyle,
+
+  glowGreen: {
+    shadowColor: '#4CAF50',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 6,
+  } as ViewStyle,
+
+  glowOrange: {
+    shadowColor: '#F3A93B',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 6,
+  } as ViewStyle,
+
+  glowBlue: {
+    shadowColor: '#5B9BD5',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 6,
+  } as ViewStyle,
+
+  glowPurple: {
+    shadowColor: '#7E57C2',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 6,
+  } as ViewStyle,
 } as const;
 
 export type Shadows = typeof shadows;
