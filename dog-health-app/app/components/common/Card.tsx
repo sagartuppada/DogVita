@@ -9,9 +9,10 @@ import { colors, spacing, borderRadius, shadows } from '../../theme';
 interface CardProps {
   children: React.ReactNode;
   style?: ViewStyle;
-  variant?: 'default' | 'elevated' | 'outlined' | 'filled';
+  variant?: 'default' | 'elevated' | 'outlined' | 'filled' | 'colored';
   padding?: 'none' | 'sm' | 'md' | 'lg';
   onPress?: () => void;
+  color?: string;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -20,6 +21,7 @@ export const Card: React.FC<CardProps> = ({
   variant = 'default',
   padding = 'md',
   onPress,
+  color,
 }) => {
   const getPadding = (): number => {
     switch (padding) {
@@ -44,6 +46,12 @@ export const Card: React.FC<CardProps> = ({
         return { ...styles.outlined, padding: getPadding() };
       case 'filled':
         return { ...styles.filled, padding: getPadding() };
+      case 'colored':
+        return {
+          backgroundColor: color || colors.background.card,
+          padding: getPadding(),
+          ...shadows.elevatedCard,
+        };
       default:
         return { ...styles.default, padding: getPadding() };
     }
@@ -67,7 +75,7 @@ export const Card: React.FC<CardProps> = ({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.background.card,
-    borderRadius: borderRadius.xxl,
+    borderRadius: borderRadius.xl,
   },
   default: {
     ...shadows.card,
