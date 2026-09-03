@@ -12,6 +12,7 @@ import {
   Animated,
   Pressable,
   Clipboard,
+  ScrollView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -19,15 +20,13 @@ import { useDogStore } from '../../store/dogStore';
 import { isModelDownloaded, downloadModel } from '../../services/ai/modelManager';
 import { loadModel } from '../../services/ai/llmService';
 import { useLlamaChat } from '../../hooks/useLlamaChat';
-import { spacing, borderRadius, colors } from '../../theme';
+import { spacing, borderRadius, colors, typography, shadows } from '../../theme';
 
-const PROMPT_CHIPS = [
+const SUGGESTIONS = [
   'How much should I feed my dog?',
-  'Is my dog getting enough exercise?',
-  'What vaccines does my dog need?',
-  'My dog is scratching a lot',
-  'Signs of emergency',
-  'Teething tips for puppies',
+  'Check heart rate',
+  'Activity summary',
+  'Any alerts?',
 ];
 
 function TypingIndicator() {
@@ -135,8 +134,8 @@ export default function ChatScreen() {
       <View style={[styles.loadingContainer, { paddingTop: insets.top }]}>
         {error ? (
           <>
-            <Ionicons name="alert-circle-outline" size={48} color="#F44336" />
-            <Text style={[styles.loadingText, { color: '#F44336', marginTop: spacing.md }]}>
+            <Ionicons name="alert-circle-outline" size={48} color={colors.status.error} />
+            <Text style={[styles.loadingText, { color: colors.status.error, marginTop: spacing.md }]}>
               {error}
             </Text>
             <TouchableOpacity
@@ -144,7 +143,7 @@ export default function ChatScreen() {
               onPress={initModel}
               activeOpacity={0.7}
             >
-              <Ionicons name="refresh" size={20} color="#FFFFFF" />
+              <Ionicons name="refresh" size={20} color={colors.text.inverse} />
               <Text style={styles.retryText}>Retry</Text>
             </TouchableOpacity>
           </>
@@ -223,24 +222,32 @@ export default function ChatScreen() {
               Nutrition, exercise, behavior, health — anything goes.
             </Text>
             <View style={styles.chipContainer}>
-              {PROMPT_CHIPS.map((chip) => (
+              {SUGGESTIONS.map((s) => (
                 <TouchableOpacity
-                  key={chip}
+                  key={s}
                   style={styles.chip}
-                  onPress={() => {
-                    setInput(chip);
-                    handleSendDirect(chip);
-                  }}
+                  onPress={() => handleSendDirect(s)}
                   disabled={isGenerating}
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.chipText}>{chip}</Text>
+                  <Text style={styles.chipText}>{s}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           </View>
         }
-      />
+/>
+      
+      {/* Suggestion Chips */}
+      {messages.length === 0 && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.suggestionsRow}>
+          {SUGGESTIONS.map((s) => (
+            <TouchableOpacity key={s} style={styles.suggestionChip} onPress={() => handleSendDirect(s)} disabled={isGenerating} activeOpacity={0.7}>
+              <Text style={styles.suggestionText}>{s}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
 
       {sendError && (
         <View style={styles.errorBanner}>
@@ -260,7 +267,7 @@ export default function ChatScreen() {
             disabled={isGenerating}
             activeOpacity={0.7}
           >
-            <Ionicons name="add-circle-outline" size={28} color={isGenerating ? '#A39888' : colors.primary.DEFAULT} />
+            <Ionicons name="add-circle-outline" size={28} color={isGenerating ? colors.text.disabled : colors.primary.DEFAULT} />
           </TouchableOpacity>
         )}
         <TextInput
@@ -268,7 +275,7 @@ export default function ChatScreen() {
           value={input}
           onChangeText={setInput}
           placeholder="Ask about your dog…"
-          placeholderTextColor="#A39888"
+          placeholderTextColor={colors.text.disabled}
           editable={!isGenerating}
           onSubmitEditing={handleSend}
           returnKeyType="send"
@@ -279,7 +286,7 @@ export default function ChatScreen() {
             onPress={cancelGeneration}
             activeOpacity={0.7}
           >
-            <Ionicons name="stop-circle" size={32} color="#F44336" />
+            <Ionicons name="stop-circle" size={24} color={colors.status.error} />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
@@ -290,8 +297,8 @@ export default function ChatScreen() {
           >
             <Ionicons
               name="arrow-up-circle"
-              size={32}
-              color={!input.trim() ? '#A39888' : colors.primary.DEFAULT}
+              size={24}
+              color={!input.trim() ? colors.text.disabled : colors.primary.DEFAULT}
             />
           </TouchableOpacity>
         )}
@@ -303,30 +310,30 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5E9CD',
+    backgroundColor: colors.background.base,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5E9CD',
+    backgroundColor: colors.background.base,
   },
   loadingText: {
     marginTop: spacing.md,
-    fontSize: 14,
-    color: '#6B625A',
+    ...typography.styles.bodyMD,
+    color: colors.text.secondary,
   },
   progressBar: {
     width: 200,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#E0D5C1',
+    backgroundColor: colors.border.light,
     marginTop: spacing.sm,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#F3A93B',
+    backgroundColor: colors.primary.DEFAULT,
     borderRadius: 2,
   },
   messagesList: {
@@ -336,32 +343,33 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   messageBubble: {
-    maxWidth: '82%',
-    borderRadius: borderRadius.lg,
+    maxWidth: '85%',
+    borderRadius: borderRadius.xl,
     padding: spacing.md,
     marginBottom: spacing.sm,
+    marginHorizontal: spacing.xs,
   },
   userBubble: {
     alignSelf: 'flex-end',
-    backgroundColor: '#F3A93B',
-    borderBottomRightRadius: 4,
+    backgroundColor: colors.primary.DEFAULT,
+    borderBottomRightRadius: 8,
+    ...shadows.sm,
   },
   assistantBubble: {
     alignSelf: 'flex-start',
-    backgroundColor: '#FBF4E4',
-    borderWidth: 1,
-    borderColor: '#F0E8D8',
-    borderBottomLeftRadius: 4,
+    backgroundColor: colors.background.elevated,
+    borderBottomLeftRadius: 8,
+    ...shadows.sm,
   },
   messageText: {
-    fontSize: 15,
+    ...typography.styles.bodyMD,
     lineHeight: 22,
   },
   userText: {
-    color: '#FFFFFF',
+    color: colors.text.inverse,
   },
   assistantText: {
-    color: '#1F1A17',
+    color: colors.text.primary,
   },
   emptyContainer: {
     flex: 1,
@@ -370,42 +378,44 @@ const styles = StyleSheet.create({
     paddingTop: 120,
   },
   emptyTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1F1A17',
+    ...typography.styles.headingSM,
+    color: colors.text.primary,
     marginTop: spacing.md,
   },
   emptySubtitle: {
-    fontSize: 14,
-    color: '#A39888',
+    ...typography.styles.bodyMD,
+    color: colors.text.secondary,
     marginTop: spacing.xs,
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.page,
-    paddingTop: spacing.sm,
-    gap: spacing.sm,
+    backgroundColor: colors.background.elevated,
+    borderRadius: borderRadius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    marginHorizontal: spacing.page,
+    marginBottom: spacing.sm,
+    ...shadows.sm,
   },
   input: {
     flex: 1,
-    height: 48,
-    borderRadius: borderRadius.xl,
-    backgroundColor: '#FBF4E4',
-    borderWidth: 1,
-    borderColor: '#F0E8D8',
-    paddingHorizontal: spacing.md,
     fontSize: 15,
-    color: '#1F1A17',
+    color: colors.text.primary,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
   },
   sendButton: {
-    width: 44,
-    height: 44,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.primary.DEFAULT,
     alignItems: 'center',
     justifyContent: 'center',
+    marginLeft: spacing.xs,
   },
   sendButtonDisabled: {
-    opacity: 0.5,
+    backgroundColor: colors.border.DEFAULT,
   },
   retryButton: {
     flexDirection: 'row',
@@ -418,9 +428,9 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.pill,
   },
   retryText: {
-    fontSize: 15,
+    ...typography.styles.bodyMD,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: colors.text.inverse,
   },
   errorBanner: {
     flexDirection: 'row',
@@ -428,14 +438,14 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     marginHorizontal: spacing.page,
     marginBottom: spacing.xs,
-    backgroundColor: '#F4433612',
+    backgroundColor: 'rgba(244, 67, 54, 0.07)',
     borderRadius: borderRadius.md,
     padding: spacing.sm,
   },
   errorText: {
     flex: 1,
-    fontSize: 13,
-    color: '#F44336',
+    ...typography.styles.bodySM,
+    color: colors.status.error,
   },
   clearButton: {
     width: 36,
@@ -452,16 +462,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
   },
   chip: {
-    backgroundColor: '#FBF4E4',
-    borderWidth: 1,
-    borderColor: '#F0E8D8',
+    backgroundColor: colors.primary[50],
     borderRadius: borderRadius.pill,
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.primary[200],
   },
   chipText: {
-    fontSize: 13,
-    color: '#6B625A',
+    ...typography.styles.bodySM,
+    color: colors.primary.dark,
+    fontWeight: '500',
+  },
+  suggestionsRow: {
+    paddingHorizontal: spacing.page,
+    paddingVertical: spacing.xs,
+    gap: spacing.sm,
+  },
+  suggestionChip: {
+    backgroundColor: colors.background.elevated,
+    borderRadius: borderRadius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border.DEFAULT,
+    ...shadows.sm,
+  },
+  suggestionText: {
+    ...typography.styles.bodySM,
+    color: colors.text.primary,
+    fontWeight: '500',
   },
   typingRow: {
     flexDirection: 'row',
@@ -473,36 +503,36 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#A39888',
+    backgroundColor: colors.text.disabled,
   },
   copiedBadge: {
     position: 'absolute',
     top: -8,
     right: -8,
-    backgroundColor: '#F3A93B',
+    backgroundColor: colors.primary.DEFAULT,
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
   },
   copiedText: {
-    fontSize: 11,
+    ...typography.styles.caption,
     fontWeight: '600' as const,
-    color: '#FFFFFF',
+    color: colors.text.inverse,
   },
   searchingBanner: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.xs,
     alignSelf: 'flex-start',
-    backgroundColor: '#6B625A',
+    backgroundColor: colors.text.tertiary,
     borderRadius: borderRadius.pill,
     paddingVertical: 6,
     paddingHorizontal: 12,
     marginBottom: spacing.sm,
   },
   searchingText: {
-    fontSize: 12,
-    color: '#FFFFFF',
+    ...typography.styles.bodySM,
+    color: colors.text.inverse,
     fontWeight: '500' as const,
   },
 });
