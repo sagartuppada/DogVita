@@ -10,52 +10,34 @@ import { useDogStore } from '../../store/dogStore';
 import { useHealthStore } from '../../store/healthStore';
 import { Card, EmptyState } from '../../components/common';
 import HeartRateChart from '../../components/charts/HeartRateChart';
-import { spacing, typography, borderRadius, shadows } from '../../theme';
+import Sparkline from '../../components/charts/Sparkline';
+import { spacing, typography, borderRadius, shadows, colors } from '../../theme';
 import type { HealthTabScreenProps } from '../../navigation/types';
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  scrollContent: { paddingHorizontal: 16, paddingTop: 16 },
+  container: { flex: 1, backgroundColor: colors.background.primary },
+  scrollContent: { paddingHorizontal: 20, paddingTop: 16 },
   header: { marginBottom: 24 },
-  title: { ...typography.styles.headingXL, color: '#1F1A17' },
-  dogName: { ...typography.styles.bodySM, color: '#A39888', marginTop: 2 },
-  sectionTitle: { ...typography.styles.label, color: '#6B625A', marginBottom: 12, marginTop: 20 },
-  chipsGrid: { flexDirection: 'row', gap: 12, marginBottom: 12 },
-  chip: { flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FBF4E4', borderRadius: 20, padding: 16, ...shadows.sm },
-  chipIcon: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  chipContent: { flex: 1 },
-  chipLabel: { ...typography.styles.caption, color: '#A39888', marginBottom: 2 },
-  chipValueRow: { flexDirection: 'row', alignItems: 'baseline' },
-  chipValue: { fontSize: 17, fontWeight: '700', color: '#1F1A17' },
-  chipUnit: { ...typography.styles.caption, color: '#A39888', marginLeft: 3 },
+  title: { ...typography.styles.headingXL, color: colors.text.primary },
+  dogName: { ...typography.styles.bodySM, color: colors.text.tertiary, marginTop: 2 },
+  sectionTitle: { ...typography.styles.label, color: colors.text.secondary, marginBottom: 12, marginTop: 20 },
+  metricCards: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 12,
+  },
+  metricCard: {
+    flex: 1,
+    borderRadius: borderRadius.xl,
+    padding: spacing.lg,
+  },
   activityCard: { marginBottom: 20 },
   activityRow: { flexDirection: 'row', justifyContent: 'space-around' },
   activityItem: { alignItems: 'center' },
   activityCircle: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
-  activityValue: { fontSize: 17, fontWeight: '700', color: '#1F1A17' },
-  activityLabel: { ...typography.styles.caption, color: '#A39888', marginTop: 2 },
+  activityValue: { fontSize: 17, fontWeight: '700', color: colors.text.primary },
+  activityLabel: { ...typography.styles.caption, color: colors.text.tertiary, marginTop: 2 },
 });
-
-const MetricChip: React.FC<{
-  icon: string;
-  label: string;
-  value: string;
-  unit: string;
-  color: string;
-}> = ({ icon, label, value, unit, color }) => (
-  <View style={styles.chip}>
-    <View style={[styles.chipIcon, { backgroundColor: color + '18' }]}>
-      <Ionicons name={icon} size={16} color={color} />
-    </View>
-    <View style={styles.chipContent}>
-      <Text style={styles.chipLabel}>{label}</Text>
-      <View style={styles.chipValueRow}>
-        <Text style={styles.chipValue}>{value}</Text>
-        <Text style={styles.chipUnit}>{unit}</Text>
-      </View>
-    </View>
-  </View>
-);
 
 export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>) {
   const insets = useSafeAreaInsets();
@@ -122,7 +104,7 @@ export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>)
       <ScrollView
         contentContainerStyle={[styles.scrollContent, { paddingBottom: 100 }]}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#F3A93B" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary.DEFAULT} />}
       >
         <View style={styles.header}>
           <Text style={styles.title}>Health</Text>
@@ -132,34 +114,67 @@ export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>)
         <HeartRateChart data={last20Bpm} current={latestHR} min={hrMin} max={hrMax} />
 
         <Text style={styles.sectionTitle}>Current Vitals</Text>
-        <View style={styles.chipsGrid}>
-          <MetricChip icon="thermometer" label="Temperature" value={latestTemp ? latestTemp.celsius.toFixed(1) : '--'} unit="°C" color="#FF9800" />
-          <MetricChip icon="flash" label="Battery" value={latestBattery !== null ? String(latestBattery) : '--'} unit="%" color="#E2941C" />
+        {/* Metric Cards with Sparklines */}
+        <View style={styles.metricCards}>
+          <View style={[styles.metricCard, { backgroundColor: '#FFEBEE', ...shadows.glowRed }]}>
+            <Sparkline
+              data={heartRateHistory.slice(-20).map((d) => d.bpm)}
+              color="#F44336"
+              label="Heart Rate"
+              value={latestHR ? String(latestHR) : '--'}
+              unit="bpm"
+            />
+          </View>
+          <View style={[styles.metricCard, { backgroundColor: '#FFF3E0', ...shadows.glowOrange }]}>
+            <Sparkline
+              data={temperatureHistory.slice(-20).map((d) => d.celsius)}
+              color="#FF9800"
+              label="Temperature"
+              value={latestTemp ? latestTemp.celsius.toFixed(1) : '--'}
+              unit="°C"
+            />
+          </View>
         </View>
-        <View style={styles.chipsGrid}>
-          <MetricChip icon="heart" label="Heart Rate" value={latestHR ? String(latestHR) : '--'} unit="bpm" color="#F44336" />
-          <MetricChip icon="footsteps" label="Steps" value={latestActivity ? String(latestActivity.steps) : '--'} unit="today" color="#4CAF50" />
+        <View style={styles.metricCards}>
+          <View style={[styles.metricCard, { backgroundColor: '#E8F5E9', ...shadows.glowGreen }]}>
+            <Sparkline
+              data={activityHistory.slice(-20).map((d) => d.steps)}
+              color="#4CAF50"
+              label="Steps"
+              value={latestActivity ? String(latestActivity.steps) : '--'}
+              unit="today"
+            />
+          </View>
+          <View style={[styles.metricCard, { backgroundColor: '#E3F2FD', ...shadows.glowBlue }]}>
+            <Sparkline
+              data={[]}
+              color="#5B9BD5"
+              label="Battery"
+              value={latestBattery !== null ? String(latestBattery) : '--'}
+              unit="%"
+            />
+          </View>
         </View>
 
         <Card variant="default" padding="md" style={styles.activityCard}>
           <Text style={styles.sectionTitle}>Activity Summary</Text>
           <View style={styles.activityRow}>
             <View style={styles.activityItem}>
-              <View style={[styles.activityCircle, { backgroundColor: '#4CAF5018' }]}>
+              <View style={[styles.activityCircle, { backgroundColor: '#E8F5E9', ...shadows.glowGreen }]}>
                 <Ionicons name="walk" size={20} color="#4CAF50" />
               </View>
               <Text style={styles.activityValue}>{latestActivity ? `${latestActivity.activeMinutes}m` : '--'}</Text>
               <Text style={styles.activityLabel}>Active</Text>
             </View>
             <View style={styles.activityItem}>
-              <View style={[styles.activityCircle, { backgroundColor: '#F3A93B18' }]}>
+              <View style={[styles.activityCircle, { backgroundColor: '#FFF3E0', ...shadows.glowOrange }]}>
                 <Ionicons name="flame" size={20} color="#F3A93B" />
               </View>
               <Text style={styles.activityValue}>{latestActivity ? String(latestActivity.calories) : '--'}</Text>
               <Text style={styles.activityLabel}>Calories</Text>
             </View>
             <View style={styles.activityItem}>
-              <View style={[styles.activityCircle, { backgroundColor: '#7E57C218' }]}>
+              <View style={[styles.activityCircle, { backgroundColor: '#EDE7F6', ...shadows.glowPurple }]}>
                 <Ionicons name="moon" size={20} color="#7E57C2" />
               </View>
               <Text style={styles.activityValue}>--</Text>
