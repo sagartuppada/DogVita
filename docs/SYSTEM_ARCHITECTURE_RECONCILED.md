@@ -26,7 +26,7 @@ This is the non-negotiable starting point. Anything below that contradicts this 
 | Layer | Reality |
 |---|---|
 | 🟢 Mobile app | `dog-health-app/` — React Native 0.76 (bare, no Expo), TypeScript strict, Zustand v5 (8 stores), React Navigation 7, Supabase JS client. **This is the only shipping product.** |
-| 🟢 Backend | **Supabase project** — Postgres + Auth + Realtime + Storage. Auth = email/password + phone/OTP. 8 tables with owner-scoped RLS (`supabase/schema.sql`). |
+| 🟢 Backend | **Supabase project `bxvihftrfamglqrilkok`** — Postgres + Auth + Realtime + Storage. Auth = email/password + phone/OTP. 8 tables with owner-scoped RLS (`supabase/schema.sql`). |
 | 🟢 AI | On-device rule engine (`services/ai/service.ts`) + optional `llama.rn` LLM. All client-side. |
 | 🟢 BLE pipeline | `react-native-ble-plx` + scanner + connection manager + **packet parser** (`services/ble/packetParser.ts`). Parser defines 5 packet types with a specific byte layout. |
 | 🔴 ESP32 firmware | **Does not exist.** No `firmware/` dir, no C/C++, no ESP-IDF. The collar is conceptual. |

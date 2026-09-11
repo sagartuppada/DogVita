@@ -13,8 +13,8 @@ import { Database } from '../../types';
 import { SUPABASE_URL, SUPABASE_ANON_KEY, EXPO_PUBLIC_SUPABASE_URL, EXPO_PUBLIC_SUPABASE_ANON_KEY } from '@env';
 
 // Production Supabase project (fallback — see header comment)
-const supabaseUrl = SUPABASE_URL || EXPO_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = SUPABASE_ANON_KEY || EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl = SUPABASE_URL || EXPO_PUBLIC_SUPABASE_URL || 'https://bxvihftrfamglqrilkok.supabase.co';
+const supabaseAnonKey = SUPABASE_ANON_KEY || EXPO_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4dmloZnRyZmFtZ2xxcmlsa29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMjcyODYsImV4cCI6MjA5NTYwMzI4Nn0.7V9FRtoFsXG895rK1X63ntuQ-iYbdr0N5Xw0CwT0MQo';
 
 console.log('[supabase] ENV CHECK — URL:', supabaseUrl ? supabaseUrl.substring(0, 40) + '...' : '(empty)');
 console.log('[supabase] ENV CHECK — Key:', supabaseAnonKey ? supabaseAnonKey.substring(0, 20) + '...' : '(empty)');

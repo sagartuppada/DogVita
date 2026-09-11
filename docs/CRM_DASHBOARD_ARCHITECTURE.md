@@ -4,7 +4,7 @@
 > **Date:** 2026-06-27
 > **Owner:** DogVita Platform Team
 > **Scope:** Admin/operator-facing CRM dashboard for the DogVita dog-health platform (manages owners, dogs/patients, devices, subscriptions, support, vet partnerships, campaigns, and platform-wide analytics).
-> **Backend:** Shared with the mobile app — same Supabase project.
+> **Backend:** Shared with the mobile app — same Supabase project (`bxvihftrfamglqrilkok`).
 
 ---
 
@@ -89,7 +89,7 @@ The mobile app (`dog-health-app/`) is React Native 0.76, TypeScript strict, **Zu
             ▼                                  ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                    SUPABASE PROJECT                         │
-│           your-project.supabase.co                            │
+│           bxvihftrfamglqrilkok.supabase.co                  │
 │                                                             │
 │  Postgres (existing + new CRM tables) ── RLS everywhere     │
 │  Auth (email+pass, phone+OTP, SSO for staff)                │
