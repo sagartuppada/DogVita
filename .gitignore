@@ -53,3 +53,8 @@ graphify-out/
 
 # Screenshots (uncomment if you want to track them)
 # screenshot.png
+
+# Separate projects (not part of this repo)
+DogVitaTemp/
+mempalace/
+graphify-setup/
