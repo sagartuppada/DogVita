@@ -323,10 +323,10 @@ let supabaseAnonKey = process.env.SUPABASE_ANON_KEY || '';
 
 // Fallback for release builds where @env doesn't work
 if (!supabaseUrl) {
-  supabaseUrl = 'https://bxvihftrfamglqrilkok.supabase.co';
+  supabaseUrl = 'https://your-project.supabase.co';
 }
 if (!supabaseAnonKey) {
-  supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIs...';
+  supabaseAnonKey = 'your-anon-key-here';
 }
 ```
 
