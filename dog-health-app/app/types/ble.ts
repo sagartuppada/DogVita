@@ -16,19 +16,7 @@ export interface BLEDevice {
   mtu?: number;
 }
 
-export interface BLEService {
-  uuid: string;
-  characteristics?: BLECharacteristic[];
-}
-
-export interface BLECharacteristic {
-  uuid: string;
-  isReadable: boolean;
-  isWritable: boolean;
-  isNotifiable: boolean;
-}
-
-export type BLEConnectionStatus = 
+export type BLEConnectionStatus =
   | 'disconnected'
   | 'connecting'
   | 'connected'
@@ -43,29 +31,6 @@ export interface BLEConnectionState {
   lastDisconnected: string | null;
   error: string | null;
 }
-
-export interface BLEScanState {
-  isScanning: boolean;
-  devices: BLEDevice[];
-  lastScan: string | null;
-  error: string | null;
-}
-
-export interface BLEPacket {
-  type: PacketType;
-  timestamp: number;
-  data: Uint8Array;
-  deviceId: string;
-}
-
-export type PacketType = 
-  | 'heart_rate'
-  | 'gps'
-  | 'temperature'
-  | 'battery'
-  | 'activity'
-  | 'config'
-  | 'command';
 
 export interface HeartRatePacket {
   type: 'heart_rate';
@@ -104,32 +69,12 @@ export interface ActivityPacket {
   distance: number;
 }
 
-export type BLEDataPacket = 
+export type BLEDataPacket =
   | HeartRatePacket
   | GPSPacket
   | TemperaturePacket
   | BatteryPacket
   | ActivityPacket;
-
-export interface BLEServiceConfig {
-  serviceUUID: string;
-  characteristicUUIDs: {
-    [key: string]: string;
-  };
-}
-
-export interface BLECommand {
-  type: 'start_monitoring' | 'stop_monitoring' | 'set_interval' | 'calibrate' | 'reset';
-  payload?: unknown;
-}
-
-export interface BLEAdvertisingData {
-  name: string;
-  txPowerLevel: number;
-  manufacturerId: string;
-  serviceUUIDs: string[];
-  rawData?: ArrayBuffer;
-}
 
 export interface BLEParsedData {
   deviceId: string;
@@ -151,10 +96,3 @@ export interface BLEParsedData {
     };
   };
 }
-
-export const DEFAULT_BLE_SERVICE_UUID = '12345678-1234-1234-1234-123456789abc';
-export const DEFAULT_BLE_HEART_RATE_SERVICE = '180d';
-export const DEFAULT_BLE_GPS_SERVICE = '12345678-1234-1234-1234-123456789001';
-export const DEFAULT_BLE_TEMPERATURE_SERVICE = '12345678-1234-1234-1234-123456789002';
-export const DEFAULT_BLE_BATTERY_SERVICE = '12345678-1234-1234-1234-123456789003';
-export const DEFAULT_BLE_ACTIVITY_SERVICE = '12345678-1234-1234-1234-123456789004';

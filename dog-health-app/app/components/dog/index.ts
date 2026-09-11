@@ -1,1 +1,0 @@
-export { DogCard } from './DogCard';

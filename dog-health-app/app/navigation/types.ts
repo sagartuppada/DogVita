@@ -19,6 +19,7 @@ export type OnboardingStackParamList = {
 
 export type MainTabParamList = {
   Dashboard: undefined;
+  Marketplace: undefined;
   Health: undefined;
   Tracking: undefined;
   AIOverview: undefined;
@@ -40,6 +41,12 @@ export type RootStackParamList = {
   AddPet: undefined;
   PrivacyPolicy: undefined;
   TermsConditions: undefined;
+  Marketplace: undefined;
+  ProductDetail: { productId: string };
+  Cart: undefined;
+  Checkout: { cartTotal: number };
+  StoreDetail: { storeId: string };
+  OrderConfirmation: { orderId: string };
 };
 
 // Screen props types
@@ -58,7 +65,16 @@ export type TrackingTabScreenProps<T extends keyof MainTabParamList> =
 export type AIOverviewTabScreenProps<T extends keyof MainTabParamList> =
   BottomTabScreenProps<MainTabParamList, T>;
 
+export type MarketplaceTabScreenProps<T extends keyof MainTabParamList> =
+  BottomTabScreenProps<MainTabParamList, T>;
+
 export type SettingsScreenProps = NativeStackScreenProps<RootStackParamList, 'Settings'>;
+export type MarketplaceScreenProps = NativeStackScreenProps<RootStackParamList, 'Marketplace'>;
+export type ProductDetailScreenProps = NativeStackScreenProps<RootStackParamList, 'ProductDetail'>;
+export type CartScreenProps = NativeStackScreenProps<RootStackParamList, 'Cart'>;
+export type CheckoutScreenProps = NativeStackScreenProps<RootStackParamList, 'Checkout'>;
+export type StoreDetailScreenProps = NativeStackScreenProps<RootStackParamList, 'StoreDetail'>;
+export type OrderConfirmationScreenProps = NativeStackScreenProps<RootStackParamList, 'OrderConfirmation'>;
 export type RouteHistoryScreenProps = NativeStackScreenProps<RootStackParamList, 'RouteHistory'>;
 export type RouteDetailScreenProps = NativeStackScreenProps<RootStackParamList, 'RouteDetail'>;
 export type GeofenceManagerScreenProps = NativeStackScreenProps<RootStackParamList, 'GeofenceManager'>;

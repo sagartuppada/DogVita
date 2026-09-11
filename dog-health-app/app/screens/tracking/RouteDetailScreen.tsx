@@ -41,7 +41,7 @@ const formatSpeed = (meters: number, seconds: number) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5E9CD',
+    backgroundColor: '#F9FAFB',
   },
   header: {
     flexDirection: 'row',
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.styles.headingLG,
-    color: '#1F1A17',
+    color: '#111827',
     flex: 1,
     textAlign: 'center',
     marginHorizontal: spacing.sm,
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     ...typography.styles.bodyMD,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: spacing.md,
   },
   mapContainer: {
@@ -91,12 +91,12 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#1F1A17',
+    color: '#111827',
     marginTop: spacing.sm,
   },
   statLabel: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: 2,
   },
   infoCard: {
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     ...typography.styles.label,
-    color: '#6B625A',
+    color: '#6B7280',
     marginBottom: spacing.md,
   },
   infoRow: {
@@ -117,11 +117,11 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     ...typography.styles.bodySM,
-    color: '#A39888',
+    color: '#9CA3AF',
   },
   infoValue: {
     ...typography.styles.bodySM,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '500',
   },
   deleteButton: {
@@ -132,11 +132,11 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
     paddingVertical: spacing.md,
     borderRadius: 12,
-    backgroundColor: '#F4433610',
+    backgroundColor: '#EF444410',
   },
   deleteText: {
     ...typography.styles.bodyMD,
-    color: '#F44336',
+    color: '#EF4444',
     fontWeight: '600',
     marginLeft: spacing.sm,
   },
@@ -177,11 +177,11 @@ export default function RouteDetailScreen({ navigation, route: navRoute }: Route
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={24} color="#1F1A17" />
+            <Ionicons name="chevron-back" size={24} color="#111827" />
           </TouchableOpacity>
         </View>
         <View style={styles.centered}>
-          <Ionicons name="alert-circle-outline" size={48} color="#A39888" />
+          <Ionicons name="alert-circle-outline" size={48} color="#9CA3AF" />
           <Text style={styles.errorText}>Route not found</Text>
         </View>
       </View>
@@ -192,7 +192,7 @@ export default function RouteDetailScreen({ navigation, route: navRoute }: Route
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
+          <Ionicons name="chevron-back" size={24} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.title} numberOfLines={1}>
           {route.name}
@@ -217,17 +217,17 @@ export default function RouteDetailScreen({ navigation, route: navRoute }: Route
         {/* Stats Cards */}
         <View style={styles.statsRow}>
           <Card variant="default" padding="md" style={styles.statCard}>
-            <Ionicons name="time-outline" size={22} color="#F3A93B" />
+            <Ionicons name="time-outline" size={22} color="#16A34A" />
             <Text style={styles.statValue}>{formatDuration(route.duration)}</Text>
             <Text style={styles.statLabel}>Duration</Text>
           </Card>
           <Card variant="default" padding="md" style={styles.statCard}>
-            <Ionicons name="trail-sign-outline" size={22} color="#4CAF50" />
+            <Ionicons name="trail-sign-outline" size={22} color="#22C55E" />
             <Text style={styles.statValue}>{formatDistance(route.totalDistance)}</Text>
             <Text style={styles.statLabel}>Distance</Text>
           </Card>
           <Card variant="default" padding="md" style={styles.statCard}>
-            <Ionicons name="speedometer-outline" size={22} color="#5B9BD5" />
+            <Ionicons name="speedometer-outline" size={22} color="#3B82F6" />
             <Text style={styles.statValue}>{formatSpeed(route.totalDistance, route.duration)}</Text>
             <Text style={styles.statLabel}>Avg Speed</Text>
           </Card>
@@ -273,7 +273,7 @@ export default function RouteDetailScreen({ navigation, route: navRoute }: Route
           }}
           activeOpacity={0.7}
         >
-          <Ionicons name="trash-outline" size={18} color="#F44336" />
+          <Ionicons name="trash-outline" size={18} color="#EF4444" />
           <Text style={styles.deleteText}>Delete Route</Text>
         </TouchableOpacity>
       </ScrollView>

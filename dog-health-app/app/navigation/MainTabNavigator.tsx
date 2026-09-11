@@ -10,6 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { spacing, borderRadius, shadows, colors } from '../theme';
 
 import DashboardScreen from '../screens/dashboard/DashboardScreen';
+import MarketplaceScreen from '../screens/marketplace/MarketplaceScreen';
 import HealthOverviewScreen from '../screens/health/HealthOverviewScreen';
 import TrackingOverviewScreen from '../screens/tracking/TrackingOverviewScreen';
 import AIOverviewScreen from '../screens/ai/AIOverviewScreen';
@@ -21,6 +22,7 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const TABS: { route: keyof MainTabParamList; icon: string; iconOutline: string; label: string }[] = [
   { route: 'Dashboard', icon: 'home', iconOutline: 'home-outline', label: 'Home' },
+  { route: 'Marketplace', icon: 'storefront', iconOutline: 'storefront-outline', label: 'Marketplace' },
   { route: 'Health', icon: 'heart', iconOutline: 'heart-outline', label: 'Health' },
   { route: 'Tracking', icon: 'map', iconOutline: 'map-outline', label: 'Tracking' },
   { route: 'AIOverview', icon: 'sparkles', iconOutline: 'sparkles-outline', label: 'AI' },
@@ -59,6 +61,7 @@ export const MainTabNavigator: React.FC = () => {
   return (
     <Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
       <Tab.Screen name="Dashboard" component={DashboardScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Marketplace" component={MarketplaceScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Health" component={HealthOverviewScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Tracking" component={TrackingOverviewScreen} options={{ headerShown: false }} />
       <Tab.Screen name="AIOverview" component={AIOverviewScreen} options={{ headerShown: false }} />

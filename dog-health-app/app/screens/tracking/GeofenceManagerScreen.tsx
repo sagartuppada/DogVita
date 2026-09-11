@@ -36,7 +36,7 @@ const DEFAULT_RADIUS = 100;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5E9CD',
+    backgroundColor: '#F9FAFB',
   },
   header: {
     flexDirection: 'row',
@@ -52,11 +52,11 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.styles.headingXL,
-    color: '#1F1A17',
+    color: '#111827',
   },
   instruction: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
     textAlign: 'center',
     marginBottom: spacing.sm,
   },
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     ...typography.styles.label,
-    color: '#6B625A',
+    color: '#6B7280',
     marginBottom: spacing.md,
   },
   geofenceCard: {
@@ -93,12 +93,12 @@ const styles = StyleSheet.create({
   },
   geofenceName: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
   },
   geofenceDetail: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: 2,
   },
   emptyState: {
@@ -107,12 +107,12 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     ...typography.styles.bodyMD,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: spacing.md,
   },
   emptySub: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: spacing.xs,
   },
   modalOverlay: {
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#F5E9CD',
+    backgroundColor: '#F9FAFB',
     borderTopLeftRadius: borderRadius.xxl,
     borderTopRightRadius: borderRadius.xxl,
     paddingHorizontal: spacing.page,
@@ -135,23 +135,23 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     ...typography.styles.headingLG,
-    color: '#1F1A17',
+    color: '#111827',
   },
   modalLabel: {
     ...typography.styles.caption,
-    color: '#6B625A',
+    color: '#6B7280',
     marginBottom: spacing.xs,
     marginTop: spacing.md,
   },
   input: {
-    backgroundColor: '#FBF4E4',
+    backgroundColor: '#FFFFFF',
     borderRadius: borderRadius.lg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
-    color: '#1F1A17',
+    color: '#111827',
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#E9DDC9',
+    borderColor: '#E5E7EB',
   },
   toggleRow: {
     flexDirection: 'row',
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   toggleLabel: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
   },
   toggle: {
     width: 48,
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   saveButton: {
-    backgroundColor: '#F3A93B',
+    backgroundColor: '#16A34A',
     borderRadius: borderRadius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   deleteButtonText: {
-    color: '#F44336',
+    color: '#EF4444',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -327,7 +327,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
+          <Ionicons name="chevron-back" size={24} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.title}>Geofences</Text>
         <View style={styles.backButton} />
@@ -364,7 +364,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
               <View style={styles.geofenceRow}>
                 <View style={[
                   styles.geofenceDot,
-                  { backgroundColor: geofence.isActive ? '#F3A93B' : '#A39888' }
+                  { backgroundColor: geofence.isActive ? '#16A34A' : '#9CA3AF' }
                 ]} />
                 <View style={styles.geofenceInfo}>
                   <Text style={styles.geofenceName}>{geofence.name}</Text>
@@ -372,7 +372,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
                     {Math.round(geofence.radius)}m radius · {geofence.isActive ? 'Active' : 'Inactive'}
                   </Text>
                 </View>
-                <Ionicons name="chevron-forward" size={18} color="#A39888" />
+                <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
               </View>
             </Card>
           </TouchableOpacity>
@@ -380,7 +380,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
 
         {dogGeofences.length === 0 && (
           <View style={styles.emptyState}>
-            <Ionicons name="location-outline" size={40} color="#A39888" />
+            <Ionicons name="location-outline" size={40} color="#9CA3AF" />
             <Text style={styles.emptyText}>No geofences set</Text>
             <Text style={styles.emptySub}>Tap on the map above to create one</Text>
           </View>
@@ -401,7 +401,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
                 {editingGeofence ? 'Edit Geofence' : 'New Geofence'}
               </Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Ionicons name="close" size={24} color="#6B625A" />
+                <Ionicons name="close" size={24} color="#6B7280" />
               </TouchableOpacity>
             </View>
 
@@ -411,7 +411,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
               value={form.name}
               onChangeText={(text) => setForm((f) => ({ ...f, name: text }))}
               placeholder="Geofence name"
-              placeholderTextColor="#A39888"
+              placeholderTextColor="#9CA3AF"
             />
 
             <Text style={styles.modalLabel}>Radius (meters)</Text>
@@ -421,7 +421,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
               onChangeText={(text) => setForm((f) => ({ ...f, radius: text.replace(/[^0-9]/g, '') }))}
               keyboardType="number-pad"
               placeholder="100"
-              placeholderTextColor="#A39888"
+              placeholderTextColor="#9CA3AF"
             />
 
             <View style={styles.toggleRow}>
@@ -430,7 +430,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
                 onPress={() => setForm((f) => ({ ...f, isActive: !f.isActive }))}
                 style={[
                   styles.toggle,
-                  { backgroundColor: form.isActive ? '#F3A93B' : '#E9DDC9' }
+                  { backgroundColor: form.isActive ? '#16A34A' : '#E5E7EB' }
                 ]}
               >
                 <View style={[
@@ -446,7 +446,7 @@ export default function GeofenceManagerScreen({ navigation }: GeofenceManagerScr
                 onPress={() => setForm((f) => ({ ...f, alertsEnabled: !f.alertsEnabled }))}
                 style={[
                   styles.toggle,
-                  { backgroundColor: form.alertsEnabled ? '#F3A93B' : '#E9DDC9' }
+                  { backgroundColor: form.alertsEnabled ? '#16A34A' : '#E5E7EB' }
                 ]}
               >
                 <View style={[

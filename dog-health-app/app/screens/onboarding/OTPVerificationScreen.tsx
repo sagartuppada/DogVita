@@ -21,7 +21,7 @@ import type { OnboardingScreenProps } from '../../navigation/types';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5E9CD',
+    backgroundColor: '#F9FAFB',
   },
   content: {
     flex: 1,
@@ -32,12 +32,12 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.styles.headingLG,
-    color: '#1F1A17',
+    color: '#111827',
     marginBottom: 8,
   },
   subtitle: {
     ...typography.styles.bodyMD,
-    color: '#6B625A',
+    color: '#6B7280',
     lineHeight: 22,
   },
   codeRow: {
@@ -55,10 +55,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 22,
     fontWeight: '700',
-    color: '#1F1A17',
+    color: '#111827',
   },
   codeInputFilled: {
-    borderColor: '#F3A93B',
+    borderColor: '#16A34A',
     backgroundColor: '#FFFFFF',
   },
   footer: {

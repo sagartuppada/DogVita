@@ -57,25 +57,25 @@ const getAlertTitle = (type: string) => {
 
 const getAlertColor = (severity: string) => {
   switch (severity) {
-    case 'critical': return '#F44336';
-    case 'warning': return '#FF9800';
-    default: return '#5B9BD5';
+    case 'critical': return '#EF4444';
+    case 'warning': return '#F59E0B';
+    default: return '#3B82F6';
   }
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F5E9CD' },
+  container: { flex: 1, backgroundColor: '#F9FAFB' },
   header: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 20 },
-  title: { ...typography.styles.headingXL, color: '#1F1A17' },
-  subtitle: { ...typography.styles.bodySM, color: '#A39888', marginTop: 2 },
+  title: { ...typography.styles.headingXL, color: '#111827' },
+  subtitle: { ...typography.styles.bodySM, color: '#9CA3AF', marginTop: 2 },
   list: { paddingHorizontal: 16 },
   alertCard: { marginBottom: 12 },
   alertRow: { flexDirection: 'row', alignItems: 'flex-start' },
   alertIcon: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
   alertContent: { flex: 1 },
-  alertTitle: { ...typography.styles.bodyMD, color: '#1F1A17', fontWeight: '600', marginBottom: 2 },
-  alertMessage: { ...typography.styles.bodySM, color: '#6B625A', marginBottom: 4 },
-  alertTime: { ...typography.styles.caption, color: '#A39888' },
+  alertTitle: { ...typography.styles.bodyMD, color: '#111827', fontWeight: '600', marginBottom: 2 },
+  alertMessage: { ...typography.styles.bodySM, color: '#6B7280', marginBottom: 4 },
+  alertTime: { ...typography.styles.caption, color: '#9CA3AF' },
   unreadDot: { width: 8, height: 8, borderRadius: 4, marginTop: 8, marginLeft: 8 },
 });
 
@@ -133,7 +133,7 @@ export default function AlertsListScreen({}: ChatScreenProps) {
         renderItem={renderAlert}
         contentContainerStyle={[styles.list, { paddingBottom: 100 }]}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#F3A93B" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#16A34A" />}
         ListEmptyComponent={
           <EmptyState
             icon="notifications-off-outline"

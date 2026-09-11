@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.styles.headingXL,
-    color: '#1F1A17',
+    color: '#111827',
   },
   statsCard: {
     marginHorizontal: spacing.page,
@@ -74,11 +74,11 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#1F1A17',
+    color: '#111827',
   },
   statLabel: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: 2,
   },
   targetCard: {
@@ -92,13 +92,13 @@ const styles = StyleSheet.create({
   },
   targetText: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
     flex: 1,
   },
   targetDiff: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
   },
   listHeader: {
     paddingHorizontal: spacing.page,
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   },
   listTitle: {
     ...typography.styles.label,
-    color: '#6B625A',
+    color: '#6B7280',
   },
   recordCard: {
     marginHorizontal: spacing.page,
@@ -123,17 +123,17 @@ const styles = StyleSheet.create({
   },
   recordWeight: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '700',
   },
   recordDate: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: 2,
   },
   recordNotes: {
     ...typography.styles.caption,
-    color: '#6B625A',
+    color: '#6B7280',
     marginTop: 2,
     fontStyle: 'italic',
   },
@@ -141,14 +141,14 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   currentBadge: {
-    backgroundColor: '#F3A93B18',
+    backgroundColor: '#16A34A18',
     paddingHorizontal: spacing.sm,
     paddingVertical: 2,
     borderRadius: borderRadius.pill,
   },
   currentBadgeText: {
     ...typography.styles.caption,
-    color: '#F3A93B',
+    color: '#16A34A',
     fontWeight: '600',
   },
   modalOverlay: {
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#F5E9CD',
+    backgroundColor: '#F9FAFB',
     borderTopLeftRadius: borderRadius.xxl,
     borderTopRightRadius: borderRadius.xxl,
     paddingHorizontal: spacing.page,
@@ -171,23 +171,23 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     ...typography.styles.headingLG,
-    color: '#1F1A17',
+    color: '#111827',
   },
   modalLabel: {
     ...typography.styles.caption,
-    color: '#6B625A',
+    color: '#6B7280',
     marginBottom: spacing.xs,
     marginTop: spacing.md,
   },
   modalInput: {
-    backgroundColor: '#FBF4E4',
+    backgroundColor: '#FFFFFF',
     borderRadius: borderRadius.lg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
-    color: '#1F1A17',
+    color: '#111827',
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#E9DDC9',
+    borderColor: '#E5E7EB',
   },
   modalWeightRow: {
     flexDirection: 'row',
@@ -206,18 +206,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#EDE2C6',
   },
   unitBtnActive: {
-    backgroundColor: '#F3A93B',
+    backgroundColor: '#16A34A',
   },
   unitBtnText: {
     ...typography.styles.bodySM,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
   },
   unitBtnTextActive: {
     color: '#FFFFFF',
   },
   saveBtn: {
-    backgroundColor: '#F3A93B',
+    backgroundColor: '#16A34A',
     borderRadius: borderRadius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   },
   chartTitle: {
     ...typography.styles.label,
-    color: '#6B625A',
+    color: '#6B7280',
     marginBottom: spacing.md,
   },
   chartContainer: {
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   deleteBtnText: {
-    color: '#F44336',
+    color: '#EF4444',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -266,11 +266,11 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
   const getTrendIcon = useCallback((trend?: 'up' | 'down' | 'stable') => {
     switch (trend) {
       case 'up':
-        return { icon: 'trending-up', color: '#FF9800' };
+        return { icon: 'trending-up', color: '#F59E0B' };
       case 'down':
-        return { icon: 'trending-down', color: '#5B9BD5' };
+        return { icon: 'trending-down', color: '#3B82F6' };
       default:
-        return { icon: 'remove', color: '#A39888' };
+        return { icon: 'remove', color: '#9CA3AF' };
     }
   }, []);
 
@@ -354,11 +354,11 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
+          <Ionicons name="chevron-back" size={24} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.title}>Weight History</Text>
         <TouchableOpacity onPress={openAdd} style={styles.backButton}>
-          <Ionicons name="add" size={24} color="#F3A93B" />
+          <Ionicons name="add" size={24} color="#16A34A" />
         </TouchableOpacity>
       </View>
 
@@ -378,7 +378,7 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
               </View>
               <View style={styles.statDivider} />
               <View style={styles.stat}>
-                <Text style={[styles.statValue, { color: totalChange > 0 ? '#FF9800' : totalChange < 0 ? '#5B9BD5' : '#1F1A17' }]}>
+                <Text style={[styles.statValue, { color: totalChange > 0 ? '#F59E0B' : totalChange < 0 ? '#3B82F6' : '#111827' }]}>
                   {totalChange > 0 ? '+' : ''}{totalChange.toFixed(1)} {latest?.weightUnit}
                 </Text>
                 <Text style={styles.statLabel}>Total Change</Text>
@@ -396,7 +396,7 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
         {dog?.weight && (
           <Card variant="default" padding="md" style={styles.targetCard}>
             <View style={styles.targetRow}>
-              <Ionicons name="scale-outline" size={20} color="#F3A93B" />
+              <Ionicons name="scale-outline" size={20} color="#16A34A" />
               <Text style={styles.targetText}>
                 Target: {dog.weight} {dog.weightUnit || 'kg'}
               </Text>
@@ -421,26 +421,26 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
                   dataPointText: record.weight.toFixed(1),
                   showVerticalLine: index === dogWeightHistory.length - 1,
                   verticalLineThickness: 1,
-                  verticalLineColor: '#F3A93B40',
+                  verticalLineColor: '#16A34A40',
                 }))}
                 width={Dimensions.get('window').width - spacing.page * 2 - spacing.md * 2 - 40}
                 height={160}
                 spacing={Math.min((Dimensions.get('window').width - spacing.page * 2 - spacing.md * 2 - 80) / Math.max(dogWeightHistory.length - 1, 1), 80)}
-                color="#F3A93B"
+                color="#16A34A"
                 thickness={2}
-                dataPointsColor="#F3A93B"
+                dataPointsColor="#16A34A"
                 dataPointsRadius={4}
-                textColor="#A39888"
+                textColor="#9CA3AF"
                 textFontSize={10}
-                xAxisLabelTextStyle={{ color: '#A39888', fontSize: 9 }}
-                yAxisTextStyle={{ color: '#A39888', fontSize: 10 }}
+                xAxisLabelTextStyle={{ color: '#9CA3AF', fontSize: 9 }}
+                yAxisTextStyle={{ color: '#9CA3AF', fontSize: 10 }}
                 yAxisColor="#F0E8D8"
                 xAxisColor="#F0E8D8"
                 noOfSections={4}
                 hideRules={false}
                 rulesColor="#F0E8D860"
-                startFillColor="#F3A93B"
-                endFillColor="#F3A93B10"
+                startFillColor="#16A34A"
+                endFillColor="#16A34A10"
                 areaChart
                 curved
                 isAnimated
@@ -516,7 +516,7 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
                 {editRecord ? 'Edit Weight' : 'Add Weight'}
               </Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Ionicons name="close" size={24} color="#6B625A" />
+                <Ionicons name="close" size={24} color="#6B7280" />
               </TouchableOpacity>
             </View>
 
@@ -528,7 +528,7 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
                 onChangeText={(text) => setWeightInput(text.replace(/[^0-9.]/g, ''))}
                 keyboardType="decimal-pad"
                 placeholder="0.0"
-                placeholderTextColor="#A39888"
+                placeholderTextColor="#9CA3AF"
               />
               <View style={styles.unitToggle}>
                 {(['kg', 'lb'] as const).map((u) => (
@@ -549,7 +549,7 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
               value={dateInput}
               onChangeText={setDateInput}
               placeholder="YYYY-MM-DD"
-              placeholderTextColor="#A39888"
+              placeholderTextColor="#9CA3AF"
             />
 
             <Text style={styles.modalLabel}>Notes (optional)</Text>
@@ -558,7 +558,7 @@ export default function WeightHistoryScreen({ navigation, route }: WeightHistory
               value={notesInput}
               onChangeText={setNotesInput}
               placeholder="e.g. Post-holiday check"
-              placeholderTextColor="#A39888"
+              placeholderTextColor="#9CA3AF"
               multiline
             />
 

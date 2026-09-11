@@ -36,7 +36,7 @@ const formatDistance = (meters: number) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5E9CD',
+    backgroundColor: '#F9FAFB',
   },
   scrollContent: {
     flexGrow: 1,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   mapPlaceholderText: {
     ...typography.styles.bodySM,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: spacing.md,
   },
   fabContainer: {
@@ -70,11 +70,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   fabPrimary: {
-    backgroundColor: '#F3A93B',
+    backgroundColor: '#16A34A',
     ...shadows.fab,
   },
   fabRecording: {
-    backgroundColor: '#F44336',
+    backgroundColor: '#EF4444',
     ...shadows.fab,
   },
   fabSecondary: {
@@ -106,16 +106,16 @@ const styles = StyleSheet.create({
   },
   dogName: {
     ...typography.styles.headingMD,
-    color: '#1F1A17',
+    color: '#111827',
   },
   breed: {
     ...typography.styles.bodySM,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: 2,
   },
   routeStatsBanner: {
     flexDirection: 'row',
-    backgroundColor: '#F4433610',
+    backgroundColor: '#EF444410',
     borderRadius: borderRadius.lg,
     paddingVertical: spacing.md,
     marginBottom: spacing.lg,
@@ -133,11 +133,11 @@ const styles = StyleSheet.create({
   routeStatValue: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#1F1A17',
+    color: '#111827',
   },
   routeStatLabel: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: 2,
   },
   statsRow: {
@@ -153,12 +153,12 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#1F1A17',
+    color: '#111827',
     marginTop: spacing.xs,
   },
   statLabel: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: 2,
   },
   statDivider: {
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   },
   actionButtonText: {
     ...typography.styles.bodySM,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
   },
 });
@@ -294,7 +294,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
           />
         ) : (
           <View style={styles.mapPlaceholder}>
-            <Ionicons name="map-outline" size={48} color="#A39888" />
+            <Ionicons name="map-outline" size={48} color="#9CA3AF" />
             <Text style={styles.mapPlaceholderText}>Waiting for GPS data...</Text>
           </View>
         )}
@@ -306,14 +306,14 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
             activeOpacity={0.7}
             onPress={handleNavigateToRoutes}
           >
-            <Ionicons name="list" size={20} color="#1F1A17" />
+            <Ionicons name="list" size={20} color="#111827" />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.fab, styles.fabSecondary]}
             activeOpacity={0.7}
             onPress={handleNavigateToGeofences}
           >
-            <Ionicons name="locate-outline" size={20} color="#1F1A17" />
+            <Ionicons name="locate-outline" size={20} color="#111827" />
           </TouchableOpacity>
           {activeRoute ? (
             <TouchableOpacity
@@ -361,7 +361,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
               <Ionicons
                 name={isTracking ? 'pause-circle' : 'play-circle'}
                 size={28}
-                color={isTracking ? '#FF9800' : '#4CAF50'}
+                color={isTracking ? '#F59E0B' : '#22C55E'}
               />
             </TouchableOpacity>
           </View>
@@ -391,13 +391,13 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
 
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <Ionicons name="speedometer" size={18} color="#F3A93B" />
+            <Ionicons name="speedometer" size={18} color="#16A34A" />
             <Text style={styles.statValue}>{currentSpeed ? `${currentSpeed.toFixed(1)}` : '--'}</Text>
             <Text style={styles.statLabel}>km/h</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
-            <Ionicons name="trail-sign-outline" size={18} color="#4CAF50" />
+            <Ionicons name="trail-sign-outline" size={18} color="#22C55E" />
             <Text style={styles.statValue}>
               {totalDistance > 0 ? formatDistance(totalDistance) : '--'}
             </Text>
@@ -405,7 +405,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
-            <Ionicons name="location" size={18} color="#5B9BD5" />
+            <Ionicons name="location" size={18} color="#3B82F6" />
             <Text style={styles.statValue}>
               {locationHistory.length}
             </Text>
@@ -420,7 +420,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
             onPress={handleNavigateToRoutes}
             activeOpacity={0.7}
           >
-            <Ionicons name="list-outline" size={18} color="#F3A93B" />
+            <Ionicons name="list-outline" size={18} color="#16A34A" />
             <Text style={styles.actionButtonText}>Route History</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -428,7 +428,7 @@ export default function TrackingOverviewScreen({ navigation }: TrackingTabScreen
             onPress={handleNavigateToGeofences}
             activeOpacity={0.7}
           >
-            <Ionicons name="locate-outline" size={18} color="#5B9BD5" />
+            <Ionicons name="locate-outline" size={18} color="#3B82F6" />
             <Text style={styles.actionButtonText}>Geofences</Text>
           </TouchableOpacity>
         </View>

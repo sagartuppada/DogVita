@@ -13,7 +13,7 @@ import type { OnboardingScreenProps } from '../../navigation/types';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5E9CD',
+    backgroundColor: '#F9FAFB',
     paddingHorizontal: 24,
   },
   logoArea: {
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     width: 96,
     height: 96,
     borderRadius: 48,
-    backgroundColor: '#FDF6E8',
+    backgroundColor: '#F0FDF4',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
@@ -34,12 +34,12 @@ const styles = StyleSheet.create({
   },
   appName: {
     ...typography.styles.headingXL,
-    color: '#E2941C',
+    color: '#15803D',
     marginBottom: 8,
   },
   tagline: {
     ...typography.styles.bodyMD,
-    color: '#6B625A',
+    color: '#6B7280',
     textAlign: 'center',
   },
   features: {
@@ -63,12 +63,12 @@ const styles = StyleSheet.create({
   },
   featureTitle: {
     ...typography.styles.bodyLG,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
   },
   featureDesc: {
     ...typography.styles.bodySM,
-    color: '#6B625A',
+    color: '#6B7280',
     marginTop: 2,
   },
   cta: {
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   signInText: {
     ...typography.styles.bodyMD,
-    color: '#E2941C',
+    color: '#15803D',
     fontWeight: '500',
   },
   skipLink: {
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   skipText: {
     ...typography.styles.bodySM,
-    color: '#A39888',
+    color: '#9CA3AF',
   },
 });
 
@@ -101,7 +101,7 @@ export default function WelcomeScreen({ navigation }: OnboardingScreenProps<'Wel
       {/* Logo Area */}
       <View style={styles.logoArea}>
         <View style={styles.logoCircle}>
-          <Ionicons name="paw" size={48} color="#F3A93B" />
+          <Ionicons name="paw" size={48} color="#16A34A" />
         </View>
         <Text style={styles.appName}>DogVita</Text>
         <Text style={styles.tagline}>Smart health monitoring for your best friend</Text>
@@ -110,8 +110,8 @@ export default function WelcomeScreen({ navigation }: OnboardingScreenProps<'Wel
       {/* Features */}
       <View style={styles.features}>
         <View style={styles.featureRow}>
-          <View style={[styles.featureIcon, { backgroundColor: '#F4433618' }]}>
-            <Ionicons name="heart" size={20} color="#F44336" />
+          <View style={[styles.featureIcon, { backgroundColor: '#EF444418' }]}>
+            <Ionicons name="heart" size={20} color="#EF4444" />
           </View>
           <View style={styles.featureText}>
             <Text style={styles.featureTitle}>Real-time Health</Text>
@@ -120,8 +120,8 @@ export default function WelcomeScreen({ navigation }: OnboardingScreenProps<'Wel
         </View>
 
         <View style={styles.featureRow}>
-          <View style={[styles.featureIcon, { backgroundColor: '#5B9BD518' }]}>
-            <Ionicons name="location" size={20} color="#5B9BD5" />
+          <View style={[styles.featureIcon, { backgroundColor: '#3B82F618' }]}>
+            <Ionicons name="location" size={20} color="#3B82F6" />
           </View>
           <View style={styles.featureText}>
             <Text style={styles.featureTitle}>Live Tracking</Text>
@@ -130,8 +130,8 @@ export default function WelcomeScreen({ navigation }: OnboardingScreenProps<'Wel
         </View>
 
         <View style={styles.featureRow}>
-          <View style={[styles.featureIcon, { backgroundColor: '#4CAF5018' }]}>
-            <Ionicons name="shield-checkmark" size={20} color="#4CAF50" />
+          <View style={[styles.featureIcon, { backgroundColor: '#22C55E18' }]}>
+            <Ionicons name="shield-checkmark" size={20} color="#22C55E" />
           </View>
           <View style={styles.featureText}>
             <Text style={styles.featureTitle}>Smart Alerts</Text>

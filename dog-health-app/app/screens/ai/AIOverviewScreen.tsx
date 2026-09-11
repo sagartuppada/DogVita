@@ -24,9 +24,9 @@ const FEATURE_CARDS = [
     title: 'Chat with AI',
     subtitle: 'Ask anything about your dog\'s health, nutrition, or behavior',
     icon: 'chatbubble-ellipses' as const,
-    color: '#F3A93B',
-    bgColor: '#F3A93B18',
-    borderColor: '#F3A93B40',
+    color: '#16A34A',
+    bgColor: '#16A34A18',
+    borderColor: '#16A34A40',
     screen: 'Chat' as const,
   },
   {
@@ -34,9 +34,9 @@ const FEATURE_CARDS = [
     title: 'Symptom Checker',
     subtitle: 'Select symptoms to check possible conditions',
     icon: 'medkit-outline' as const,
-    color: '#F44336',
-    bgColor: '#F4433612',
-    borderColor: '#F4433630',
+    color: '#EF4444',
+    bgColor: '#EF444412',
+    borderColor: '#EF444430',
     screen: 'SymptomChecker' as const,
   },
   {
@@ -44,9 +44,9 @@ const FEATURE_CARDS = [
     title: 'Diet & Feeding',
     subtitle: 'Calorie calculator, diet plan & feeding schedule',
     icon: 'restaurant-outline' as const,
-    color: '#4CAF50',
-    bgColor: '#4CAF5012',
-    borderColor: '#4CAF5030',
+    color: '#22C55E',
+    bgColor: '#22C55E12',
+    borderColor: '#22C55E30',
     screen: 'DietFeeding' as const,
   },
 ] as const;
@@ -62,19 +62,19 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#1F1A17',
+    color: '#111827',
     letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 14,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: 4,
     lineHeight: 20,
   },
   heroCard: {
     marginHorizontal: spacing.page,
     marginBottom: spacing.lg,
-    backgroundColor: '#F3A93B',
+    backgroundColor: '#16A34A',
     borderRadius: borderRadius.xl,
     padding: spacing.lg,
     flexDirection: 'row',
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#A39888',
+    color: '#9CA3AF',
     textTransform: 'uppercase',
     letterSpacing: 1,
     paddingHorizontal: spacing.page,
@@ -146,13 +146,13 @@ const styles = StyleSheet.create({
   featureTitle: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#1F1A17',
+    color: '#111827',
     textAlign: 'center',
   },
   tipsCard: {
     marginHorizontal: spacing.page,
     marginBottom: spacing.lg,
-    backgroundColor: '#FBF4E4',
+    backgroundColor: '#FFFFFF',
     borderRadius: borderRadius.lg,
     padding: spacing.md,
     borderWidth: 1,
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   tipsTitle: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#1F1A17',
+    color: '#111827',
     marginBottom: spacing.xs,
   },
   tipRow: {
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   },
   tipText: {
     fontSize: 12,
-    color: '#6B625A',
+    color: '#6B7280',
     flex: 1,
     lineHeight: 18,
   },
@@ -245,19 +245,19 @@ export default function AIOverviewScreen({ navigation }: Props) {
       {/* Quick Tips */}
       <View style={styles.tipsCard}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: spacing.xs }}>
-          <Ionicons name="bulb-outline" size={16} color="#F3A93B" />
+          <Ionicons name="bulb-outline" size={16} color="#16A34A" />
           <Text style={styles.tipsTitle}>Quick Tips</Text>
         </View>
         <View style={styles.tipRow}>
-          <Ionicons name="paw-outline" size={14} color="#F3A93B" style={{ marginTop: 1 }} />
+          <Ionicons name="paw-outline" size={14} color="#16A34A" style={{ marginTop: 1 }} />
           <Text style={styles.tipText}>Log your dog's weight regularly for accurate diet calculations</Text>
         </View>
         <View style={styles.tipRow}>
-          <Ionicons name="heart-outline" size={14} color="#F44336" style={{ marginTop: 1 }} />
+          <Ionicons name="heart-outline" size={14} color="#EF4444" style={{ marginTop: 1 }} />
           <Text style={styles.tipText}>Use the Symptom Checker at the first sign of unusual behavior</Text>
         </View>
         <View style={styles.tipRow}>
-          <Ionicons name="chatbubble-outline" size={14} color="#5B9BD5" style={{ marginTop: 1 }} />
+          <Ionicons name="chatbubble-outline" size={14} color="#3B82F6" style={{ marginTop: 1 }} />
           <Text style={styles.tipText}>Ask the AI assistant for personalized health advice anytime</Text>
         </View>
       </View>

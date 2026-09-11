@@ -110,70 +110,70 @@ const DEFAULT_SCHEDULES: FeedingSchedule[] = [
 ];
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F5E9CD' },
+  container: { flex: 1, backgroundColor: '#F9FAFB' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 16, paddingBottom: 12 },
   backButton: { padding: 4, width: 40 },
-  title: { ...typography.styles.headingXL, color: '#1F1A17' },
+  title: { ...typography.styles.headingXL, color: '#111827' },
   noDataCard: { marginHorizontal: 16, marginTop: 20, alignItems: 'center' },
-  noDataTitle: { ...typography.styles.bodyMD, color: '#1F1A17', fontWeight: '600', marginTop: 12 },
-  noDataText: { ...typography.styles.caption, color: '#A39888', marginTop: 4, textAlign: 'center' },
+  noDataTitle: { ...typography.styles.bodyMD, color: '#111827', fontWeight: '600', marginTop: 12 },
+  noDataText: { ...typography.styles.caption, color: '#9CA3AF', marginTop: 4, textAlign: 'center' },
   infoCard: { marginHorizontal: 16, marginBottom: 12 },
   infoRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  infoText: { ...typography.styles.bodyMD, color: '#1F1A17', fontWeight: '600' },
+  infoText: { ...typography.styles.bodyMD, color: '#111827', fontWeight: '600' },
   section: { marginHorizontal: 16, marginBottom: 16 },
-  sectionTitle: { ...typography.styles.label, color: '#6B625A', marginBottom: 12 },
+  sectionTitle: { ...typography.styles.label, color: '#6B7280', marginBottom: 12 },
   conditionRow: { flexDirection: 'row', gap: 8 },
-  conditionBtn: { flex: 1, alignItems: 'center', paddingVertical: 8, backgroundColor: '#FBF4E4', borderRadius: 16, borderWidth: 1, borderColor: '#F0E8D8' },
-  conditionBtnActive: { backgroundColor: '#F3A93B', borderColor: '#F3A93B' },
-  conditionScore: { fontSize: 16, fontWeight: '700', color: '#1F1A17' },
+  conditionBtn: { flex: 1, alignItems: 'center', paddingVertical: 8, backgroundColor: '#FFFFFF', borderRadius: 16, borderWidth: 1, borderColor: '#E5E7EB' },
+  conditionBtnActive: { backgroundColor: '#16A34A', borderColor: '#16A34A' },
+  conditionScore: { fontSize: 16, fontWeight: '700', color: '#111827' },
   conditionScoreActive: { color: '#FFFFFF' },
-  conditionLabel: { ...typography.styles.caption, color: '#A39888', marginTop: 2 },
+  conditionLabel: { ...typography.styles.caption, color: '#9CA3AF', marginTop: 2 },
   conditionLabelActive: { color: '#FFFFFF' },
-  conditionDesc: { ...typography.styles.caption, color: '#6B625A', marginTop: 8, textAlign: 'center' },
+  conditionDesc: { ...typography.styles.caption, color: '#6B7280', marginTop: 8, textAlign: 'center' },
   activityRow: { gap: 8 },
-  activityBtn: { paddingVertical: 12, paddingHorizontal: 12, backgroundColor: '#FBF4E4', borderRadius: 16, borderWidth: 1, borderColor: '#F0E8D8', marginBottom: 8 },
-  activityBtnActive: { backgroundColor: '#F3A93B18', borderColor: '#F3A93B' },
-  activityLabel: { ...typography.styles.bodySM, color: '#1F1A17', fontWeight: '600' },
-  activityLabelActive: { color: '#F3A93B' },
-  activityDesc: { ...typography.styles.caption, color: '#A39888', marginTop: 2 },
-  activityDescActive: { color: '#E2941C' },
+  activityBtn: { paddingVertical: 12, paddingHorizontal: 12, backgroundColor: '#FFFFFF', borderRadius: 16, borderWidth: 1, borderColor: '#E5E7EB', marginBottom: 8 },
+  activityBtnActive: { backgroundColor: '#16A34A18', borderColor: '#16A34A' },
+  activityLabel: { ...typography.styles.bodySM, color: '#111827', fontWeight: '600' },
+  activityLabelActive: { color: '#16A34A' },
+  activityDesc: { ...typography.styles.caption, color: '#9CA3AF', marginTop: 2 },
+  activityDescActive: { color: '#15803D' },
   dietCard: { marginHorizontal: 16, marginBottom: 16 },
-  dietCardTitle: { ...typography.styles.label, color: '#6B625A', marginBottom: 12 },
+  dietCardTitle: { ...typography.styles.label, color: '#6B7280', marginBottom: 12 },
   dietStatsRow: { flexDirection: 'row', marginBottom: 16 },
   dietStat: { flex: 1, alignItems: 'center' },
-  dietStatDivider: { width: 1, height: 36, backgroundColor: '#F0E8D8', alignSelf: 'center' },
-  dietStatValue: { fontSize: 18, fontWeight: '700', color: '#1F1A17' },
-  dietStatLabel: { ...typography.styles.caption, color: '#A39888', marginTop: 2 },
+  dietStatDivider: { width: 1, height: 36, backgroundColor: '#E5E7EB', alignSelf: 'center' },
+  dietStatValue: { fontSize: 18, fontWeight: '700', color: '#111827' },
+  dietStatLabel: { ...typography.styles.caption, color: '#9CA3AF', marginTop: 2 },
   macroRow: { flexDirection: 'row', gap: 12, marginBottom: 16 },
   macroItem: { flex: 1, alignItems: 'center', backgroundColor: '#EDE2C6', borderRadius: 16, paddingVertical: 12 },
-  macroValue: { ...typography.styles.bodySM, color: '#1F1A17', fontWeight: '700' },
-  macroLabel: { ...typography.styles.caption, color: '#A39888', marginTop: 2 },
-  recommendationBox: { flexDirection: 'row', gap: 8, backgroundColor: '#F3A93B10', borderRadius: 16, padding: 12 },
-  recommendationText: { ...typography.styles.caption, color: '#1F1A17', flex: 1, lineHeight: 18 },
+  macroValue: { ...typography.styles.bodySM, color: '#111827', fontWeight: '700' },
+  macroLabel: { ...typography.styles.caption, color: '#9CA3AF', marginTop: 2 },
+  recommendationBox: { flexDirection: 'row', gap: 8, backgroundColor: '#16A34A10', borderRadius: 16, padding: 12 },
+  recommendationText: { ...typography.styles.caption, color: '#111827', flex: 1, lineHeight: 18 },
   scheduleHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
-  emptySchedule: { ...typography.styles.caption, color: '#A39888', textAlign: 'center', paddingVertical: 12 },
+  emptySchedule: { ...typography.styles.caption, color: '#9CA3AF', textAlign: 'center', paddingVertical: 12 },
   scheduleCard: { marginBottom: 12 },
   scheduleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   scheduleLeft: { flex: 1 },
-  scheduleTime: { ...typography.styles.bodyMD, color: '#1F1A17', fontWeight: '700' },
-  scheduleDetail: { ...typography.styles.caption, color: '#A39888', marginTop: 2 },
+  scheduleTime: { ...typography.styles.bodyMD, color: '#111827', fontWeight: '700' },
+  scheduleDetail: { ...typography.styles.caption, color: '#9CA3AF', marginTop: 2 },
   scheduleActions: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   toggleBtn: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 999 },
   toggleText: { ...typography.styles.caption, fontWeight: '600' },
   editBtn: { padding: 4 },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
-  modalContent: { backgroundColor: '#F5E9CD', borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingHorizontal: 16, paddingTop: 20 },
+  modalContent: { backgroundColor: '#F9FAFB', borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingHorizontal: 16, paddingTop: 20 },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-  modalTitle: { ...typography.styles.headingLG, color: '#1F1A17' },
-  modalLabel: { ...typography.styles.caption, color: '#6B625A', marginBottom: 4, marginTop: 12 },
-  modalInput: { backgroundColor: '#FBF4E4', borderRadius: 16, paddingHorizontal: 12, paddingVertical: 12, color: '#1F1A17', fontSize: 16, borderWidth: 1, borderColor: '#E9DDC9' },
+  modalTitle: { ...typography.styles.headingLG, color: '#111827' },
+  modalLabel: { ...typography.styles.caption, color: '#6B7280', marginBottom: 4, marginTop: 12 },
+  modalInput: { backgroundColor: '#FFFFFF', borderRadius: 16, paddingHorizontal: 12, paddingVertical: 12, color: '#111827', fontSize: 16, borderWidth: 1, borderColor: '#E5E7EB' },
   modalPortionRow: { flexDirection: 'row', gap: 12 },
-  unitToggle: { flexDirection: 'row', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: '#F0E8D8' },
+  unitToggle: { flexDirection: 'row', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: '#E5E7EB' },
   unitBtn: { paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#EDE2C6' },
-  unitBtnActive: { backgroundColor: '#F3A93B' },
-  unitBtnText: { ...typography.styles.bodySM, color: '#1F1A17', fontWeight: '600' },
+  unitBtnActive: { backgroundColor: '#16A34A' },
+  unitBtnText: { ...typography.styles.bodySM, color: '#111827', fontWeight: '600' },
   unitBtnTextActive: { color: '#FFFFFF' },
-  saveBtn: { backgroundColor: '#F3A93B', borderRadius: 16, paddingVertical: 12, alignItems: 'center', marginTop: 20, marginBottom: 16 },
+  saveBtn: { backgroundColor: '#16A34A', borderRadius: 16, paddingVertical: 12, alignItems: 'center', marginTop: 20, marginBottom: 16 },
   saveBtnText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
 });
 
@@ -239,7 +239,7 @@ export default function DietFeedingScreen({ navigation }: DietFeedingScreenProps
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
+          <Ionicons name="chevron-back" size={24} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.title}>Diet & Feeding</Text>
         <View style={styles.backButton} />
@@ -247,7 +247,7 @@ export default function DietFeedingScreen({ navigation }: DietFeedingScreenProps
       <ScrollView contentContainerStyle={{ paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
         {!activeDog || weightKg <= 0 ? (
           <Card variant="default" padding="lg" style={styles.noDataCard}>
-            <Ionicons name="restaurant-outline" size={40} color="#A39888" />
+            <Ionicons name="restaurant-outline" size={40} color="#9CA3AF" />
             <Text style={styles.noDataTitle}>No Weight Data</Text>
             <Text style={styles.noDataText}>Add a weight record for your dog to calculate diet recommendations.</Text>
           </Card>
@@ -255,7 +255,7 @@ export default function DietFeedingScreen({ navigation }: DietFeedingScreenProps
           <>
             <Card variant="elevated" padding="md" style={styles.infoCard}>
               <View style={styles.infoRow}>
-                <Ionicons name="paw" size={20} color="#F3A93B" />
+                <Ionicons name="paw" size={20} color="#16A34A" />
                 <Text style={styles.infoText}>{activeDog.name} · {latestWeight ? `${latestWeight.weight} ${latestWeight.weightUnit}` : `${activeDog.weight} ${activeDog.weightUnit}`} · {stageLabel}</Text>
               </View>
             </Card>
@@ -301,7 +301,7 @@ export default function DietFeedingScreen({ navigation }: DietFeedingScreenProps
                   <View style={styles.macroItem}><Text style={styles.macroValue}>{dietProfile.fiberGrams}g</Text><Text style={styles.macroLabel}>Fiber</Text></View>
                 </View>
                 <View style={styles.recommendationBox}>
-                  <Ionicons name="bulb-outline" size={18} color="#F3A93B" />
+                  <Ionicons name="bulb-outline" size={18} color="#16A34A" />
                   <Text style={styles.recommendationText}>{dietProfile.recommendation}</Text>
                 </View>
               </Card>
@@ -310,7 +310,7 @@ export default function DietFeedingScreen({ navigation }: DietFeedingScreenProps
               <View style={styles.scheduleHeader}>
                 <Text style={styles.sectionTitle}>Feeding Schedule</Text>
                 <TouchableOpacity onPress={openAddSchedule} activeOpacity={0.7}>
-                  <Ionicons name="add-circle" size={24} color="#F3A93B" />
+                  <Ionicons name="add-circle" size={24} color="#16A34A" />
                 </TouchableOpacity>
               </View>
               {sortedSchedules.length === 0 ? (
@@ -323,14 +323,14 @@ export default function DietFeedingScreen({ navigation }: DietFeedingScreenProps
                       <Text style={styles.scheduleDetail}>{schedule.portion} {schedule.portionUnit} · {schedule.foodType}</Text>
                     </View>
                     <View style={styles.scheduleActions}>
-                      <TouchableOpacity onPress={() => toggleSchedule(schedule.id)} style={[styles.toggleBtn, { backgroundColor: schedule.enabled ? '#4CAF5018' : '#F0E8D8' }]}>
-                        <Text style={[styles.toggleText, { color: schedule.enabled ? '#4CAF50' : '#A39888' }]}>{schedule.enabled ? 'On' : 'Off'}</Text>
+                      <TouchableOpacity onPress={() => toggleSchedule(schedule.id)} style={[styles.toggleBtn, { backgroundColor: schedule.enabled ? '#22C55E18' : '#E5E7EB' }]}>
+                        <Text style={[styles.toggleText, { color: schedule.enabled ? '#22C55E' : '#9CA3AF' }]}>{schedule.enabled ? 'On' : 'Off'}</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => openEditSchedule(schedule)} style={styles.editBtn}>
-                        <Ionicons name="create-outline" size={18} color="#A39888" />
+                        <Ionicons name="create-outline" size={18} color="#9CA3AF" />
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => deleteSchedule(schedule.id)} style={styles.editBtn}>
-                        <Ionicons name="trash-outline" size={18} color="#F44336" />
+                        <Ionicons name="trash-outline" size={18} color="#EF4444" />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -346,14 +346,14 @@ export default function DietFeedingScreen({ navigation }: DietFeedingScreenProps
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>{editSchedule ? 'Edit Meal' : 'Add Meal'}</Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Ionicons name="close" size={24} color="#6B625A" />
+                <Ionicons name="close" size={24} color="#6B7280" />
               </TouchableOpacity>
             </View>
             <Text style={styles.modalLabel}>Time (HH:MM)</Text>
-            <TextInput style={styles.modalInput} value={timeInput} onChangeText={setTimeInput} placeholder="08:00" placeholderTextColor="#A39888" />
+            <TextInput style={styles.modalInput} value={timeInput} onChangeText={setTimeInput} placeholder="08:00" placeholderTextColor="#9CA3AF" />
             <Text style={styles.modalLabel}>Portion</Text>
             <View style={styles.modalPortionRow}>
-              <TextInput style={[styles.modalInput, { flex: 1 }]} value={portionInput} onChangeText={(text) => setPortionInput(text.replace(/[^0-9.]/g, ''))} keyboardType="decimal-pad" placeholder="200" placeholderTextColor="#A39888" />
+              <TextInput style={[styles.modalInput, { flex: 1 }]} value={portionInput} onChangeText={(text) => setPortionInput(text.replace(/[^0-9.]/g, ''))} keyboardType="decimal-pad" placeholder="200" placeholderTextColor="#9CA3AF" />
               <View style={styles.unitToggle}>
                 {(['g', 'cups'] as const).map((u) => (
                   <TouchableOpacity key={u} style={[styles.unitBtn, unitInput === u && styles.unitBtnActive]} onPress={() => setUnitInput(u)}>
@@ -363,7 +363,7 @@ export default function DietFeedingScreen({ navigation }: DietFeedingScreenProps
               </View>
             </View>
             <Text style={styles.modalLabel}>Food Type</Text>
-            <TextInput style={styles.modalInput} value={foodTypeInput} onChangeText={setFoodTypeInput} placeholder="e.g. Dry kibble, Raw, Wet food" placeholderTextColor="#A39888" />
+            <TextInput style={styles.modalInput} value={foodTypeInput} onChangeText={setFoodTypeInput} placeholder="e.g. Dry kibble, Raw, Wet food" placeholderTextColor="#9CA3AF" />
             <TouchableOpacity style={styles.saveBtn} onPress={handleSaveSchedule} activeOpacity={0.7}>
               <Text style={styles.saveBtnText}>{editSchedule ? 'Save Changes' : 'Add Meal'}</Text>
             </TouchableOpacity>

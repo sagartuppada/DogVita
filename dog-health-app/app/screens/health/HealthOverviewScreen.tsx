@@ -119,7 +119,7 @@ export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>)
           <View style={[styles.metricCard, { backgroundColor: '#FFEBEE', ...shadows.glowRed }]}>
             <Sparkline
               data={heartRateHistory.slice(-20).map((d) => d.bpm)}
-              color="#F44336"
+              color={colors.health.heartRate}
               label="Heart Rate"
               value={latestHR ? String(latestHR) : '--'}
               unit="bpm"
@@ -128,7 +128,7 @@ export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>)
           <View style={[styles.metricCard, { backgroundColor: '#FFF3E0', ...shadows.glowOrange }]}>
             <Sparkline
               data={temperatureHistory.slice(-20).map((d) => d.celsius)}
-              color="#FF9800"
+              color={colors.health.temperature}
               label="Temperature"
               value={latestTemp ? latestTemp.celsius.toFixed(1) : '--'}
               unit="°C"
@@ -139,7 +139,7 @@ export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>)
           <View style={[styles.metricCard, { backgroundColor: '#E8F5E9', ...shadows.glowGreen }]}>
             <Sparkline
               data={activityHistory.slice(-20).map((d) => d.steps)}
-              color="#4CAF50"
+              color={colors.health.activity}
               label="Steps"
               value={latestActivity ? String(latestActivity.steps) : '--'}
               unit="today"
@@ -148,7 +148,7 @@ export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>)
           <View style={[styles.metricCard, { backgroundColor: '#E3F2FD', ...shadows.glowBlue }]}>
             <Sparkline
               data={[]}
-              color="#5B9BD5"
+              color={colors.status.info}
               label="Battery"
               value={latestBattery !== null ? String(latestBattery) : '--'}
               unit="%"
@@ -161,21 +161,21 @@ export default function HealthOverviewScreen({}: HealthTabScreenProps<'Health'>)
           <View style={styles.activityRow}>
             <View style={styles.activityItem}>
               <View style={[styles.activityCircle, { backgroundColor: '#E8F5E9', ...shadows.glowGreen }]}>
-                <Ionicons name="walk" size={20} color="#4CAF50" />
+                <Ionicons name="walk" size={20} color={colors.health.activity} />
               </View>
               <Text style={styles.activityValue}>{latestActivity ? `${latestActivity.activeMinutes}m` : '--'}</Text>
               <Text style={styles.activityLabel}>Active</Text>
             </View>
             <View style={styles.activityItem}>
               <View style={[styles.activityCircle, { backgroundColor: '#FFF3E0', ...shadows.glowOrange }]}>
-                <Ionicons name="flame" size={20} color="#F3A93B" />
+                <Ionicons name="flame" size={20} color={colors.primary.DEFAULT} />
               </View>
               <Text style={styles.activityValue}>{latestActivity ? String(latestActivity.calories) : '--'}</Text>
               <Text style={styles.activityLabel}>Calories</Text>
             </View>
             <View style={styles.activityItem}>
               <View style={[styles.activityCircle, { backgroundColor: '#EDE7F6', ...shadows.glowPurple }]}>
-                <Ionicons name="moon" size={20} color="#7E57C2" />
+                <Ionicons name="moon" size={20} color={colors.health.sleep} />
               </View>
               <Text style={styles.activityValue}>--</Text>
               <Text style={styles.activityLabel}>Sleep</Text>

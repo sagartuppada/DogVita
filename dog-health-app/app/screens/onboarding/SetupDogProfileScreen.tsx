@@ -26,7 +26,7 @@ const BREEDS = [
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5E9CD',
+    backgroundColor: '#F9FAFB',
   },
   content: {
     paddingHorizontal: 24,
@@ -37,12 +37,12 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.styles.headingLG,
-    color: '#1F1A17',
+    color: '#111827',
     marginBottom: 8,
   },
   subtitle: {
     ...typography.styles.bodyMD,
-    color: '#6B625A',
+    color: '#6B7280',
   },
   avatarSection: {
     alignItems: 'center',
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     width: 88,
     height: 88,
     borderRadius: 44,
-    backgroundColor: '#FDF6E8',
+    backgroundColor: '#F0FDF4',
     borderWidth: 2,
     borderStyle: 'dashed',
     borderColor: '#F3C45A',
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   avatarHint: {
     ...typography.styles.caption,
-    color: '#E2941C',
+    color: '#15803D',
   },
   form: {
     marginBottom: 16,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   breedLabel: {
     ...typography.styles.label,
-    color: '#6B625A',
+    color: '#6B7280',
     marginBottom: 8,
   },
   breedValue: {
@@ -88,10 +88,10 @@ const styles = StyleSheet.create({
   },
   breedText: {
     ...typography.styles.bodyLG,
-    color: '#1F1A17',
+    color: '#111827',
   },
   breedPlaceholder: {
-    color: '#A39888',
+    color: '#9CA3AF',
   },
   breedList: {
     backgroundColor: '#FFFFFF',
@@ -108,14 +108,14 @@ const styles = StyleSheet.create({
     borderBottomColor: '#F0E8D8',
   },
   breedOptionSelected: {
-    backgroundColor: '#FDF6E8',
+    backgroundColor: '#F0FDF4',
   },
   breedOptionText: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
   },
   breedOptionTextSelected: {
-    color: '#E2941C',
+    color: '#15803D',
     fontWeight: '600',
   },
   row: {
@@ -183,7 +183,7 @@ export default function SetupDogProfileScreen({
         {/* Dog Avatar */}
         <View style={styles.avatarSection}>
           <View style={styles.avatarCircle}>
-            <Ionicons name="camera" size={28} color="#E2941C" />
+            <Ionicons name="camera" size={28} color="#15803D" />
           </View>
           <Text style={styles.avatarHint}>Add a photo</Text>
         </View>
@@ -210,7 +210,7 @@ export default function SetupDogProfileScreen({
               <Ionicons
                 name={showBreedPicker ? 'chevron-up' : 'chevron-down'}
                 size={18}
-                color="#A39888"
+                color="#9CA3AF"
               />
             </View>
           </TouchableOpacity>

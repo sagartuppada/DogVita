@@ -1,81 +1,80 @@
 /**
  * DogVita Color Palette
- * Premium pet-wellness aesthetic
- * Warm cream backgrounds, soft ivory cards, honey-orange accents, cocoa text
+ * Clean & minimal — white backgrounds, green primary, gray accents
  */
 
 export const lightColors = {
   primary: {
-    DEFAULT: '#F3A93B',
-    dark: '#E2941C',
-    light: '#F5C46B',
-    50: '#FDF6E8',
-    100: '#FAECC8',
-    200: '#F5D88E',
-    300: '#F3C45A',
-    400: '#F3A93B',
-    500: '#E2941C',
-    600: '#C47E15',
-    700: '#A06610',
-    800: '#7D4E0C',
-    900: '#5A3808',
+    DEFAULT: '#16A34A',
+    dark: '#15803D',
+    light: '#22C55E',
+    50: '#F0FDF4',
+    100: '#DCFCE7',
+    200: '#BBF7D0',
+    300: '#86EFAC',
+    400: '#4ADE80',
+    500: '#22C55E',
+    600: '#16A34A',
+    700: '#15803D',
+    800: '#166534',
+    900: '#14532D',
   },
 
   secondary: {
-    DEFAULT: '#6B625A',
-    light: '#8A7F75',
-    dark: '#4D4540',
+    DEFAULT: '#6B7280',
+    light: '#9CA3AF',
+    dark: '#374151',
   },
 
   status: {
-    success: '#4CAF50',
-    warning: '#FF9800',
-    error: '#F44336',
-    info: '#5B9BD5',
+    success: '#22C55E',
+    warning: '#F59E0B',
+    error: '#EF4444',
+    info: '#3B82F6',
   },
 
   health: {
-    heartRate: '#F44336',
-    temperature: '#FF9800',
-    activity: '#4CAF50',
-    sleep: '#7E57C2',
-    battery: '#4CAF50',
-    gps: '#5B9BD5',
+    heartRate: '#EF4444',
+    temperature: '#F59E0B',
+    activity: '#22C55E',
+    sleep: '#8B5CF6',
+    battery: '#22C55E',
+    gps: '#3B82F6',
   },
 
   background: {
-    primary: '#F5E9CD',
-    secondary: '#EDE2C6',
-    card: '#FBF4E4',
+    primary: '#F9FAFB',
+    secondary: '#F3F4F6',
+    card: '#FFFFFF',
     elevated: '#FFFFFF',
     modal: '#FFFFFF',
-    overlay: 'rgba(31, 26, 23, 0.5)',
+    overlay: 'rgba(0, 0, 0, 0.5)',
   },
 
   text: {
-    primary: '#1F1A17',
-    secondary: '#6B625A',
-    tertiary: '#A39888',
+    primary: '#111827',
+    secondary: '#6B7280',
+    tertiary: '#9CA3AF',
     inverse: '#FFFFFF',
-    link: '#E2941C',
+    link: '#16A34A',
   },
 
   border: {
-    DEFAULT: '#E9DDC9',
-    light: '#F0E8D8',
-    focused: '#F3A93B',
-    error: '#F44336',
+    DEFAULT: '#E5E7EB',
+    light: '#F3F4F6',
+    focused: '#16A34A',
+    error: '#EF4444',
   },
 
   ble: {
-    connected: '#4CAF50',
-    connecting: '#FF9800',
-    disconnected: '#A39888',
-    error: '#F44336',
+    connected: '#22C55E',
+    connecting: '#F59E0B',
+    disconnected: '#9CA3AF',
+    error: '#EF4444',
   },
 
   white: '#FFFFFF',
-  black: '#1F1A17',
+  black: '#111827',
 } as const;
 
 export const colors = lightColors as Colors;

@@ -14,7 +14,7 @@ import { useSettingsStore } from '../../store/settingsStore';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5E9CD',
+    backgroundColor: '#F9FAFB',
   },
   content: {
     flex: 1,
@@ -52,13 +52,13 @@ const styles = StyleSheet.create({
   },
   statusText: {
     ...typography.styles.headingSM,
-    color: '#1F1A17',
+    color: '#111827',
     textAlign: 'center',
     marginBottom: 24,
   },
   devicePreview: {
     width: '100%',
-    backgroundColor: '#FBF4E4',
+    backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 20,
     ...shadows.card,
@@ -73,16 +73,16 @@ const styles = StyleSheet.create({
   },
   deviceName: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
   },
   deviceId: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
   },
   errorHint: {
     ...typography.styles.bodySM,
-    color: '#6B625A',
+    color: '#6B7280',
     textAlign: 'center',
     marginTop: 16,
   },
@@ -116,15 +116,15 @@ export default function PairDeviceScreen({
   const getStatusConfig = () => {
     switch (status) {
       case 'scanning':
-        return { icon: 'bluetooth', color: '#F3A93B', text: 'Scanning for devices...' };
+        return { icon: 'bluetooth', color: '#16A34A', text: 'Scanning for devices...' };
       case 'found':
-        return { icon: 'watch', color: '#5B9BD5', text: 'DogVita Collar found!' };
+        return { icon: 'watch', color: '#3B82F6', text: 'DogVita Collar found!' };
       case 'pairing':
-        return { icon: 'sync', color: '#F3A93B', text: 'Pairing...' };
+        return { icon: 'sync', color: '#16A34A', text: 'Pairing...' };
       case 'connected':
-        return { icon: 'checkmark-circle', color: '#4CAF50', text: 'Connected!' };
+        return { icon: 'checkmark-circle', color: '#22C55E', text: 'Connected!' };
       case 'error':
-        return { icon: 'alert-circle', color: '#F44336', text: 'Pairing failed' };
+        return { icon: 'alert-circle', color: '#EF4444', text: 'Pairing failed' };
     }
   };
 
@@ -159,7 +159,7 @@ export default function PairDeviceScreen({
         {status === 'found' && (
           <View style={styles.devicePreview}>
             <View style={styles.deviceRow}>
-              <Ionicons name="watch" size={24} color="#6B625A" />
+              <Ionicons name="watch" size={24} color="#6B7280" />
               <View style={styles.deviceInfo}>
                 <Text style={styles.deviceName}>DogVita Collar</Text>
                 <Text style={styles.deviceId}>Signal: Strong</Text>

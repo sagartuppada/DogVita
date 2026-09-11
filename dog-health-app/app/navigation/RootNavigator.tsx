@@ -31,6 +31,12 @@ import ChatScreen from '../screens/chat/ChatScreen';
 import AddPetScreen from '../screens/pet/AddPetScreen';
 import PrivacyPolicyScreen from '../screens/settings/PrivacyPolicyScreen';
 import TermsConditionsScreen from '../screens/settings/TermsConditionsScreen';
+import MarketplaceScreen from '../screens/marketplace/MarketplaceScreen';
+import ProductDetailScreen from '../screens/marketplace/ProductDetailScreen';
+import CartScreen from '../screens/marketplace/CartScreen';
+import CheckoutScreen from '../screens/marketplace/CheckoutScreen';
+import StoreDetailScreen from '../screens/marketplace/StoreDetailScreen';
+import OrderConfirmationScreen from '../screens/marketplace/OrderConfirmationScreen';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
@@ -119,6 +125,12 @@ export const RootNavigator: React.FC = () => {
             <RootStack.Screen name="AddPet" component={AddPetScreen} options={{ headerShown: false }} />
             <RootStack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} options={{ headerShown: false }} />
             <RootStack.Screen name="TermsConditions" component={TermsConditionsScreen} options={{ headerShown: false }} />
+            <RootStack.Screen name="Marketplace" component={MarketplaceScreen} />
+            <RootStack.Screen name="ProductDetail" component={ProductDetailScreen} />
+            <RootStack.Screen name="Cart" component={CartScreen} />
+            <RootStack.Screen name="Checkout" component={CheckoutScreen} />
+            <RootStack.Screen name="StoreDetail" component={StoreDetailScreen} />
+            <RootStack.Screen name="OrderConfirmation" component={OrderConfirmationScreen} />
           </>
         ) : (
           <RootStack.Screen name="Onboarding" component={OnboardingNavigator} />

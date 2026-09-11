@@ -1,4 +1,3 @@
-export { apiClient } from './client';
 export {
   supabase,
   isSupabaseConfigured,

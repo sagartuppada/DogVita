@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.styles.headingXL,
-    color: '#1F1A17',
+    color: '#111827',
   },
   summaryCard: {
     marginHorizontal: spacing.page,
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   },
   listTitle: {
     ...typography.styles.label,
-    color: '#6B625A',
+    color: '#6B7280',
   },
   recordCard: {
     marginHorizontal: spacing.page,
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
   recordName: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
   },
   recordMeta: {
@@ -123,11 +123,11 @@ const styles = StyleSheet.create({
   },
   recordMetaText: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
   },
   recordVet: {
     ...typography.styles.caption,
-    color: '#6B625A',
+    color: '#6B7280',
     marginTop: 2,
   },
   statusBadge: {
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#F5E9CD',
+    backgroundColor: '#F9FAFB',
     borderTopLeftRadius: borderRadius.xxl,
     borderTopRightRadius: borderRadius.xxl,
     paddingHorizontal: spacing.page,
@@ -159,45 +159,45 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     ...typography.styles.headingLG,
-    color: '#1F1A17',
+    color: '#111827',
   },
   modalLabel: {
     ...typography.styles.caption,
-    color: '#6B625A',
+    color: '#6B7280',
     marginBottom: spacing.xs,
     marginTop: spacing.md,
   },
   modalInput: {
-    backgroundColor: '#FBF4E4',
+    backgroundColor: '#FFFFFF',
     borderRadius: borderRadius.lg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
-    color: '#1F1A17',
+    color: '#111827',
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#E9DDC9',
+    borderColor: '#E5E7EB',
   },
   nameSelector: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#FBF4E4',
+    backgroundColor: '#FFFFFF',
     borderRadius: borderRadius.lg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
     borderWidth: 1,
-    borderColor: '#E9DDC9',
+    borderColor: '#E5E7EB',
   },
   nameSelectorText: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
   },
   nameSelectorPlaceholder: {
     ...typography.styles.bodyMD,
-    color: '#A39888',
+    color: '#9CA3AF',
   },
   namePicker: {
-    backgroundColor: '#FBF4E4',
+    backgroundColor: '#FFFFFF',
     borderRadius: borderRadius.lg,
     padding: spacing.sm,
     marginBottom: spacing.md,
@@ -210,19 +210,19 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.md,
   },
   nameOptionActive: {
-    backgroundColor: '#F3A93B18',
+    backgroundColor: '#16A34A18',
   },
   nameOptionText: {
     ...typography.styles.bodySM,
-    color: '#1F1A17',
+    color: '#111827',
   },
   nameOptionTextActive: {
-    color: '#F3A93B',
+    color: '#16A34A',
     fontWeight: '600',
   },
   nameInput: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
     borderTopWidth: 1,
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
   },
   toggleLabel: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
   },
   toggle: {
     width: 48,
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   saveBtn: {
-    backgroundColor: '#F3A93B',
+    backgroundColor: '#16A34A',
     borderRadius: borderRadius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -275,18 +275,18 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
   },
   deleteBtnText: {
-    color: '#F44336',
+    color: '#EF4444',
     fontSize: 16,
     fontWeight: '600',
   },
 });
 
 const STATUS_CONFIG: Record<VaccinationStatus, { color: string; bg: string; label: string; icon: string }> = {
-  completed: { color: '#4CAF50', bg: '#4CAF5018', label: 'Completed', icon: 'checkmark-circle' },
-  upcoming: { color: '#5B9BD5', bg: '#5B9BD518', label: 'Upcoming', icon: 'time' },
-  due: { color: '#FF9800', bg: '#FF980018', label: 'Due Soon', icon: 'alert-circle' },
-  overdue: { color: '#F44336', bg: '#F4433618', label: 'Overdue', icon: 'warning' },
-  skipped: { color: '#A39888', bg: '#A3988812', label: 'Skipped', icon: 'close-circle' },
+  completed: { color: '#22C55E', bg: '#22C55E18', label: 'Completed', icon: 'checkmark-circle' },
+  upcoming: { color: '#3B82F6', bg: '#3B82F618', label: 'Upcoming', icon: 'time' },
+  due: { color: '#F59E0B', bg: '#F59E0B18', label: 'Due Soon', icon: 'alert-circle' },
+  overdue: { color: '#EF4444', bg: '#EF444418', label: 'Overdue', icon: 'warning' },
+  skipped: { color: '#9CA3AF', bg: '#9CA3AF12', label: 'Skipped', icon: 'close-circle' },
 };
 
 export default function VaccinationRecordsScreen({ navigation, route }: VaccinationRecordsScreenProps) {
@@ -392,11 +392,11 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
+          <Ionicons name="chevron-back" size={24} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.title}>Vaccinations</Text>
         <TouchableOpacity onPress={openAdd} style={styles.backButton}>
-          <Ionicons name="add" size={24} color="#F3A93B" />
+          <Ionicons name="add" size={24} color="#16A34A" />
         </TouchableOpacity>
       </View>
 
@@ -410,16 +410,16 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
             <View style={styles.summaryRow}>
               {overdueCount > 0 && (
                 <View style={styles.summaryBadge}>
-                  <Ionicons name="warning" size={16} color="#F44336" />
-                  <Text style={[styles.summaryText, { color: '#F44336' }]}>
+                  <Ionicons name="warning" size={16} color="#EF4444" />
+                  <Text style={[styles.summaryText, { color: '#EF4444' }]}>
                     {overdueCount} overdue
                   </Text>
                 </View>
               )}
               {dueCount > 0 && (
                 <View style={styles.summaryBadge}>
-                  <Ionicons name="alert-circle" size={16} color="#FF9800" />
-                  <Text style={[styles.summaryText, { color: '#FF9800' }]}>
+                  <Ionicons name="alert-circle" size={16} color="#F59E0B" />
+                  <Text style={[styles.summaryText, { color: '#F59E0B' }]}>
                     {dueCount} due soon
                   </Text>
                 </View>
@@ -466,8 +466,8 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
                         {record.nextDueDate && (
                           <Text style={[
                             styles.recordMetaText,
-                            days !== null && days <= 0 && { color: '#F44336' },
-                            days !== null && days > 0 && days <= 30 && { color: '#FF9800' },
+                            days !== null && days <= 0 && { color: '#EF4444' },
+                            days !== null && days > 0 && days <= 30 && { color: '#F59E0B' },
                           ]}>
                             {days !== null ? (days <= 0 ? `Overdue by ${Math.abs(days)} days` : `Due in ${days} days`) : ''}
                           </Text>
@@ -502,7 +502,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
                 {editRecord ? 'Edit Vaccination' : 'Add Vaccination'}
               </Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Ionicons name="close" size={24} color="#6B625A" />
+                <Ionicons name="close" size={24} color="#6B7280" />
               </TouchableOpacity>
             </View>
 
@@ -516,7 +516,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
               <Text style={vaccineName ? styles.nameSelectorText : styles.nameSelectorPlaceholder}>
                 {vaccineName || 'Select or type a vaccine name'}
               </Text>
-              <Ionicons name={showNamePicker ? 'chevron-up' : 'chevron-down'} size={16} color="#A39888" />
+              <Ionicons name={showNamePicker ? 'chevron-up' : 'chevron-down'} size={16} color="#9CA3AF" />
             </TouchableOpacity>
 
             {showNamePicker && (
@@ -547,7 +547,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
                     if (!VACCINE_NAMES.includes(text)) setShowNamePicker(false);
                   }}
                   placeholder="Custom name..."
-                  placeholderTextColor="#A39888"
+                  placeholderTextColor="#9CA3AF"
                 />
               </View>
             )}
@@ -558,7 +558,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
               value={administeredDate}
               onChangeText={setAdministeredDate}
               placeholder="YYYY-MM-DD (optional)"
-              placeholderTextColor="#A39888"
+              placeholderTextColor="#9CA3AF"
             />
 
             <Text style={styles.modalLabel}>Next Due Date</Text>
@@ -567,7 +567,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
               value={nextDueDate}
               onChangeText={setNextDueDate}
               placeholder="YYYY-MM-DD (optional)"
-              placeholderTextColor="#A39888"
+              placeholderTextColor="#9CA3AF"
             />
 
             <Text style={styles.modalLabel}>Vet Name</Text>
@@ -576,7 +576,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
               value={vetName}
               onChangeText={setVetName}
               placeholder="Optional"
-              placeholderTextColor="#A39888"
+              placeholderTextColor="#9CA3AF"
             />
 
             <Text style={styles.modalLabel}>Batch Number</Text>
@@ -585,7 +585,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
               value={batchNumber}
               onChangeText={setBatchNumber}
               placeholder="Optional"
-              placeholderTextColor="#A39888"
+              placeholderTextColor="#9CA3AF"
             />
 
             <Text style={styles.modalLabel}>Notes</Text>
@@ -594,7 +594,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
               value={notes}
               onChangeText={setNotes}
               placeholder="Optional"
-              placeholderTextColor="#A39888"
+              placeholderTextColor="#9CA3AF"
               multiline
             />
 
@@ -604,7 +604,7 @@ export default function VaccinationRecordsScreen({ navigation, route }: Vaccinat
                 onPress={() => setReminderEnabled((r) => !r)}
                 style={[
                   styles.toggle,
-                  { backgroundColor: reminderEnabled ? '#F3A93B' : '#E9DDC9' },
+                  { backgroundColor: reminderEnabled ? '#16A34A' : '#E5E7EB' },
                 ]}
               >
                 <View style={[styles.toggleKnob, reminderEnabled && styles.toggleKnobActive]} />

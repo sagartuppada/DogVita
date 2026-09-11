@@ -251,10 +251,10 @@ export default function ChatScreen() {
 
       {sendError && (
         <View style={styles.errorBanner}>
-          <Ionicons name="alert-circle" size={16} color="#F44336" />
+          <Ionicons name="alert-circle" size={16} color="#EF4444" />
           <Text style={styles.errorText} numberOfLines={2}>{sendError}</Text>
           <TouchableOpacity onPress={() => setSendError(null)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Ionicons name="close" size={16} color="#F44336" />
+            <Ionicons name="close" size={16} color="#EF4444" />
           </TouchableOpacity>
         </View>
       )}

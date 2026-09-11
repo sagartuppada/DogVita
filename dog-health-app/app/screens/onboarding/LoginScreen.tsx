@@ -21,7 +21,7 @@ import type { OnboardingScreenProps } from '../../navigation/types';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5E9CD',
+    backgroundColor: '#F9FAFB',
   },
   content: {
     flex: 1,
@@ -35,12 +35,12 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.styles.headingLG,
-    color: '#1F1A17',
+    color: '#111827',
     marginBottom: 8,
   },
   subtitle: {
     ...typography.styles.bodyMD,
-    color: '#6B625A',
+    color: '#6B7280',
   },
   form: {
     marginBottom: 16,
@@ -82,7 +82,7 @@ export default function LoginScreen({
       <Header showBack onBack={() => navigation.goBack()} title="" />
 
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.content}
       >
         <ScrollView

@@ -157,12 +157,12 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.styles.headingXL,
-    color: '#1F1A17',
+    color: '#111827',
   },
   disclaimerCard: {
     marginHorizontal: spacing.page,
     marginBottom: spacing.md,
-    backgroundColor: '#5B9BD510',
+    backgroundColor: '#3B82F610',
   },
   disclaimerRow: {
     flexDirection: 'row',
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   disclaimerText: {
     ...typography.styles.caption,
-    color: '#6B625A',
+    color: '#6B7280',
     flex: 1,
     lineHeight: 18,
   },
@@ -183,11 +183,11 @@ const styles = StyleSheet.create({
   },
   selectedText: {
     ...typography.styles.bodySM,
-    color: '#6B625A',
+    color: '#6B7280',
   },
   analyzeText: {
     ...typography.styles.bodySM,
-    color: '#F3A93B',
+    color: '#16A34A',
     fontWeight: '700',
   },
   categorySection: {
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   categoryTitle: {
     ...typography.styles.label,
-    color: '#6B625A',
+    color: '#6B7280',
     marginBottom: spacing.sm,
   },
   symptomGrid: {
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.xs,
-    backgroundColor: '#FBF4E4',
+    backgroundColor: '#FFFFFF',
     borderRadius: borderRadius.pill,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
@@ -216,8 +216,8 @@ const styles = StyleSheet.create({
     borderColor: '#F0E8D8',
   },
   symptomChipSelected: {
-    backgroundColor: '#F3A93B',
-    borderColor: '#F3A93B',
+    backgroundColor: '#16A34A',
+    borderColor: '#16A34A',
   },
   severityDot: {
     width: 8,
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   },
   symptomLabel: {
     ...typography.styles.caption,
-    color: '#1F1A17',
+    color: '#111827',
   },
   symptomLabelSelected: {
     color: '#FFFFFF',
@@ -241,13 +241,13 @@ const styles = StyleSheet.create({
   },
   resultsTitle: {
     ...typography.styles.headingMD,
-    color: '#1F1A17',
+    color: '#111827',
     marginBottom: spacing.md,
   },
   urgentCard: {
     marginBottom: spacing.md,
-    backgroundColor: '#F4433610',
-    borderColor: '#F4433630',
+    backgroundColor: '#EF444410',
+    borderColor: '#EF444430',
     borderWidth: 1,
   },
   urgentRow: {
@@ -259,12 +259,12 @@ const styles = StyleSheet.create({
   },
   urgentTitle: {
     ...typography.styles.bodyMD,
-    color: '#F44336',
+    color: '#EF4444',
     fontWeight: '700',
   },
   urgentDesc: {
     ...typography.styles.caption,
-    color: '#6B625A',
+    color: '#6B7280',
     marginTop: spacing.xs,
   },
   resultCard: {
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   },
   resultRank: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
     fontWeight: '700',
     width: 24,
   },
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   },
   resultName: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
     flex: 1,
   },
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
   },
   resultDesc: {
     ...typography.styles.caption,
-    color: '#6B625A',
+    color: '#6B7280',
     marginLeft: 32,
     marginBottom: spacing.sm,
     lineHeight: 18,
@@ -316,19 +316,19 @@ const styles = StyleSheet.create({
   },
   matchText: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
   },
   actionBox: {
     flexDirection: 'row',
     gap: spacing.sm,
     marginLeft: 32,
-    backgroundColor: '#F3A93B10',
+    backgroundColor: '#16A34A10',
     borderRadius: borderRadius.lg,
     padding: spacing.sm,
   },
   actionText: {
     ...typography.styles.caption,
-    color: '#1F1A17',
+    color: '#111827',
     flex: 1,
     lineHeight: 18,
   },
@@ -338,20 +338,20 @@ const styles = StyleSheet.create({
   },
   noResultsText: {
     ...typography.styles.bodyMD,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: spacing.md,
   },
   noResultsSub: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: spacing.xs,
   },
 });
 
 const RISK_COLORS = {
-  low: '#4CAF50',
-  moderate: '#FF9800',
-  high: '#F44336',
+  low: '#22C55E',
+  moderate: '#F59E0B',
+  high: '#EF4444',
   critical: '#8B0000',
 };
 
@@ -413,11 +413,11 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
+          <Ionicons name="chevron-back" size={24} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.title}>Symptom Checker</Text>
         <TouchableOpacity onPress={clearAll} style={styles.backButton}>
-          <Ionicons name="refresh" size={20} color="#A39888" />
+          <Ionicons name="refresh" size={20} color="#9CA3AF" />
         </TouchableOpacity>
       </View>
 
@@ -428,7 +428,7 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
         {/* Disclaimer */}
         <Card variant="default" padding="md" style={styles.disclaimerCard}>
           <View style={styles.disclaimerRow}>
-            <Ionicons name="information-circle" size={20} color="#5B9BD5" />
+            <Ionicons name="information-circle" size={20} color="#3B82F6" />
             <Text style={styles.disclaimerText}>
               This is not a substitute for professional veterinary care. If your dog is in distress, contact a vet immediately.
             </Text>
@@ -456,10 +456,10 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
                 const isSelected = selectedSymptoms.has(symptom.id);
                 const severityColor =
                   symptom.severity === 'high'
-                    ? '#F44336'
+                    ? '#EF4444'
                     : symptom.severity === 'medium'
-                    ? '#FF9800'
-                    : '#4CAF50';
+                    ? '#F59E0B'
+                    : '#22C55E';
                 return (
                   <TouchableOpacity
                     key={symptom.id}
@@ -492,7 +492,7 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
             {maxRisk && (maxRisk.risk === 'critical' || maxRisk.risk === 'high') && (
               <Card variant="elevated" padding="md" style={styles.urgentCard}>
                 <View style={styles.urgentRow}>
-                  <Ionicons name="warning" size={24} color="#F44336" />
+                  <Ionicons name="warning" size={24} color="#EF4444" />
                   <View style={styles.urgentText}>
                     <Text style={styles.urgentTitle}>Potential Emergency Detected</Text>
                     <Text style={styles.urgentDesc}>
@@ -523,7 +523,7 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
                   </Text>
                 </View>
                 <View style={styles.actionBox}>
-                  <Ionicons name="medical" size={16} color="#F3A93B" />
+                  <Ionicons name="medical" size={16} color="#16A34A" />
                   <Text style={styles.actionText}>{result.action}</Text>
                 </View>
               </Card>
@@ -533,7 +533,7 @@ export default function SymptomCheckerScreen({ navigation }: SymptomCheckerScree
 
         {showResults && results.length === 0 && selectedSymptoms.size > 0 && (
           <View style={styles.noResults}>
-            <Ionicons name="search-outline" size={40} color="#A39888" />
+            <Ionicons name="search-outline" size={40} color="#9CA3AF" />
             <Text style={styles.noResultsText}>No matching conditions found</Text>
             <Text style={styles.noResultsSub}>
               Try selecting different symptoms or consult your vet directly.

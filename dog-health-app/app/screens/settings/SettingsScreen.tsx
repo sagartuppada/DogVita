@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.styles.headingXL,
-    color: '#1F1A17',
+    color: '#111827',
   },
   section: {
     marginBottom: spacing.xl,
@@ -49,12 +49,12 @@ const styles = StyleSheet.create({
   },
   settingLabel: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
     flex: 1,
   },
   settingValue: {
     ...typography.styles.bodySM,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginRight: spacing.sm,
   },
   separator: {
@@ -101,10 +101,10 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
       headerTitle: 'Settings',
       headerLeft: () => (
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
+          <Ionicons name="chevron-back" size={24} color="#111827" />
         </TouchableOpacity>
       ),
-      headerStyle: { backgroundColor: '#F5E9CD' },
+      headerStyle: { backgroundColor: '#F9FAFB' },
       headerShadowVisible: false,
     });
   }, [navigation]);
@@ -180,7 +180,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
         <Card variant="default" padding="none" style={styles.section}>
           <SettingRow
             icon="paw"
-            iconColor="#F3A93B"
+            iconColor="#16A34A"
             label="Dog Profile"
             value={activeDog?.name ?? 'Add dog'}
             onPress={handleDogProfile}
@@ -188,7 +188,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           <View style={styles.separator} />
           <SettingRow
             icon="watch"
-            iconColor="#5B9BD5"
+            iconColor="#3B82F6"
             label="Device"
             value="Connected"
             onPress={handleDeviceSettings}
@@ -199,7 +199,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
         <Card variant="default" padding="none" style={styles.section}>
           <SettingRow
             icon="location"
-            iconColor="#4CAF50"
+            iconColor="#22C55E"
             label="Location & Geofences"
             onPress={handleLocationSettings}
           />
@@ -211,14 +211,14 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
         <Card variant="default" padding="none" style={styles.section}>
           <SettingRow
             icon="fitness"
-            iconColor="#F3A93B"
+            iconColor="#16A34A"
             label="Weight"
             onPress={handleWeight}
           />
           <View style={styles.separator} />
           <SettingRow
             icon="medical"
-            iconColor="#4CAF50"
+            iconColor="#22C55E"
             label="Vaccinations"
             onPress={handleVaccinations}
           />
@@ -228,21 +228,21 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
         <Card variant="default" padding="none" style={styles.section}>
           <SettingRow
             icon="person"
-            iconColor="#6B625A"
+            iconColor="#6B7280"
             label="Account"
             onPress={handleAccount}
           />
           <View style={styles.separator} />
           <SettingRow
             icon="help-circle"
-            iconColor="#5B9BD5"
+            iconColor="#3B82F6"
             label="Help & Support"
             onPress={handleHelp}
           />
           <View style={styles.separator} />
           <SettingRow
             icon="information-circle"
-            iconColor="#A39888"
+            iconColor="#9CA3AF"
             label="About"
             value="v1.0.0"
             onPress={() => Alert.alert('About', 'DogVita v1.0.0\nSmart health monitoring for your best friend')}
@@ -250,14 +250,14 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           <View style={styles.separator} />
           <SettingRow
             icon="shield-checkmark-outline"
-            iconColor="#6B625A"
+            iconColor="#6B7280"
             label="Privacy Policy"
             onPress={() => navigation.navigate('PrivacyPolicy')}
           />
           <View style={styles.separator} />
           <SettingRow
             icon="document-text-outline"
-            iconColor="#6B625A"
+            iconColor="#6B7280"
             label="Terms & Conditions"
             onPress={() => navigation.navigate('TermsConditions')}
           />
@@ -267,7 +267,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
         <Card variant="default" padding="none" style={styles.section}>
           <SettingRow
             icon="log-out"
-            iconColor="#F44336"
+            iconColor="#EF4444"
             label="Log Out"
             showChevron={false}
             onPress={handleLogout}

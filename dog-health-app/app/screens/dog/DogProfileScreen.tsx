@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.styles.headingLG,
-    color: '#1F1A17',
+    color: '#111827',
   },
   centered: {
     flex: 1,
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     ...typography.styles.bodyMD,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: spacing.md,
   },
   photoSection: {
@@ -66,26 +66,26 @@ const styles = StyleSheet.create({
     width: 96,
     height: 96,
     borderRadius: 48,
-    backgroundColor: '#F3A93B18',
+    backgroundColor: '#16A34A18',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: spacing.md,
   },
   photoLabel: {
     ...typography.styles.headingMD,
-    color: '#1F1A17',
+    color: '#111827',
   },
   photoSub: {
     ...typography.styles.bodySM,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: 2,
   },
   ageBadge: {
     ...typography.styles.caption,
-    color: '#F3A93B',
+    color: '#16A34A',
     fontWeight: '600',
     marginTop: spacing.xs,
-    backgroundColor: '#F3A93B12',
+    backgroundColor: '#16A34A12',
     paddingHorizontal: spacing.md,
     paddingVertical: 4,
     borderRadius: borderRadius.pill,
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FBF4E4',
+    backgroundColor: '#FFFFFF',
     borderRadius: borderRadius.lg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   },
   quickLinkText: {
     ...typography.styles.bodySM,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
     flex: 1,
   },
@@ -118,12 +118,12 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     ...typography.styles.label,
-    color: '#6B625A',
+    color: '#6B7280',
     marginBottom: spacing.md,
   },
   fieldLabel: {
     ...typography.styles.label,
-    color: '#6B625A',
+    color: '#6B7280',
     marginBottom: spacing.sm,
   },
   genderRow: {
@@ -144,12 +144,12 @@ const styles = StyleSheet.create({
     borderColor: '#F0E8D8',
   },
   genderOptionActive: {
-    backgroundColor: '#F3A93B',
-    borderColor: '#F3A93B',
+    backgroundColor: '#16A34A',
+    borderColor: '#16A34A',
   },
   genderOptionText: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
   },
   genderOptionTextActive: {
@@ -176,11 +176,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#EDE2C6',
   },
   unitOptionActive: {
-    backgroundColor: '#F3A93B',
+    backgroundColor: '#16A34A',
   },
   unitOptionText: {
     ...typography.styles.bodySM,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
   },
   unitOptionTextActive: {
@@ -198,11 +198,11 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     ...typography.styles.bodySM,
-    color: '#A39888',
+    color: '#9CA3AF',
   },
   infoValue: {
     ...typography.styles.bodySM,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '500',
   },
   actions: {
@@ -302,11 +302,11 @@ export default function DogProfileScreen({ navigation, route }: DogProfileScreen
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={24} color="#1F1A17" />
+            <Ionicons name="chevron-back" size={24} color="#111827" />
           </TouchableOpacity>
         </View>
         <View style={styles.centered}>
-          <Ionicons name="paw-outline" size={48} color="#A39888" />
+          <Ionicons name="paw-outline" size={48} color="#9CA3AF" />
           <Text style={styles.errorText}>Dog not found</Text>
         </View>
       </View>
@@ -317,11 +317,11 @@ export default function DogProfileScreen({ navigation, route }: DogProfileScreen
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
+          <Ionicons name="chevron-back" size={24} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.title}>{isEditing ? 'Edit Profile' : dog.name}</Text>
         <TouchableOpacity onPress={() => setIsEditing((e) => !e)} style={styles.backButton}>
-          <Ionicons name={isEditing ? 'close' : 'create-outline'} size={22} color="#1F1A17" />
+          <Ionicons name={isEditing ? 'close' : 'create-outline'} size={22} color="#111827" />
         </TouchableOpacity>
       </View>
 
@@ -332,7 +332,7 @@ export default function DogProfileScreen({ navigation, route }: DogProfileScreen
         {/* Profile Photo Placeholder */}
         <View style={styles.photoSection}>
           <View style={styles.photoCircle}>
-            <Ionicons name="paw" size={40} color="#F3A93B" />
+            <Ionicons name="paw" size={40} color="#16A34A" />
           </View>
           <Text style={styles.photoLabel}>{dog.name}</Text>
           <Text style={styles.photoSub}>{dog.breed}</Text>
@@ -364,7 +364,7 @@ export default function DogProfileScreen({ navigation, route }: DogProfileScreen
                     <Ionicons
                       name={option.value === 'male' ? 'male' : 'female'}
                       size={18}
-                      color={gender === option.value ? '#FFFFFF' : '#A39888'}
+                      color={gender === option.value ? '#FFFFFF' : '#9CA3AF'}
                     />
                     <Text
                       style={[
@@ -457,7 +457,7 @@ export default function DogProfileScreen({ navigation, route }: DogProfileScreen
               title="Delete Profile"
               onPress={handleDelete}
               variant="ghost"
-              textStyle={{ color: '#F44336' }}
+              textStyle={{ color: '#EF4444' }}
             />
           </View>
         )}

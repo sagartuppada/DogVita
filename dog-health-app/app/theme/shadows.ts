@@ -85,7 +85,7 @@ export const shadows = {
 
   /** Input focus ring — honey-orange glow */
   inputFocus: {
-    shadowColor: '#F3A93B',
+    shadowColor: '#16A34A',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.20,
     shadowRadius: 8,
@@ -103,7 +103,7 @@ export const shadows = {
 
   /** Colored glow — health metric cards */
   glowRed: {
-    shadowColor: '#F44336',
+    shadowColor: '#EF4444',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
@@ -111,7 +111,7 @@ export const shadows = {
   } as ViewStyle,
 
   glowGreen: {
-    shadowColor: '#4CAF50',
+    shadowColor: '#22C55E',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
@@ -119,7 +119,7 @@ export const shadows = {
   } as ViewStyle,
 
   glowOrange: {
-    shadowColor: '#F3A93B',
+    shadowColor: '#16A34A',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
@@ -127,7 +127,7 @@ export const shadows = {
   } as ViewStyle,
 
   glowBlue: {
-    shadowColor: '#5B9BD5',
+    shadowColor: '#3B82F6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,

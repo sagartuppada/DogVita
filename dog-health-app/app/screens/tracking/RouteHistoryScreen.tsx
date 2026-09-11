@@ -34,7 +34,7 @@ const formatDistance = (meters: number) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5E9CD',
+    backgroundColor: '#F9FAFB',
   },
   header: {
     flexDirection: 'row',
@@ -50,12 +50,12 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.styles.headingXL,
-    color: '#1F1A17',
+    color: '#111827',
   },
   recordingBanner: {
     marginHorizontal: spacing.page,
     marginBottom: spacing.md,
-    backgroundColor: '#4CAF5012',
+    backgroundColor: '#22C55E12',
   },
   recordingRow: {
     flexDirection: 'row',
@@ -65,18 +65,18 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#22C55E',
     marginRight: spacing.sm,
   },
   recordingText: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
     flex: 1,
   },
   recordingStat: {
     ...typography.styles.caption,
-    color: '#6B625A',
+    color: '#6B7280',
   },
   list: {
     paddingHorizontal: spacing.page,
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F3A93B18',
+    backgroundColor: '#16A34A18',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: spacing.md,
@@ -102,12 +102,12 @@ const styles = StyleSheet.create({
   },
   routeName: {
     ...typography.styles.bodyMD,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
   },
   routeDate: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: 2,
   },
   routeStats: {
@@ -116,12 +116,12 @@ const styles = StyleSheet.create({
   },
   routeStatValue: {
     ...typography.styles.bodySM,
-    color: '#1F1A17',
+    color: '#111827',
     fontWeight: '600',
   },
   routeStatLabel: {
     ...typography.styles.caption,
-    color: '#A39888',
+    color: '#9CA3AF',
     marginTop: 2,
   },
 });
@@ -139,7 +139,7 @@ const RouteItem: React.FC<{
       <Card variant="default" padding="md" style={styles.routeCard}>
         <View style={styles.routeRow}>
           <View style={styles.routeIcon}>
-            <Ionicons name="walk" size={22} color="#F3A93B" />
+            <Ionicons name="walk" size={22} color="#16A34A" />
           </View>
           <View style={styles.routeInfo}>
             <Text style={styles.routeName}>{route.name}</Text>
@@ -149,7 +149,7 @@ const RouteItem: React.FC<{
             <Text style={styles.routeStatValue}>{formatDistance(route.totalDistance)}</Text>
             <Text style={styles.routeStatLabel}>{formatDuration(route.duration)}</Text>
           </View>
-          <Ionicons name="chevron-forward" size={18} color="#A39888" />
+          <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
         </View>
       </Card>
     </TouchableOpacity>
@@ -189,7 +189,7 @@ export default function RouteHistoryScreen({ navigation }: RouteHistoryScreenPro
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#1F1A17" />
+          <Ionicons name="chevron-back" size={24} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.title}>Route History</Text>
         <View style={styles.backButton} />
